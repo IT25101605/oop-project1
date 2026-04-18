@@ -1,10 +1,185 @@
-body {
-    font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #fff1eb, #ace0f9);
+* {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
+body {
+    font-family: Arial, sans-serif;
+    background: #fffaf5;
+    color: #333;
+}
+
+/* Navbar */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 60px;
+    background: white;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.logo {
+    font-size: 28px;
+    font-weight: bold;
+    color: #ff6b35;
+}
+
+.navbar nav a {
+    margin-left: 20px;
+    text-decoration: none;
+    color: #333;
+    font-weight: 600;
+}
+
+.navbar nav a:hover {
+    color: #ff6b35;
+}
+
+/* Hero */
+.hero {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 70px 60px;
+    background: linear-gradient(135deg, #fff1eb, #ffd6c7);
+    min-height: 85vh;
+}
+
+.hero-text {
+    max-width: 50%;
+}
+
+.hero-text h1 {
+    font-size: 52px;
+    margin-bottom: 20px;
+}
+
+.hero-text h1 span {
+    color: #ff6b35;
+}
+
+.hero-text p {
+    font-size: 20px;
+    margin-bottom: 25px;
+    line-height: 1.6;
+    color: #555;
+}
+
+.hero-buttons {
+    margin-top: 20px;
+}
+
+.hero-image img {
+    width: 450px;
+    max-width: 100%;
+}
+
+/* Buttons */
+.btn {
+    display: inline-block;
+    background: #ff6b35;
+    color: white;
+    padding: 12px 22px;
+    border-radius: 10px;
+    text-decoration: none;
+    margin-right: 10px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.btn:hover {
+    background: #e85a2a;
+}
+
+.btn-dark {
+    background: #333;
+}
+
+.btn-dark:hover {
+    background: #111;
+}
+
+/* Features */
+.features {
+    padding: 70px 60px;
+    text-align: center;
+    background: #fff;
+}
+
+.features h2 {
+    font-size: 36px;
+    margin-bottom: 40px;
+    color: #222;
+}
+
+.feature-cards {
+    display: flex;
+    gap: 25px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.card {
+    width: 300px;
+    background: #fffaf5;
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    transition: transform 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-8px);
+}
+
+.card img {
+    width: 90px;
+    height: 90px;
+    object-fit: contain;
+    margin-bottom: 15px;
+}
+
+.card h3 {
+    margin-bottom: 12px;
+    color: #ff6b35;
+}
+
+.card p {
+    color: #555;
+    line-height: 1.5;
+}
+
+/* About */
+.about {
+    padding: 70px 60px;
+    text-align: center;
+    background: #fff3ec;
+}
+
+.about h2 {
+    font-size: 34px;
+    margin-bottom: 20px;
+}
+
+.about p {
+    max-width: 800px;
+    margin: auto;
+    font-size: 18px;
+    line-height: 1.7;
+    color: #555;
+}
+
+/* Footer */
+.footer {
+    text-align: center;
+    padding: 20px;
+    background: #222;
+    color: white;
+}
+
+/* Form and dashboard old styles */
 .form-box, .dashboard-box {
     width: 420px;
     margin: 60px auto;
@@ -14,7 +189,7 @@ body {
     box-shadow: 0 10px 25px rgba(0,0,0,0.15);
 }
 
-h1, h2, p {
+.form-box h2, .dashboard-box h1, .dashboard-box p {
     text-align: center;
 }
 
@@ -37,30 +212,6 @@ input {
 .btn-group {
     text-align: center;
     margin-top: 20px;
-}
-
-.btn {
-    display: inline-block;
-    background: #ff6b35;
-    color: white;
-    padding: 10px 18px;
-    border: none;
-    border-radius: 10px;
-    text-decoration: none;
-    cursor: pointer;
-    margin: 5px;
-}
-
-.btn:hover {
-    background: #e85a2a;
-}
-
-.logout-btn {
-    background: #444;
-}
-
-.logout-btn:hover {
-    background: #222;
 }
 
 .success-msg {

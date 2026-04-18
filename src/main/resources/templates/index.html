@@ -2,18 +2,71 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Food Delivery System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DineDrop - Home</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
-<div class="dashboard-box">
-    <h1>Online Food Delivery System</h1>
-    <p>Customer Management Module</p>
 
-    <div class="btn-group">
-        <a th:href="@{/customer/register}" class="btn">Customer Register</a>
-        <a th:href="@{/customer/login}" class="btn">Customer Login</a>
+<header class="navbar">
+    <div class="logo">DineDrop</div>
+    <nav>
+        <a th:href="@{/}">Home</a>
+        <a th:href="@{/customer/register}">Register</a>
+        <a th:href="@{/customer/login}">Login</a>
+    </nav>
+</header>
+
+<section class="hero">
+    <div class="hero-text">
+        <h1>Welcome to <span>DineDrop</span></h1>
+        <p>Fresh meals, fast delivery, and your favorite food at your doorstep.</p>
+        <div class="hero-buttons">
+            <a th:href="@{/customer/register}" class="btn">Get Started</a>
+            <a th:href="@{/customer/login}" class="btn btn-dark">Login</a>
+        </div>
     </div>
-</div>
+
+    <div class="hero-image">
+        <img th:src="@{/images/hero-food.png}" alt="Delicious Food">
+    </div>
+</section>
+
+<section class="features">
+    <h2>Why Choose DineDrop?</h2>
+    <div class="feature-cards">
+        <div class="card">
+            <img th:src="@{/images/burger.png}" alt="Burger">
+            <h3>Tasty Meals</h3>
+            <p>Enjoy fresh and delicious food made with quality ingredients.</p>
+        </div>
+
+        <div class="card">
+            <img th:src="@{/images/delivery.png}" alt="Delivery">
+            <h3>Fast Delivery</h3>
+            <p>Get your orders delivered quickly and safely to your location.</p>
+        </div>
+
+        <div class="card">
+            <img th:src="@{/images/drink.png}" alt="Drinks">
+            <h3>Variety of Choices</h3>
+            <p>Choose from burgers, pizzas, drinks, desserts, and more.</p>
+        </div>
+    </div>
+</section>
+
+<section class="about">
+    <h2>About DineDrop</h2>
+    <p>
+        DineDrop is your smart online food delivery platform built to make ordering meals
+        easy, quick, and enjoyable. Browse your favorite dishes, place orders, and enjoy
+        a smooth food delivery experience.
+    </p>
+</section>
+
+<footer class="footer">
+    <p>© 2026 DineDrop. All Rights Reserved.</p>
+</footer>
+
 </body>
 </html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Customer Profile</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="form-box">
+    <h2>Update Customer Profile</h2>
+
+    <p class="success-msg" th:if="${success}" th:text="${success}"></p>
+    <p class="error-msg" th:if="${error}" th:text="${error}"></p>
+
+    <form th:action="@{/customer/profile}" method="post" th:object="${customer}">
+        <label>Name</label>
+        <input type="text" name="name" th:value="${customer.name}" required>
+
+        <label>Email</label>
+        <input type="email" th:value="${customer.email}" readonly>
+
+        <label>Password</label>
+        <input type="text" name="password" th:value="${customer.password}" required>
+
+        <label>Address</label>
+        <input type="text" name="address" th:value="${customer.address}" required>
+
+        <label>Phone</label>
+        <input type="text" name="phone" th:value="${customer.phone}" required>
+
+        <button type="submit" class="btn">Update Profile</button>
+    </form>
+
+    <p><a th:href="@{/customer/dashboard}">Back to Dashboard</a></p>
+</div>
+</body>
+</html>

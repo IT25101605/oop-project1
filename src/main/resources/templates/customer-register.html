@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Customer Register</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="form-box">
+    <h2>Customer Registration</h2>
+
+    <p class="error-msg" th:if="${error}" th:text="${error}"></p>
+
+    <form th:action="@{/customer/register}" method="post">
+        <label>Full Name</label>
+        <input type="text" name="name" required>
+
+        <label>Email</label>
+        <input type="email" name="email" required>
+
+        <label>Password</label>
+        <input type="password" name="password" required>
+
+        <label>Address</label>
+        <input type="text" name="address" required>
+
+        <label>Phone</label>
+        <input type="text" name="phone" required>
+
+        <button type="submit" class="btn">Register</button>
+    </form>
+
+    <p>Already have an account? <a th:href="@{/customer/login}">Login here</a></p>
+</div>
+</body>
+</html>

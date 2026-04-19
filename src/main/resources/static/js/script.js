@@ -1,1 +1,1 @@
-console.log("Customer Management Module Loaded");
+console.log("DineDrop auth module loaded");

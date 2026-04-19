@@ -7,11 +7,40 @@
   <script>
     function toggleFields() {
       const role = document.getElementById("role").value;
+
       const customerFields = document.getElementById("customerFields");
       const ownerFields = document.getElementById("ownerFields");
 
-      customerFields.style.display = role === "customer" ? "block" : "none";
-      ownerFields.style.display = role === "owner" ? "block" : "none";
+      const addressInput = document.getElementById("address");
+      const customerPhoneInput = document.getElementById("customerPhone");
+      const restaurantNameInput = document.getElementById("restaurantName");
+      const ownerPhoneInput = document.getElementById("ownerPhone");
+
+      if (role === "customer") {
+        customerFields.style.display = "block";
+        ownerFields.style.display = "none";
+
+        addressInput.required = true;
+        customerPhoneInput.required = true;
+
+        restaurantNameInput.required = false;
+        ownerPhoneInput.required = false;
+
+        restaurantNameInput.value = "";
+        ownerPhoneInput.value = "";
+      } else if (role === "owner") {
+        customerFields.style.display = "none";
+        ownerFields.style.display = "block";
+
+        addressInput.required = false;
+        customerPhoneInput.required = false;
+
+        restaurantNameInput.required = true;
+        ownerPhoneInput.required = true;
+
+        addressInput.value = "";
+        customerPhoneInput.value = "";
+      }
     }
 
     window.onload = toggleFields;
@@ -42,18 +71,18 @@
 
     <div id="customerFields">
       <label>Address</label>
-      <input type="text" name="address">
+      <input type="text" id="address" name="address">
 
       <label>Phone</label>
-      <input type="text" name="phone" required>
+      <input type="text" id="customerPhone" name="phone">
     </div>
 
     <div id="ownerFields" style="display:none;">
       <label>Restaurant Name</label>
-      <input type="text" name="restaurantName">
+      <input type="text" id="restaurantName" name="restaurantName">
 
       <label>Phone</label>
-      <input type="text" name="phone" required>
+      <input type="text" id="ownerPhone" name="phone">
     </div>
 
     <button type="submit" class="btn">Register</button>

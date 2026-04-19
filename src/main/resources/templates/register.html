@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Register - DineDrop</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <script>
+    function toggleFields() {
+      const role = document.getElementById("role").value;
+      const customerFields = document.getElementById("customerFields");
+      const ownerFields = document.getElementById("ownerFields");
+
+      customerFields.style.display = role === "customer" ? "block" : "none";
+      ownerFields.style.display = role === "owner" ? "block" : "none";
+    }
+
+    window.onload = toggleFields;
+  </script>
+</head>
+<body>
+<div class="form-box">
+  <h2>Create Your DineDrop Account</h2>
+  <p class="form-subtitle">Join as a customer or restaurant owner and start your journey.</p>
+
+  <p class="error-msg" th:if="${error}" th:text="${error}"></p>
+
+  <form th:action="@{/register}" method="post">
+    <label>Select Role</label>
+    <select name="role" id="role" onchange="toggleFields()" required>
+      <option value="customer">Customer</option>
+      <option value="owner">Restaurant Owner</option>
+    </select>
+
+    <label>Full Name</label>
+    <input type="text" name="name" required>
+
+    <label>Email</label>
+    <input type="email" name="email" required>
+
+    <label>Password</label>
+    <input type="password" name="password" required>
+
+    <div id="customerFields">
+      <label>Address</label>
+      <input type="text" name="address">
+
+      <label>Phone</label>
+      <input type="text" name="phone" required>
+    </div>
+
+    <div id="ownerFields" style="display:none;">
+      <label>Restaurant Name</label>
+      <input type="text" name="restaurantName">
+
+      <label>Phone</label>
+      <input type="text" name="phone" required>
+    </div>
+
+    <button type="submit" class="btn">Register</button>
+  </form>
+
+  <p><a th:href="@{/login}">Already have an account? Login</a></p>
+  <p><a th:href="@{/}">Back to Home</a></p>
+</div>
+</body>
+</html>

@@ -230,3 +230,10 @@ input, select {
     font-weight: bold;
     margin-bottom: 15px;
 }
+.btn-danger {
+    background: #d62828;
+}
+
+.btn-danger:hover {
+    background: #b71c1c;
+}

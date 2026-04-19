@@ -52,6 +52,7 @@ body {
 .hero-text h1 {
     font-size: 52px;
     margin-bottom: 20px;
+    line-height: 1.2;
 }
 
 .hero-text h1 span {
@@ -123,6 +124,25 @@ body {
     margin-bottom: 15px;
 }
 
+.catchy-banner {
+    background: #ff6b35;
+    color: white;
+    text-align: center;
+    padding: 55px 25px;
+}
+
+.catchy-banner h2 {
+    font-size: 34px;
+    margin-bottom: 15px;
+}
+
+.catchy-banner p {
+    font-size: 18px;
+    max-width: 760px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
 .footer {
     text-align: center;
     padding: 20px;
@@ -131,10 +151,10 @@ body {
 }
 
 .form-box, .dashboard-box {
-    width: 430px;
+    width: 460px;
     margin: 60px auto;
     background: #ffffff;
-    padding: 30px;
+    padding: 32px;
     border-radius: 16px;
     box-shadow: 0 10px 25px rgba(0,0,0,0.15);
 }
@@ -144,6 +164,12 @@ body {
     margin-bottom: 10px;
 }
 
+.form-subtitle {
+    text-align: center;
+    color: #666;
+    margin-bottom: 18px;
+}
+
 label {
     display: block;
     margin-top: 10px;
@@ -151,7 +177,7 @@ label {
     font-weight: bold;
 }
 
-input {
+input, select {
     width: 100%;
     padding: 10px;
     border: 1px solid #ccc;
@@ -175,6 +201,8 @@ input {
     margin: 5px;
     font-weight: bold;
     transition: 0.3s;
+    border: none;
+    cursor: pointer;
 }
 
 .btn:hover {

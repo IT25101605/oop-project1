@@ -12,20 +12,18 @@
     <div class="logo">DineDrop</div>
     <nav>
         <a th:href="@{/}">Home</a>
-        <a th:href="@{/customer/register}">Customer Register</a>
-        <a th:href="@{/customer/login}">Customer Login</a>
-        <a th:href="@{/owner/register}">Owner Register</a>
-        <a th:href="@{/owner/login}">Owner Login</a>
+        <a th:href="@{/register}">Register</a>
+        <a th:href="@{/login}">Login</a>
     </nav>
 </header>
 
 <section class="hero">
     <div class="hero-text">
-        <h1>Welcome to <span>DineDrop</span></h1>
-        <p>Fresh meals, fast delivery, and smart restaurant management in one place.</p>
+        <h1>Craving Something Amazing? <span>DineDrop Delivers.</span></h1>
+        <p>From quick bites to full meals, DineDrop connects hungry customers and smart restaurant owners in one delicious platform.</p>
         <div class="hero-buttons">
-            <a th:href="@{/customer/register}" class="btn">Join as Customer</a>
-            <a th:href="@{/owner/register}" class="btn btn-dark">Join as Owner</a>
+            <a th:href="@{/register}" class="btn">Get Started</a>
+            <a th:href="@{/login}" class="btn btn-dark">Login Now</a>
         </div>
     </div>
 
@@ -35,26 +33,35 @@
 </section>
 
 <section class="features">
-    <h2>Use DineDrop As</h2>
+    <h2>Why People Love DineDrop</h2>
     <div class="feature-cards">
         <div class="card">
-            <img th:src="@{/images/burger.png}" alt="Customer">
-            <h3>Customer</h3>
-            <p>Register, login, browse food, place orders, and enjoy fast delivery.</p>
-            <a th:href="@{/customer/login}" class="btn">Customer Login</a>
+            <img th:src="@{/images/burger.png}" alt="Fresh Food">
+            <h3>Fresh & Tasty</h3>
+            <p>Hot meals, refreshing drinks, and favorites you will keep coming back for.</p>
         </div>
 
         <div class="card">
-            <img th:src="@{/images/delivery.png}" alt="Owner">
-            <h3>Restaurant Owner</h3>
-            <p>Register your restaurant, add food items, and manage incoming orders.</p>
-            <a th:href="@{/owner/login}" class="btn">Owner Login</a>
+            <img th:src="@{/images/delivery.png}" alt="Fast Delivery">
+            <h3>Fast & Easy</h3>
+            <p>Simple ordering for customers and smooth management tools for restaurant owners.</p>
+        </div>
+
+        <div class="card">
+            <img th:src="@{/images/drink.png}" alt="Choices">
+            <h3>More Choices</h3>
+            <p>Explore restaurants, discover dishes, and enjoy a better food delivery experience.</p>
         </div>
     </div>
 </section>
 
+<section class="catchy-banner">
+    <h2>One Platform. Two Journeys. Endless Flavor.</h2>
+    <p>Join DineDrop today as a customer or restaurant owner and be part of the future of food delivery.</p>
+</section>
+
 <footer class="footer">
-    <p>© 2026 DineDrop. All Rights Reserved.</p>
+    <p>© 2026 DineDrop. Taste dropped at your doorstep.</p>
 </footer>
 
 </body>

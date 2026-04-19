@@ -12,18 +12,20 @@
     <div class="logo">DineDrop</div>
     <nav>
         <a th:href="@{/}">Home</a>
-        <a th:href="@{/customer/register}">Register</a>
-        <a th:href="@{/customer/login}">Login</a>
+        <a th:href="@{/customer/register}">Customer Register</a>
+        <a th:href="@{/customer/login}">Customer Login</a>
+        <a th:href="@{/owner/register}">Owner Register</a>
+        <a th:href="@{/owner/login}">Owner Login</a>
     </nav>
 </header>
 
 <section class="hero">
     <div class="hero-text">
         <h1>Welcome to <span>DineDrop</span></h1>
-        <p>Fresh meals, fast delivery, and your favorite food at your doorstep.</p>
+        <p>Fresh meals, fast delivery, and smart restaurant management in one place.</p>
         <div class="hero-buttons">
-            <a th:href="@{/customer/register}" class="btn">Get Started</a>
-            <a th:href="@{/customer/login}" class="btn btn-dark">Login</a>
+            <a th:href="@{/customer/register}" class="btn">Join as Customer</a>
+            <a th:href="@{/owner/register}" class="btn btn-dark">Join as Owner</a>
         </div>
     </div>
 
@@ -33,35 +35,22 @@
 </section>
 
 <section class="features">
-    <h2>Why Choose DineDrop?</h2>
+    <h2>Use DineDrop As</h2>
     <div class="feature-cards">
         <div class="card">
-            <img th:src="@{/images/burger.png}" alt="Burger">
-            <h3>Tasty Meals</h3>
-            <p>Enjoy fresh and delicious food made with quality ingredients.</p>
+            <img th:src="@{/images/burger.png}" alt="Customer">
+            <h3>Customer</h3>
+            <p>Register, login, browse food, place orders, and enjoy fast delivery.</p>
+            <a th:href="@{/customer/login}" class="btn">Customer Login</a>
         </div>
 
         <div class="card">
-            <img th:src="@{/images/delivery.png}" alt="Delivery">
-            <h3>Fast Delivery</h3>
-            <p>Get your orders delivered quickly and safely to your location.</p>
-        </div>
-
-        <div class="card">
-            <img th:src="@{/images/drink.png}" alt="Drinks">
-            <h3>Variety of Choices</h3>
-            <p>Choose from burgers, pizzas, drinks, desserts, and more.</p>
+            <img th:src="@{/images/delivery.png}" alt="Owner">
+            <h3>Restaurant Owner</h3>
+            <p>Register your restaurant, add food items, and manage incoming orders.</p>
+            <a th:href="@{/owner/login}" class="btn">Owner Login</a>
         </div>
     </div>
-</section>
-
-<section class="about">
-    <h2>About DineDrop</h2>
-    <p>
-        DineDrop is your smart online food delivery platform built to make ordering meals
-        easy, quick, and enjoyable. Browse your favorite dishes, place orders, and enjoy
-        a smooth food delivery experience.
-    </p>
 </section>
 
 <footer class="footer">

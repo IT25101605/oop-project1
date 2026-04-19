@@ -7,12 +7,13 @@
 </head>
 <body>
 <div class="form-box">
-    <h2>Update Customer Profile</h2>
+    <h2>Customer Profile</h2>
+    <p class="form-subtitle">View, update, or delete your customer account.</p>
 
     <p class="success-msg" th:if="${success}" th:text="${success}"></p>
     <p class="error-msg" th:if="${error}" th:text="${error}"></p>
 
-    <form th:action="@{/customer/profile}" method="post" th:object="${customer}">
+    <form th:action="@{/customer/profile/update}" method="post">
         <label>Name</label>
         <input type="text" name="name" th:value="${customer.name}" required>
 
@@ -29,6 +30,11 @@
         <input type="text" name="phone" th:value="${customer.phone}" required>
 
         <button type="submit" class="btn">Update Profile</button>
+    </form>
+
+    <form th:action="@{/customer/profile/delete}" method="post"
+          onsubmit="return confirm('Are you sure you want to delete your customer account?');">
+        <button type="submit" class="btn btn-danger">Delete Account</button>
     </form>
 
     <p><a th:href="@{/customer/dashboard}">Back to Dashboard</a></p>

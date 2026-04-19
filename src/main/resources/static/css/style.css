@@ -10,7 +10,6 @@ body {
     color: #333;
 }
 
-/* Navbar */
 .navbar {
     display: flex;
     justify-content: space-between;
@@ -27,7 +26,7 @@ body {
 }
 
 .navbar nav a {
-    margin-left: 20px;
+    margin-left: 18px;
     text-decoration: none;
     color: #333;
     font-weight: 600;
@@ -37,14 +36,13 @@ body {
     color: #ff6b35;
 }
 
-/* Hero */
 .hero {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 70px 60px;
     background: linear-gradient(135deg, #fff1eb, #ffd6c7);
-    min-height: 85vh;
+    min-height: 80vh;
 }
 
 .hero-text {
@@ -72,36 +70,10 @@ body {
 }
 
 .hero-image img {
-    width: 450px;
+    width: 430px;
     max-width: 100%;
 }
 
-/* Buttons */
-.btn {
-    display: inline-block;
-    background: #ff6b35;
-    color: white;
-    padding: 12px 22px;
-    border-radius: 10px;
-    text-decoration: none;
-    margin-right: 10px;
-    font-weight: bold;
-    transition: 0.3s;
-}
-
-.btn:hover {
-    background: #e85a2a;
-}
-
-.btn-dark {
-    background: #333;
-}
-
-.btn-dark:hover {
-    background: #111;
-}
-
-/* Features */
 .features {
     padding: 70px 60px;
     text-align: center;
@@ -111,7 +83,6 @@ body {
 .features h2 {
     font-size: 36px;
     margin-bottom: 40px;
-    color: #222;
 }
 
 .feature-cards {
@@ -122,7 +93,7 @@ body {
 }
 
 .card {
-    width: 300px;
+    width: 320px;
     background: #fffaf5;
     border-radius: 16px;
     padding: 25px;
@@ -149,29 +120,9 @@ body {
 .card p {
     color: #555;
     line-height: 1.5;
+    margin-bottom: 15px;
 }
 
-/* About */
-.about {
-    padding: 70px 60px;
-    text-align: center;
-    background: #fff3ec;
-}
-
-.about h2 {
-    font-size: 34px;
-    margin-bottom: 20px;
-}
-
-.about p {
-    max-width: 800px;
-    margin: auto;
-    font-size: 18px;
-    line-height: 1.7;
-    color: #555;
-}
-
-/* Footer */
 .footer {
     text-align: center;
     padding: 20px;
@@ -179,9 +130,8 @@ body {
     color: white;
 }
 
-/* Form and dashboard old styles */
 .form-box, .dashboard-box {
-    width: 420px;
+    width: 430px;
     margin: 60px auto;
     background: #ffffff;
     padding: 30px;
@@ -191,6 +141,7 @@ body {
 
 .form-box h2, .dashboard-box h1, .dashboard-box p {
     text-align: center;
+    margin-bottom: 10px;
 }
 
 label {
@@ -214,14 +165,40 @@ input {
     margin-top: 20px;
 }
 
+.btn {
+    display: inline-block;
+    background: #ff6b35;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 10px;
+    text-decoration: none;
+    margin: 5px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.btn:hover {
+    background: #e85a2a;
+}
+
+.btn-dark {
+    background: #333;
+}
+
+.btn-dark:hover {
+    background: #111;
+}
+
 .success-msg {
     color: green;
     text-align: center;
     font-weight: bold;
+    margin-bottom: 15px;
 }
 
 .error-msg {
     color: red;
     text-align: center;
     font-weight: bold;
+    margin-bottom: 15px;
 }

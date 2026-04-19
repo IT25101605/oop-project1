@@ -130,6 +130,152 @@ public class AuthController {
         return "owner-dashboard";
     }
 
+    @GetMapping("/customer/profile")
+    public String showCustomerProfile(HttpSession session, Model model) {
+        String role = (String) session.getAttribute("role");
+        String email = (String) session.getAttribute("userEmail");
+
+        if (role == null || !role.equals("customer") || email == null) {
+            return "redirect:/login";
+        }
+
+        Customer customer = authService.getCustomerByEmail(email);
+        model.addAttribute("customer", customer);
+        return "customer-profile";
+    }
+
+    @PostMapping("/customer/profile/update")
+    public String updateCustomerProfile(@RequestParam String name,
+                                        @RequestParam String password,
+                                        @RequestParam String address,
+                                        @RequestParam String phone,
+                                        HttpSession session,
+                                        Model model) {
+
+        String role = (String) session.getAttribute("role");
+        String email = (String) session.getAttribute("userEmail");
+
+        if (role == null || !role.equals("customer") || email == null) {
+            return "redirect:/login";
+        }
+
+        Customer oldCustomer = authService.getCustomerByEmail(email);
+
+        if (oldCustomer == null) {
+            return "redirect:/login";
+        }
+
+        Customer updatedCustomer = new Customer(
+                oldCustomer.getId(),
+                name,
+                oldCustomer.getEmail(),
+                password,
+                oldCustomer.getRole(),
+                address,
+                phone
+        );
+
+        boolean success = authService.updateCustomer(updatedCustomer);
+
+        if (success) {
+            session.setAttribute("userName", updatedCustomer.getName());
+            model.addAttribute("success", "Profile updated successfully");
+            model.addAttribute("customer", updatedCustomer);
+        } else {
+            model.addAttribute("error", "Profile update failed");
+            model.addAttribute("customer", oldCustomer);
+        }
+
+        return "customer-profile";
+    }
+
+    @PostMapping("/customer/profile/delete")
+    public String deleteCustomerProfile(HttpSession session) {
+        String role = (String) session.getAttribute("role");
+        String email = (String) session.getAttribute("userEmail");
+
+        if (role == null || !role.equals("customer") || email == null) {
+            return "redirect:/login";
+        }
+
+        authService.deleteUserByEmail(email, "customer");
+        session.invalidate();
+        return "redirect:/?deleted=1";
+    }
+
+    @GetMapping("/owner/profile")
+    public String showOwnerProfile(HttpSession session, Model model) {
+        String role = (String) session.getAttribute("role");
+        String email = (String) session.getAttribute("userEmail");
+
+        if (role == null || !role.equals("owner") || email == null) {
+            return "redirect:/login";
+        }
+
+        RestaurantOwner owner = authService.getOwnerByEmail(email);
+        model.addAttribute("owner", owner);
+        return "owner-profile";
+    }
+
+    @PostMapping("/owner/profile/update")
+    public String updateOwnerProfile(@RequestParam String name,
+                                     @RequestParam String password,
+                                     @RequestParam String restaurantName,
+                                     @RequestParam String phone,
+                                     HttpSession session,
+                                     Model model) {
+
+        String role = (String) session.getAttribute("role");
+        String email = (String) session.getAttribute("userEmail");
+
+        if (role == null || !role.equals("owner") || email == null) {
+            return "redirect:/login";
+        }
+
+        RestaurantOwner oldOwner = authService.getOwnerByEmail(email);
+
+        if (oldOwner == null) {
+            return "redirect:/login";
+        }
+
+        RestaurantOwner updatedOwner = new RestaurantOwner(
+                oldOwner.getId(),
+                name,
+                oldOwner.getEmail(),
+                password,
+                oldOwner.getRole(),
+                restaurantName,
+                phone
+        );
+
+        boolean success = authService.updateOwner(updatedOwner);
+
+        if (success) {
+            session.setAttribute("userName", updatedOwner.getName());
+            model.addAttribute("success", "Profile updated successfully");
+            model.addAttribute("owner", updatedOwner);
+        } else {
+            model.addAttribute("error", "Profile update failed");
+            model.addAttribute("owner", oldOwner);
+        }
+
+        return "owner-profile";
+    }
+
+    @PostMapping("/owner/profile/delete")
+    public String deleteOwnerProfile(HttpSession session) {
+        String role = (String) session.getAttribute("role");
+        String email = (String) session.getAttribute("userEmail");
+
+        if (role == null || !role.equals("owner") || email == null) {
+            return "redirect:/login";
+        }
+
+        authService.deleteUserByEmail(email, "owner");
+        session.invalidate();
+        return "redirect:/?deleted=1";
+    }
+
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();

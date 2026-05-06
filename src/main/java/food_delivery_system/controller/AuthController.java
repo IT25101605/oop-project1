@@ -35,16 +35,21 @@ public class AuthController {
     }
 
     // =====================================================
-    // FIX: SUPPORT BOTH /register AND /customer/register
+    // REGISTER (UPDATED FOR ROLE SUPPORT)
     // =====================================================
-
     @PostMapping({"/register", "/customer/register"})
     public String registerCustomer(@RequestParam String name,
                                    @RequestParam String email,
                                    @RequestParam String password,
                                    @RequestParam String address,
                                    @RequestParam String phone,
+                                   @RequestParam(required = false) String role,
                                    Model model) {
+
+        // default role = CUSTOMER if not selected
+        if (role == null) {
+            role = "CUSTOMER";
+        }
 
         Customer customer = new Customer(
                 "C" + System.currentTimeMillis(),
@@ -54,6 +59,9 @@ public class AuthController {
                 address,
                 phone
         );
+
+        // store role inside session OR pass to service (depends on your service)
+        customer.setRole(role);
 
         boolean success = authService.registerCustomer(customer);
 
@@ -65,35 +73,67 @@ public class AuthController {
         return "register";
     }
 
-    // ================= LOGIN =================
+    // =====================================================
+    // LOGIN (UPDATED FOR ROLE SUPPORT)
+    // =====================================================
     @PostMapping("/login")
     public String login(@RequestParam String email,
                         @RequestParam String password,
+                        @RequestParam String role,
                         HttpSession session,
                         Model model) {
 
-        Customer user = authService.loginUser(email, password, "CUSTOMER");
+        Customer user = authService.loginUser(email, password, role);
 
         if (user != null) {
+
             session.setAttribute("email", user.getEmail());
-            session.setAttribute("role", "CUSTOMER");
-            return "redirect:/dashboard";
+            session.setAttribute("role", role);
+
+            // ROLE-BASED REDIRECTION
+            if (role.equals("CUSTOMER")) {
+                return "redirect:/dashboard";
+            } else if (role.equals("OWNER")) {
+                return "redirect:/owner/dashboard";
+            }
         }
 
         model.addAttribute("error", "Invalid login details");
         return "login";
     }
 
-    // ================= DASHBOARD =================
+    // ================= CUSTOMER DASHBOARD =================
     @GetMapping("/dashboard")
     public String dashboard(HttpSession session, Model model) {
 
         String email = (String) session.getAttribute("email");
+        String role = (String) session.getAttribute("role");
 
         if (email == null) return "redirect:/login";
 
+        if (!"CUSTOMER".equals(role)) {
+            return "redirect:/owner/dashboard";
+        }
+
         model.addAttribute("userEmail", email);
         return "customer-dashboard";
+    }
+
+    // ================= OWNER DASHBOARD (NEW) =================
+    @GetMapping("/owner/dashboard")
+    public String ownerDashboard(HttpSession session, Model model) {
+
+        String email = (String) session.getAttribute("email");
+        String role = (String) session.getAttribute("role");
+
+        if (email == null) return "redirect:/login";
+
+        if (!"OWNER".equals(role)) {
+            return "redirect:/dashboard";
+        }
+
+        model.addAttribute("ownerEmail", email);
+        return "owner-dashboard";
     }
 
     // ================= PROFILE =================

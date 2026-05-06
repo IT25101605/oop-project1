@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edit Restaurant</title>
+</head>
+<body>
+
+<h2>Edit Restaurant</h2>
+
+<form action="/restaurant/update" method="post">
+
+    <input type="hidden" name="id" th:value="${restaurant.id}">
+
+    Name: <input name="name" th:value="${restaurant.name}"><br><br>
+    Location: <input name="location" th:value="${restaurant.location}"><br><br>
+    Owner Email: <input name="ownerEmail" th:value="${restaurant.ownerEmail}"><br><br>
+
+    <button type="submit">Update</button>
+
+</form>
+
+</body>
+</html>

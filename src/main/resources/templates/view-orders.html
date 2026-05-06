@@ -1,0 +1,17 @@
+<h2>Orders</h2>
+<table border="1">
+    <tr>
+        <th>ID</th><th>Email</th><th>Status</th><th>Action</th>
+    </tr>
+
+    <tr th:each="o : ${orders}">
+        <td th:text="${o.orderId}"></td>
+        <td th:text="${o.customerEmail}"></td>
+        <td th:text="${o.status}"></td>
+
+        <td>
+            <a th:href="@{'/order/delete/' + ${o.orderId}}">Delete</a>
+        </td>
+    </tr>
+
+</table>

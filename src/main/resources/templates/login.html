@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Login - DineDrop</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="form-box">
+  <h2>Welcome Back to DineDrop</h2>
+  <p class="form-subtitle">Login as a customer or restaurant owner.</p>
+
+  <p class="success-msg" th:if="${param.registered}">Registration successful. Please login.</p>
+  <p class="error-msg" th:if="${error}" th:text="${error}"></p>
+
+  <form th:action="@{/login}" method="post">
+    <label>Select Role</label>
+    <select name="role" required>
+      <option value="customer">Customer</option>
+      <option value="owner">Restaurant Owner</option>
+    </select>
+
+    <label>Email</label>
+    <input type="email" name="email" required>
+
+    <label>Password</label>
+    <input type="password" name="password" required>
+
+    <button type="submit" class="btn">Login</button>
+  </form>
+
+  <p><a th:href="@{/register}">Create a new account</a></p>
+  <p><a th:href="@{/}">Back to Home</a></p>
+</div>
+</body>
+</html>

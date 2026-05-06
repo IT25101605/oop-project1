@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Owner Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="dashboard-box">
+    <h1>Welcome, <span th:text="${userName}"></span></h1>
+    <p>Your DineDrop restaurant owner dashboard</p>
+
+    <div class="btn-group">
+        <a href="#" class="btn">Add Restaurant</a>
+        <a href="#" class="btn">Add Foods</a>
+        <a href="#" class="btn">Manage Orders</a>
+        <a th:href="@{/owner/profile}" class="btn">My Profile</a>
+        <a th:href="@{/logout}" class="btn btn-dark">Logout</a>
+    </div>
+</div>
+</body>
+</html>

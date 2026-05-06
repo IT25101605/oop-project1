@@ -1,66 +1,42 @@
 package food_delivery_system.util;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.nio.file.*;
+import java.util.*;
 
 public class FileUtil {
 
-    public static void createFileIfNotExists(String filePath) {
-        try {
-            File file = new File(filePath);
-            File parent = file.getParentFile();
+    // SOLID: Single Responsibility → ONLY handles file operations
 
-            if (parent != null && !parent.exists()) {
-                parent.mkdirs();
-            }
+    public static List<String> readAllLines(String path) {
+        try {
+            File file = new File(path);
 
             if (!file.exists()) {
+                file.getParentFile().mkdirs();
                 file.createNewFile();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+
+            return Files.readAllLines(Paths.get(path));
+        } catch (Exception e) {
+            System.out.println("File Read Error: " + e.getMessage());
+            return new ArrayList<>();
         }
     }
 
-    public static void writeLine(String filePath, String line) {
-        createFileIfNotExists(filePath);
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
-            writer.write(line);
-            writer.newLine();
-        } catch (IOException e) {
-            e.printStackTrace();
+    public static void writeLine(String path, String line) {
+        try (FileWriter fw = new FileWriter(path, true)) {
+            fw.write(line + "\n");
+        } catch (Exception e) {
+            System.out.println("Write Error: " + e.getMessage());
         }
     }
 
-    public static List<String> readAllLines(String filePath) {
-        createFileIfNotExists(filePath);
-        List<String> lines = new ArrayList<>();
-
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                if (!line.trim().isEmpty()) {
-                    lines.add(line);
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return lines;
-    }
-
-    public static void overwriteFile(String filePath, List<String> lines) {
-        createFileIfNotExists(filePath);
-
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
-            for (String line : lines) {
-                writer.write(line);
-                writer.newLine();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+    public static void overwriteFile(String path, List<String> lines) {
+        try {
+            Files.write(Paths.get(path), lines);
+        } catch (Exception e) {
+            System.out.println("Overwrite Error: " + e.getMessage());
         }
     }
 }

@@ -1,23 +1,208 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>Register</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DineDrop | Join the Community</title>
+
+  <!-- Bootstrap 5 -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Plus+Jakarta+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary-gold: #D4AF37;
+      --dark-charcoal: #1a1a1a;
+      --bg-light: #f8f9fa;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--bg-light);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    .register-container {
+      width: 100%;
+      max-width: 900px;
+      background: white;
+      display: flex;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
+    }
+
+    /* LEFT SIDE - BRANDING */
+    .register-info {
+      flex: 1;
+      background: var(--dark-charcoal);
+      color: white;
+      padding: 60px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      background-image: linear-gradient(rgba(26, 26, 26, 0.8), rgba(26, 26, 26, 0.8)),
+      url('https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&q=80&w=1000');
+      background-size: cover;
+      background-position: center;
+    }
+
+    .register-info h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.8rem;
+      margin-bottom: 20px;
+      color: var(--primary-gold);
+    }
+
+    .benefit-item {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 20px;
+      opacity: 0.9;
+      font-size: 0.95rem;
+    }
+
+    /* RIGHT SIDE - FORM */
+    .register-form-area {
+      flex: 1.2;
+      padding: 60px;
+      background: white;
+    }
+
+    .form-header h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      color: var(--dark-charcoal);
+      margin-bottom: 30px;
+    }
+
+    .form-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #999;
+      margin-bottom: 8px;
+    }
+
+    .form-control {
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      background-color: #fdfdfd;
+    }
+
+    .form-control:focus {
+      border-color: var(--primary-gold);
+      box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.1);
+      background-color: white;
+    }
+
+    .btn-register {
+      background: var(--dark-charcoal);
+      color: white;
+      border: none;
+      padding: 15px;
+      border-radius: 12px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-top: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .btn-register:hover {
+      background: var(--primary-gold);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(212, 175, 55, 0.2);
+    }
+
+    .login-link {
+      text-decoration: none;
+      color: var(--primary-gold);
+      font-weight: 600;
+    }
+
+    @media (max-width: 768px) {
+      .register-container { flex-direction: column; }
+      .register-info { padding: 40px; }
+      .register-form-area { padding: 40px; }
+    }
+  </style>
 </head>
+
 <body>
 
-<div class="container mt-5">
-  <h2>Create Account</h2>
+<div class="register-container">
 
-  <form method="post" action="/customer/register">
-    <input class="form-control mb-2" name="name" placeholder="Full Name" required>
-    <input class="form-control mb-2" name="email" placeholder="Email" required>
-    <input class="form-control mb-2" name="password" placeholder="Password" required>
-    <input class="form-control mb-2" name="address" placeholder="Address">
-    <input class="form-control mb-2" name="phone" placeholder="Phone">
+  <!-- BRANDING SECTION -->
+  <div class="register-info">
+    <h2>DineDrop</h2>
+    <p class="mb-5">Join our exclusive community of food enthusiasts.</p>
 
-    <button class="btn btn-success w-100">Register</button>
-  </form>
+    <div class="benefit-item">
+      <span>✨</span> Access to gourmet collections
+    </div>
+    <div class="benefit-item">
+      <span>🚀</span> Priority concierge delivery
+    </div>
+    <div class="benefit-item">
+      <span>💎</span> Earn DinePoints with every order
+    </div>
+  </div>
+
+  <!-- FORM SECTION -->
+  <div class="register-form-area">
+    <div class="form-header">
+      <h3>Create Account</h3>
+    </div>
+
+    <form method="post" action="/customer/register">
+      <div class="row">
+        <div class="col-md-12 mb-3">
+          <label class="form-label">Full Name</label>
+          <input class="form-control" name="name" placeholder="John Doe" required>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Email Address</label>
+          <input class="form-control" type="email" name="email" placeholder="john@example.com" required>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Phone Number</label>
+          <input class="form-control" type="tel" name="phone" placeholder="+1 234 567 890">
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Password</label>
+        <input class="form-control" type="password" name="password" placeholder="••••••••" required>
+      </div>
+
+      <div class="mb-4">
+        <label class="form-label">Delivery Address</label>
+        <input class="form-control" name="address" placeholder="123 Gourmet Ave, Food City">
+      </div>
+
+      <button class="btn btn-register w-100">Establish Account</button>
+    </form>
+
+    <p class="mt-4 text-center small text-muted">
+      Already have an account?
+      <a href="/login" class="login-link">Sign In</a>
+    </p>
+  </div>
 
 </div>
 

@@ -1,4 +1,0 @@
-cdd719a7-4e5f-4ae5-bc6b-ff911e0c93ce,saman,saman@gmail.com,Saman123,customer,kurunegala,0712545789,
-c2a137c6-6471-41d2-8876-9d569bce4277,Maleesha Weerakkody,maleeshaslweera@gmail.com,m,sdnf,customer,jdsef,5465251231,
-22b9028d-91e9-4a40-bc06-32ce68e74aef,alan,alanbverslmb@gmail.com,m,sdnf,customer,dsfsed,2585295,
-bdb80d5d-8d54-4dc1-8773-e131c51ae7de,Bandiya,bandiya@gmail.com,Bandiya123,owner,Bandi Full,,0714859766

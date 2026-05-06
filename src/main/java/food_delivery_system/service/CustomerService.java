@@ -1,4 +1,4 @@
-package food_delivery_system.service;
+/*package food_delivery_system.service;
 
 import food_delivery_system.repository.UserRepository;
 import java.util.*;
@@ -23,4 +23,4 @@ public class CustomerService {
     public void update(List<String> updated) {
         repo.update(updated);
     }
-}
+}*/

@@ -1,5 +1,6 @@
 package food_delivery_system.controller;
 
+import food_delivery_system.model.Customer;
 import food_delivery_system.service.AuthService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
@@ -9,28 +10,32 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 public class AuthController {
 
-    private final AuthService authService = new AuthService();
+    private final AuthService authService;
 
-    // HOME
+    public AuthController(AuthService authService) {
+        this.authService = authService;
+    }
+
+    // ================= HOME =================
     @GetMapping("/")
     public String home() {
         return "index";
     }
 
-    // LOGIN PAGE
+    // ================= LOGIN PAGE =================
     @GetMapping("/login")
     public String loginPage() {
         return "login";
     }
 
-    // REGISTER PAGE
+    // ================= REGISTER PAGE =================
     @GetMapping("/register")
     public String registerPage() {
         return "register";
     }
 
-    // REGISTER CUSTOMER ✅ (ONLY HERE)
-    @PostMapping("/customer/register")
+    // ================= REGISTER =================
+    @PostMapping("/register")
     public String registerCustomer(@RequestParam String name,
                                    @RequestParam String email,
                                    @RequestParam String password,
@@ -38,77 +43,72 @@ public class AuthController {
                                    @RequestParam String phone,
                                    Model model) {
 
-        boolean success = authService.registerCustomer(
-                name, email, password, address, phone
+        Customer customer = new Customer(
+                "C" + System.currentTimeMillis(),
+                name,
+                email,
+                password,
+                address,
+                phone
         );
+
+        boolean success = authService.registerCustomer(customer);
 
         if (success) {
             return "redirect:/login";
-        } else {
-            model.addAttribute("error", "Email already exists!");
-            return "register";
         }
+
+        model.addAttribute("error", "Email already exists!");
+        return "register";
     }
 
-    // LOGIN
+    // ================= LOGIN =================
     @PostMapping("/login")
     public String login(@RequestParam String email,
                         @RequestParam String password,
                         HttpSession session,
                         Model model) {
 
-        String role = authService.login(email, password);
+        Customer user = authService.loginUser(email, password, "CUSTOMER");
 
-        if (role != null) {
-
-            session.setAttribute("email", email);
-            session.setAttribute("role", role);
-
-            if (role.equals("CUSTOMER")) {
-                return "redirect:/customer/dashboard";
-            } else if (role.equals("ADMIN")) {
-                return "redirect:/admin/dashboard";
-            } else if (role.equals("OWNER")) {
-                return "redirect:/owner/dashboard";
-            }
+        if (user != null) {
+            session.setAttribute("email", user.getEmail());
+            session.setAttribute("role", "CUSTOMER");
+            return "redirect:/dashboard";
         }
 
         model.addAttribute("error", "Invalid login details");
         return "login";
     }
 
-    // CUSTOMER DASHBOARD
-    @GetMapping("/customer/dashboard")
-    public String customerDashboard(HttpSession session, Model model) {
+    // ================= DASHBOARD =================
+    @GetMapping("/dashboard")
+    public String dashboard(HttpSession session, Model model) {
 
         String email = (String) session.getAttribute("email");
 
-        if (email == null) {
-            return "redirect:/login";
-        }
+        if (email == null) return "redirect:/login";
 
         model.addAttribute("userEmail", email);
         return "customer-dashboard";
     }
 
-    // PROFILE
-    @GetMapping("/customer/profile")
+    // ================= PROFILE =================
+    @GetMapping("/profile")
     public String profile(HttpSession session, Model model) {
 
         String email = (String) session.getAttribute("email");
 
-        if (email == null) {
-            return "redirect:/login";
-        }
+        if (email == null) return "redirect:/login";
 
-        String[] customer = authService.getCustomerByEmail(email);
+        Customer customer = authService.getCustomerByEmail(email);
 
         model.addAttribute("customer", customer);
         return "customer-profile";
     }
 
-    // UPDATE
-    @PostMapping("/customer/update")
+    // ================= UPDATE =================
+    @PostMapping("/update")
     public String updateCustomer(@RequestParam String name,
                                  @RequestParam String password,
                                  @RequestParam String address,
@@ -118,27 +118,37 @@ public class AuthController {
         String email = (String) session.getAttribute("email");
 
         if (email != null) {
-            authService.updateCustomer(email, name, password, address, phone);
+
+            Customer customer = authService.getCustomerByEmail(email);
+
+            if (customer != null) {
+                customer.setName(name);
+                customer.setPassword(password);
+                customer.setAddress(address);
+                customer.setPhone(phone);
+
+                authService.updateCustomer(customer);
+            }
         }
 
-        return "redirect:/customer/profile";
+        return "redirect:/profile";
     }
 
-    // DELETE
-    @PostMapping("/customer/delete")
+    // ================= DELETE =================
+    @PostMapping("/delete")
     public String deleteCustomer(HttpSession session) {
 
         String email = (String) session.getAttribute("email");
 
         if (email != null) {
-            authService.deleteCustomer(email);
+            authService.deleteUserByEmail(email, "CUSTOMER");
         }
 
         session.invalidate();
         return "redirect:/";
     }
 
-    // LOGOUT
+    // ================= LOGOUT =================
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();

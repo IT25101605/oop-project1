@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Foods</title>
+</head>
+<body>
+
+<h2>All Food Items</h2>
+
+<table border="1">
+  <tr>
+    <th>Name</th>
+    <th>Price</th>
+    <th>Restaurant ID</th>
+    <th>Actions</th>
+  </tr>
+
+  <tr th:each="f : ${foods}">
+    <td th:text="${f.name}"></td>
+    <td th:text="${f.price}"></td>
+    <td th:text="${f.restaurantId}"></td>
+
+    <td>
+      <a th:href="@{'/food/delete/' + ${f.id}}">Delete</a>
+      <a th:href="@{'/food/edit/' + ${f.id}}">Edit</a>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>

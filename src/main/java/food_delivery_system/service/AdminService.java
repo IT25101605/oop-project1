@@ -1,95 +1,72 @@
 package food_delivery_system.service;
 
-import food_delivery_system.model.Admin;
 import food_delivery_system.util.FileUtil;
-import org.springframework.stereotype.Service;
+import java.util.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
-@Service
+// Solid: SRP → Admin handles system-level operations only
 public class AdminService {
 
-    private static final String ADMIN_FILE = "src/main/resources/data/admins.txt";
-    private static final String USER_FILE = "src/main/resources/data/users.txt";
+    private final String USERS = "src/main/resources/data/users.txt";
+    private final String RESTAURANTS = "src/main/resources/data/restaurants.txt";
+    private final String ORDERS = "src/main/resources/data/orders.txt";
 
-    public boolean registerAdmin(Admin admin) {
-
-        List<String> admins = FileUtil.readAllLines(ADMIN_FILE);
-
-        for (String a : admins) {
-            String[] data = a.split(",");
-            if (data[2].equalsIgnoreCase(admin.getEmail())) {
-                return false;
-            }
-        }
-
-        String line = admin.getId() + "," +
-                admin.getName() + "," +
-                admin.getEmail() + "," +
-                admin.getPassword() + "," +
-                admin.getRole() + "," +
-                admin.getPhone();
-
-        FileUtil.writeLine(ADMIN_FILE, line);
-        return true;
+    //  Login (hardcoded for simplicity)
+    public boolean login(String username, String password) {
+        return username.equals("admin") && password.equals("123");
     }
 
-    public Admin loginAdmin(String email, String password) {
-
-        List<String> admins = FileUtil.readAllLines(ADMIN_FILE);
-
-        for (String a : admins) {
-            String[] data = a.split(",");
-
-            if (data[2].equalsIgnoreCase(email) &&
-                    data[3].equals(password)) {
-
-                return new Admin(
-                        data[0],
-                        data[1],
-                        data[2],
-                        data[3],
-                        data[4],
-                        data[5]
-                );
-            }
-        }
-        return null;
+    // Read all data
+    public List<String> getAllUsers() {
+        return FileUtil.readAllLines(USERS);
     }
 
-    public List<String[]> getAllUsers() {
-        List<String> users = FileUtil.readAllLines(USER_FILE);
-        List<String[]> list = new ArrayList<>();
-
-        for (String u : users) {
-            list.add(u.split(","));
-        }
-
-        return list;
+    public List<String> getAllRestaurants() {
+        return FileUtil.readAllLines(RESTAURANTS);
     }
 
-    public boolean deleteUser(String email) {
+    public List<String> getAllOrders() {
+        return FileUtil.readAllLines(ORDERS);
+    }
 
-        List<String> users = FileUtil.readAllLines(USER_FILE);
+    //Delete user
+    public void deleteUser(String email) {
+
         List<String> updated = new ArrayList<>();
 
-        boolean deleted = false;
-
-        for (String u : users) {
-            String[] data = u.split(",");
-
-            if (!data[2].equalsIgnoreCase(email)) {
-                updated.add(u);
-            } else {
-                deleted = true;
+        for (String line : FileUtil.readAllLines(USERS)) {
+            if (!line.contains(email)) {
+                updated.add(line);
             }
         }
 
-        if (deleted) {
-            FileUtil.overwriteFile(USER_FILE, updated);
+        FileUtil.overwriteFile(USERS, updated);
+    }
+
+    // ❌ DELETE RESTAURANT
+    public void deleteRestaurant(String id) {
+
+        List<String> updated = new ArrayList<>();
+
+        for (String line : FileUtil.readAllLines(RESTAURANTS)) {
+            if (!line.startsWith(id + ",")) {
+                updated.add(line);
+            }
         }
 
-        return deleted;
+        FileUtil.overwriteFile(RESTAURANTS, updated);
+    }
+
+    //Delete order
+    public void deleteOrder(String id) {
+
+        List<String> updated = new ArrayList<>();
+
+        for (String line : FileUtil.readAllLines(ORDERS)) {
+            if (!line.startsWith(id + ",")) {
+                updated.add(line);
+            }
+        }
+
+        FileUtil.overwriteFile(ORDERS, updated);
     }
 }

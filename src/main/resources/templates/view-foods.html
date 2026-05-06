@@ -1,28 +1,31 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>Foods</title>
+  <title>View Foods</title>
 </head>
 <body>
 
-<h2>All Food Items</h2>
+<h1>Food List</h1>
+
+<a href="/foods/add">Add New Food</a>
 
 <table border="1">
   <tr>
+    <th>ID</th>
     <th>Name</th>
     <th>Price</th>
     <th>Restaurant ID</th>
     <th>Actions</th>
   </tr>
 
-  <tr th:each="f : ${foods}">
-    <td th:text="${f.name}"></td>
-    <td th:text="${f.price}"></td>
-    <td th:text="${f.restaurantId}"></td>
-
+  <tr th:each="food : ${foods}">
+    <td th:text="${food.id}"></td>
+    <td th:text="${food.name}"></td>
+    <td th:text="${food.price}"></td>
+    <td th:text="${food.restaurantId}"></td>
     <td>
-      <a th:href="@{'/food/delete/' + ${f.id}}">Delete</a>
-      <a th:href="@{'/food/edit/' + ${f.id}}">Edit</a>
+      <a th:href="@{/foods/edit/{id}(id=${food.id})}">Edit</a> |
+      <a th:href="@{/foods/delete/{id}(id=${food.id})}">Delete</a>
     </td>
   </tr>
 </table>

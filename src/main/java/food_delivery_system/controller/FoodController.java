@@ -9,12 +9,22 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
-// MVC: Controller only handles HTTP requests
 @Controller
-@RequestMapping("/food")
+@RequestMapping("/foods")   // ✅ base URL
 public class FoodController {
 
-    private final FoodService service = new FoodService();
+    private final FoodService service;
+
+    // ✅ Constructor Injection
+    public FoodController(FoodService service) {
+        this.service = service;
+    }
+
+    // ✅ FIX: handle /foods → redirect to /foods/all
+    @GetMapping("")
+    public String redirectToAll() {
+        return "redirect:/foods/all";
+    }
 
     // SHOW ADD PAGE
     @GetMapping("/add")
@@ -37,10 +47,10 @@ public class FoodController {
 
         service.addFood(f);
 
-        return "redirect:/food/all";
+        return "redirect:/foods/all";
     }
 
-    // READ
+    // READ ALL
     @GetMapping("/all")
     public String viewFoods(Model model) {
         model.addAttribute("foods", service.getAllFoods());
@@ -50,15 +60,13 @@ public class FoodController {
     // DELETE
     @GetMapping("/delete/{id}")
     public String deleteFood(@PathVariable String id) {
-
         service.deleteFood(id);
-        return "redirect:/food/all";
+        return "redirect:/foods/all";
     }
 
     // SHOW EDIT PAGE
     @GetMapping("/edit/{id}")
     public String editFood(@PathVariable String id, Model model) {
-
         model.addAttribute("food", service.getById(id));
         return "edit-food";
     }
@@ -73,6 +81,6 @@ public class FoodController {
         Food f = new Food(id, name, price, restaurantId);
         service.updateFood(f);
 
-        return "redirect:/food/all";
+        return "redirect:/foods/all";
     }
 }

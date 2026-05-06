@@ -1,4 +1,4 @@
-/*package food_delivery_system.controller;
+package food_delivery_system.controller;
 
 import food_delivery_system.model.Customer;
 import food_delivery_system.service.AuthService;
@@ -83,4 +83,4 @@ public class CustomerController {
         session.invalidate();
         return "redirect:/";
     }
-}*/
+}

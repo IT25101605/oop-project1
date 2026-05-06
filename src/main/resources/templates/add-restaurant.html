@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Add Restaurant</title>
+</head>
+<body>
+
+<h2>Add Restaurant</h2>
+
+<form action="/restaurant/add" method="post">
+
+    Name: <input name="name"><br><br>
+    Location: <input name="location"><br><br>
+    Owner Email: <input name="ownerEmail"><br><br>
+
+    <button type="submit">Add</button>
+</form>
+
+<a href="/restaurant/all">View All</a>
+
+</body>
+</html>

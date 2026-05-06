@@ -1,0 +1,17 @@
+<h2>Reviews</h2>
+
+<table border="1">
+    <tr>
+        <th>Email</th><th>Message</th><th>Rating</th><th>Action</th>
+    </tr>
+
+    <tr th:each="r : ${reviews}">
+        <td th:text="${r.customerEmail}"></td>
+        <td th:text="${r.message}"></td>
+        <td th:text="${r.rating}"></td>
+
+        <td>
+            <a th:href="@{'/review/delete/' + ${r.reviewId}}">Delete</a>
+        </td>
+    </tr>
+</table>

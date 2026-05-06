@@ -3,12 +3,19 @@ package food_delivery_system.service;
 import food_delivery_system.model.Food;
 import food_delivery_system.repository.FoodRepository;
 
+import org.springframework.stereotype.Service;
+
 import java.util.*;
 
-// OOP: Abstraction → hides file operations from controller
+@Service   // ✅ REQUIRED
 public class FoodService {
 
-    private final FoodRepository repo = new FoodRepository();
+    private final FoodRepository repo;
+
+    // ✅ Constructor Injection
+    public FoodService(FoodRepository repo) {
+        this.repo = repo;
+    }
 
     // CREATE
     public void addFood(Food f) {

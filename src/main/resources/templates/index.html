@@ -1,92 +1,227 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>DineDrop</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DineDrop | Gourmet Delivery</title>
 
+    <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Plus+Jakarta+Sans:wght@300;400;600&display=swap" rel="stylesheet">
 
     <style>
+        :root {
+            --primary-gold: #D4AF37;
+            --dark-charcoal: #1a1a1a;
+            --soft-white: #f8f9fa;
+        }
+
         body {
             margin: 0;
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--soft-white);
+            color: var(--dark-charcoal);
+        }
+
+        /* NAVIGATION */
+        .navbar {
+            position: absolute;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 20px 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.5), transparent);
+        }
+
+        .navbar-brand {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            color: white !important;
+            font-size: 1.8rem;
+            letter-spacing: -1px;
         }
 
         /* HERO SECTION */
         .hero {
             height: 100vh;
-            background-image: url('/images/hero-food.png');
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)),
+            url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&q=80&w=2070') no-repeat center center;
             background-size: cover;
-            background-position: center;
-            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
             color: white;
         }
 
-        .overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            height: 100%;
-            width: 100%;
-            background: rgba(0,0,0,0.6);
+        .hero-content h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(3rem, 8vw, 5rem);
+            margin-bottom: 1rem;
+            animation: fadeInDown 1s ease-out;
         }
 
-        .hero-content {
-            position: relative;
-            top: 50%;
-            transform: translateY(-50%);
+        .hero-content p {
+            font-size: 1.2rem;
+            font-weight: 300;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 2.5rem;
+            opacity: 0.9;
         }
 
+        /* BUTTONS */
         .btn-custom {
-            padding: 10px 25px;
-            border-radius: 25px;
+            padding: 14px 35px;
+            border-radius: 50px;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
         }
 
+        .btn-gold {
+            background-color: var(--primary-gold);
+            color: white;
+            border: none;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .btn-gold:hover {
+            background-color: #b8962d;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+        }
+
+        .btn-outline-light:hover {
+            background-color: white;
+            color: var(--dark-charcoal);
+            transform: translateY(-2px);
+        }
+
+        /* FOOD SECTION */
         .food-section {
-            padding: 60px 20px;
+            padding: 100px 0;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            position: relative;
+            margin-bottom: 50px;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 50px;
+            height: 3px;
+            background: var(--primary-gold);
+            margin: 15px auto;
+        }
+
+        .food-card {
+            border: none;
+            background: none;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            margin-bottom: 30px;
+        }
+
+        .food-card:hover {
+            transform: translateY(-15px);
+        }
+
+        .img-wrapper {
+            overflow: hidden;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
 
         .food-img {
             width: 100%;
-            height: 200px;
+            height: 300px;
             object-fit: cover;
-            border-radius: 15px;
+            transition: transform 0.6s ease;
+        }
+
+        .food-card:hover .food-img {
+            transform: scale(1.1);
+        }
+
+        .food-card h5 {
+            margin-top: 20px;
+            font-weight: 600;
+            font-size: 1.25rem;
+        }
+
+        /* ANIMATIONS */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 
 <body>
 
+<!-- NAVBAR -->
+<nav class="navbar">
+    <div class="container">
+        <span class="navbar-brand">🍽 DINEDROP</span>
+    </div>
+</nav>
+
 <!-- HERO -->
-<div class="hero text-center">
-    <div class="overlay"></div>
-
+<div class="hero">
     <div class="hero-content container">
-        <h1 class="display-3 fw-bold">🍽 DineDrop</h1>
-        <p class="lead">Fast. Fresh. Delivered to your doorstep.</p>
+        <h1>Taste the Art of Delivery</h1>
+        <p>Curated meals. Rapidly delivered.</p>
 
-        <a href="/login" class="btn btn-warning btn-custom m-2">Login</a>
-        <a href="/register" class="btn btn-outline-light btn-custom m-2">Register</a>
+        <div class="d-flex justify-content-center gap-3">
+            <a href="/login" class="btn btn-gold btn-custom">Sign In</a>
+            <a href="/register" class="btn btn-outline-light btn-custom">Join Community</a>
+        </div>
     </div>
 </div>
 
 <!-- FOOD SECTION -->
 <div class="food-section container text-center">
-    <h2 class="mb-4">🔥 Popular Dishes</h2>
+    <h2 class="section-title">Popular Dishes</h2>
 
     <div class="row">
-        <div class="col-md-4">
-            <img src="/images/burger.png" class="food-img">
-            <h5 class="mt-2">Cheese Burger</h5>
+        <!-- Item 1 -->
+        <div class="col-lg-4 col-md-6">
+            <div class="food-card">
+                <div class="img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&q=80&w=800" class="food-img" alt="Burger">
+                </div>
+                <h5>The Signature Burger</h5>
+                <p class="text-muted small">Wagyu beef, aged cheddar, brioche</p>
+            </div>
         </div>
 
-        <div class="col-md-4">
-            <img src="/images/pizza.jpg" class="food-img">
-            <h5 class="mt-2">Italian Pizza</h5>
+        <!-- Item 2 -->
+        <div class="col-lg-4 col-md-6">
+            <div class="food-card">
+                <div class="img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&q=80&w=800" class="food-img" alt="Pizza">
+                </div>
+                <h5>Artisan Pizza</h5>
+                <p class="text-muted small">San Marzano tomatoes, buffalo mozzarella</p>
+            </div>
         </div>
 
-        <div class="col-md-4">
-            <img src="/images/noodles.jpg" class="food-img">
-            <h5 class="mt-2">Spicy Noodles</h5>
+        <!-- Item 3 -->
+        <div class="col-lg-4 col-md-6">
+            <div class="food-card">
+                <div class="img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1552611052-33e04de081de?auto=format&fit=crop&q=80&w=800" class="food-img" alt="Noodles">
+                </div>
+                <h5>Spicy Ramen</h5>
+                <p class="text-muted small">12-hour broth, hand-pulled noodles</p>
+            </div>
         </div>
     </div>
 </div>

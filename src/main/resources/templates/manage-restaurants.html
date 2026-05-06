@@ -1,0 +1,13 @@
+<h2>Restaurants</h2>
+
+<table border="1">
+    <tr><th>Data</th><th>Action</th></tr>
+
+    <tr th:each="r : ${restaurants}">
+        <td th:text="${r}"></td>
+        <td>
+            <a th:href="@{'/admin/delete-restaurant?id=' + ${r.split(',')[0]}}">Delete</a>
+        </td>
+    </tr>
+
+</table>

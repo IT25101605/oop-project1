@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Owner Profile</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="form-box">
+    <h2>Restaurant Owner Profile</h2>
+    <p class="form-subtitle">View, update, or delete your owner account.</p>
+
+    <p class="success-msg" th:if="${success}" th:text="${success}"></p>
+    <p class="error-msg" th:if="${error}" th:text="${error}"></p>
+
+    <form th:action="@{/owner/profile/update}" method="post">
+        <label>Owner Name</label>
+        <input type="text" name="name" th:value="${owner.name}" required>
+
+        <label>Email</label>
+        <input type="email" th:value="${owner.email}" readonly>
+
+        <label>Password</label>
+        <input type="text" name="password" th:value="${owner.password}" required>
+
+        <label>Restaurant Name</label>
+        <input type="text" name="restaurantName" th:value="${owner.restaurantName}" required>
+
+        <label>Phone</label>
+        <input type="text" name="phone" th:value="${owner.phone}" required>
+
+        <button type="submit" class="btn">Update Profile</button>
+    </form>
+
+    <form th:action="@{/owner/profile/delete}" method="post"
+          onsubmit="return confirm('Are you sure you want to delete your owner account?');">
+        <button type="submit" class="btn btn-danger">Delete Account</button>
+    </form>
+
+    <p><a th:href="@{/owner/dashboard}">Back to Dashboard</a></p>
+</div>
+</body>
+</html>

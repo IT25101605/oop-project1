@@ -2,16 +2,93 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>DineDrop</title>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        /* HERO SECTION */
+        .hero {
+            height: 100vh;
+            background-image: url('/images/hero-food.png');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            color: white;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            background: rgba(0,0,0,0.6);
+        }
+
+        .hero-content {
+            position: relative;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .btn-custom {
+            padding: 10px 25px;
+            border-radius: 25px;
+        }
+
+        .food-section {
+            padding: 60px 20px;
+        }
+
+        .food-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 15px;
+        }
+    </style>
 </head>
-<body class="bg-light text-center">
 
-<div class="container mt-5">
-    <h1 class="display-4">🍽 DineDrop</h1>
-    <p class="lead">Fast. Fresh. Delivered.</p>
+<body>
 
-    <a href="/login" class="btn btn-dark m-2">Login</a>
-    <a href="/register" class="btn btn-outline-dark m-2">Register</a>
+<!-- HERO -->
+<div class="hero text-center">
+    <div class="overlay"></div>
+
+    <div class="hero-content container">
+        <h1 class="display-3 fw-bold">🍽 DineDrop</h1>
+        <p class="lead">Fast. Fresh. Delivered to your doorstep.</p>
+
+        <a href="/login" class="btn btn-warning btn-custom m-2">Login</a>
+        <a href="/register" class="btn btn-outline-light btn-custom m-2">Register</a>
+    </div>
+</div>
+
+<!-- FOOD SECTION -->
+<div class="food-section container text-center">
+    <h2 class="mb-4">🔥 Popular Dishes</h2>
+
+    <div class="row">
+        <div class="col-md-4">
+            <img src="/images/burger.png" class="food-img">
+            <h5 class="mt-2">Cheese Burger</h5>
+        </div>
+
+        <div class="col-md-4">
+            <img src="/images/pizza.jpg" class="food-img">
+            <h5 class="mt-2">Italian Pizza</h5>
+        </div>
+
+        <div class="col-md-4">
+            <img src="/images/noodles.jpg" class="food-img">
+            <h5 class="mt-2">Spicy Noodles</h5>
+        </div>
+    </div>
 </div>
 
 </body>

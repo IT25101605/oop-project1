@@ -35,7 +35,7 @@ public class AuthController {
     }
 
     // =====================================================
-    // REGISTER (UPDATED FOR ROLE SUPPORT)
+    // REGISTER (ROLE SUPPORT)
     // =====================================================
     @PostMapping({"/register", "/customer/register"})
     public String registerCustomer(@RequestParam String name,
@@ -46,7 +46,6 @@ public class AuthController {
                                    @RequestParam(required = false) String role,
                                    Model model) {
 
-        // default role = CUSTOMER if not selected
         if (role == null) {
             role = "CUSTOMER";
         }
@@ -60,7 +59,6 @@ public class AuthController {
                 phone
         );
 
-        // store role inside session OR pass to service (depends on your service)
         customer.setRole(role);
 
         boolean success = authService.registerCustomer(customer);
@@ -74,7 +72,7 @@ public class AuthController {
     }
 
     // =====================================================
-    // LOGIN (UPDATED FOR ROLE SUPPORT)
+    // LOGIN (ROLE SUPPORT)
     // =====================================================
     @PostMapping("/login")
     public String login(@RequestParam String email,
@@ -90,10 +88,9 @@ public class AuthController {
             session.setAttribute("email", user.getEmail());
             session.setAttribute("role", role);
 
-            // ROLE-BASED REDIRECTION
-            if (role.equals("CUSTOMER")) {
+            if ("CUSTOMER".equals(role)) {
                 return "redirect:/dashboard";
-            } else if (role.equals("OWNER")) {
+            } else if ("OWNER".equals(role)) {
                 return "redirect:/owner/dashboard";
             }
         }
@@ -119,7 +116,7 @@ public class AuthController {
         return "customer-dashboard";
     }
 
-    // ================= OWNER DASHBOARD (NEW) =================
+    // ================= OWNER DASHBOARD =================
     @GetMapping("/owner/dashboard")
     public String ownerDashboard(HttpSession session, Model model) {
 
@@ -134,6 +131,72 @@ public class AuthController {
 
         model.addAttribute("ownerEmail", email);
         return "owner-dashboard";
+    }
+
+    // =====================================================
+    // OWNER PROFILE VIEW
+    // =====================================================
+    @GetMapping("/owner/profile")
+    public String ownerProfile(HttpSession session, Model model) {
+
+        String email = (String) session.getAttribute("email");
+        String role = (String) session.getAttribute("role");
+
+        if (email == null) return "redirect:/login";
+
+        if (!"OWNER".equals(role)) {
+            return "redirect:/dashboard";
+        }
+
+        model.addAttribute("ownerEmail", email);
+        return "owner-profile";
+    }
+
+    // =====================================================
+    // OWNER UPDATE PROFILE (NEW ADDITION)
+    // =====================================================
+    @PostMapping("/owner/update")
+    public String updateOwner(@RequestParam String name,
+                              @RequestParam String password,
+                              @RequestParam String address,
+                              @RequestParam String phone,
+                              HttpSession session) {
+
+        String email = (String) session.getAttribute("email");
+        String role = (String) session.getAttribute("role");
+
+        if (email != null && "OWNER".equals(role)) {
+
+            Customer owner = authService.getCustomerByEmail(email);
+
+            if (owner != null) {
+                owner.setName(name);
+                owner.setPassword(password);
+                owner.setAddress(address);
+                owner.setPhone(phone);
+
+                authService.updateCustomer(owner);
+            }
+        }
+
+        return "redirect:/owner/profile";
+    }
+
+    // =====================================================
+    // OWNER DELETE PROFILE (NEW ADDITION)
+    // =====================================================
+    @PostMapping("/owner/delete")
+    public String deleteOwner(HttpSession session) {
+
+        String email = (String) session.getAttribute("email");
+        String role = (String) session.getAttribute("role");
+
+        if (email != null && "OWNER".equals(role)) {
+            authService.deleteUserByEmail(email, "OWNER");
+        }
+
+        session.invalidate();
+        return "redirect:/";
     }
 
     // ================= PROFILE =================

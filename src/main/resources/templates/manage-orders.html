@@ -1,0 +1,13 @@
+<h2>Orders</h2>
+
+<table border="1">
+    <tr><th>Data</th><th>Action</th></tr>
+
+    <tr th:each="o : ${orders}">
+        <td th:text="${o}"></td>
+        <td>
+            <a th:href="@{'/admin/delete-order?id=' + ${o.split(',')[0]}}">Delete</a>
+        </td>
+    </tr>
+
+</table>

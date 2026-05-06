@@ -34,8 +34,11 @@ public class AuthController {
         return "register";
     }
 
-    // ================= REGISTER =================
-    @PostMapping("/register")
+    // =====================================================
+    // FIX: SUPPORT BOTH /register AND /customer/register
+    // =====================================================
+
+    @PostMapping({"/register", "/customer/register"})
     public String registerCustomer(@RequestParam String name,
                                    @RequestParam String email,
                                    @RequestParam String password,

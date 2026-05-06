@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Edit Food</title>
+</head>
+<body>
+
+<h2>Edit Food</h2>
+
+<form action="/food/update" method="post">
+
+  <input type="hidden" name="id" th:value="${food.id}">
+
+  Name: <input name="name" th:value="${food.name}"><br><br>
+  Price: <input name="price" th:value="${food.price}"><br><br>
+  Restaurant ID: <input name="restaurantId" th:value="${food.restaurantId}"><br><br>
+
+  <button type="submit">Update</button>
+
+</form>
+
+</body>
+</html>

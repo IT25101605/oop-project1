@@ -6,22 +6,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
-// MVC Pattern: Controller handles HTTP requests only
-
 @Controller
 @RequestMapping("/customer")
 public class CustomerController {
 
     private final CustomerService service = new CustomerService();
 
-    // CREATE (REGISTER)
-    @PostMapping("/register")
-    public String register(@RequestParam String data) {
-        service.register(data);
-        return "redirect:/login";
-    }
-
-    // READ
+    // READ ALL CUSTOMERS
     @GetMapping("/all")
     @ResponseBody
     public List<String> getAll() {

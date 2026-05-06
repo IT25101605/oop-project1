@@ -6,57 +6,30 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-/*
--------------------------------------------------------
-CONTROLLER LAYER (MVC)
--------------------------------------------------------
-✔ Handles HTTP requests
-✔ Sends data to Service layer
-✔ Manages session for login
-✔ Returns HTML pages (Thymeleaf)
--------------------------------------------------------
-*/
-
 @Controller
 public class AuthController {
 
     private final AuthService authService = new AuthService();
 
-    /*
-    -------------------------------------------------------
-    HOME PAGE
-    -------------------------------------------------------
-    */
+    // HOME
     @GetMapping("/")
     public String home() {
         return "index";
     }
 
-    /*
-    -------------------------------------------------------
-    SHOW LOGIN PAGE
-    -------------------------------------------------------
-    */
+    // LOGIN PAGE
     @GetMapping("/login")
     public String loginPage() {
         return "login";
     }
 
-    /*
-    -------------------------------------------------------
-    SHOW REGISTER PAGE
-    -------------------------------------------------------
-    */
+    // REGISTER PAGE
     @GetMapping("/register")
     public String registerPage() {
         return "register";
     }
 
-    /*
-    -------------------------------------------------------
-    REGISTER CUSTOMER (CREATE)
-    -------------------------------------------------------
-    */
+    // REGISTER CUSTOMER ✅ (ONLY HERE)
     @PostMapping("/customer/register")
     public String registerCustomer(@RequestParam String name,
                                    @RequestParam String email,
@@ -77,11 +50,7 @@ public class AuthController {
         }
     }
 
-    /*
-    -------------------------------------------------------
-    LOGIN (READ + SESSION CREATION)
-    -------------------------------------------------------
-    */
+    // LOGIN
     @PostMapping("/login")
     public String login(@RequestParam String email,
                         @RequestParam String password,
@@ -92,11 +61,9 @@ public class AuthController {
 
         if (role != null) {
 
-            // store session data
             session.setAttribute("email", email);
             session.setAttribute("role", role);
 
-            // redirect based on role
             if (role.equals("CUSTOMER")) {
                 return "redirect:/customer/dashboard";
             } else if (role.equals("ADMIN")) {
@@ -104,18 +71,13 @@ public class AuthController {
             } else if (role.equals("OWNER")) {
                 return "redirect:/owner/dashboard";
             }
-
         }
 
         model.addAttribute("error", "Invalid login details");
         return "login";
     }
 
-    /*
-    -------------------------------------------------------
-    CUSTOMER DASHBOARD
-    -------------------------------------------------------
-    */
+    // CUSTOMER DASHBOARD
     @GetMapping("/customer/dashboard")
     public String customerDashboard(HttpSession session, Model model) {
 
@@ -129,11 +91,7 @@ public class AuthController {
         return "customer-dashboard";
     }
 
-    /*
-    -------------------------------------------------------
-    VIEW PROFILE (READ)
-    -------------------------------------------------------
-    */
+    // PROFILE
     @GetMapping("/customer/profile")
     public String profile(HttpSession session, Model model) {
 
@@ -149,11 +107,7 @@ public class AuthController {
         return "customer-profile";
     }
 
-    /*
-    -------------------------------------------------------
-    UPDATE PROFILE (UPDATE)
-    -------------------------------------------------------
-    */
+    // UPDATE
     @PostMapping("/customer/update")
     public String updateCustomer(@RequestParam String name,
                                  @RequestParam String password,
@@ -170,11 +124,7 @@ public class AuthController {
         return "redirect:/customer/profile";
     }
 
-    /*
-    -------------------------------------------------------
-    DELETE ACCOUNT (DELETE)
-    -------------------------------------------------------
-    */
+    // DELETE
     @PostMapping("/customer/delete")
     public String deleteCustomer(HttpSession session) {
 
@@ -184,15 +134,11 @@ public class AuthController {
             authService.deleteCustomer(email);
         }
 
-        session.invalidate(); // logout after delete
+        session.invalidate();
         return "redirect:/";
     }
 
-    /*
-    -------------------------------------------------------
-    LOGOUT
-    -------------------------------------------------------
-    */
+    // LOGOUT
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();

@@ -7,20 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-/*
--------------------------------------------------------
-SERVICE LAYER (BUSINESS LOGIC)
--------------------------------------------------------
-✔ Handles authentication logic
-✔ Handles Customer CRUD (via users.txt)
-✔ Does NOT handle UI or file I/O directly (uses FileUtil)
-
-OOP Principle:
-- Encapsulation: hides file operations
-- SRP: only authentication + user management
--------------------------------------------------------
-*/
-
 @Service
 public class AuthService {
 
@@ -29,9 +15,6 @@ public class AuthService {
     /*
     -------------------------------------------------------
     REGISTER CUSTOMER (CREATE)
-    -------------------------------------------------------
-    Format in file:
-    id,name,email,password,address,phone,role
     -------------------------------------------------------
     */
     public boolean registerCustomer(String name, String email,
@@ -61,15 +44,15 @@ public class AuthService {
         List<String> users = FileUtil.readAllLines(USER_FILE);
 
         for (String user : users) {
-            String[] data = user.split(",");
+            String[] data = safeSplit(user);
 
-            if (data.length >= 7) {
+            if (data != null) {
                 String storedEmail = data[2];
                 String storedPassword = data[3];
                 String role = data[6];
 
                 if (storedEmail.equals(email) && storedPassword.equals(password)) {
-                    return role; // CUSTOMER / ADMIN / OWNER
+                    return role;
                 }
             }
         }
@@ -87,9 +70,12 @@ public class AuthService {
         List<String> users = FileUtil.readAllLines(USER_FILE);
 
         for (String user : users) {
-            String[] data = user.split(",");
+            String[] data = safeSplit(user);
 
-            if (data[2].equals(email) && data[6].equals("CUSTOMER")) {
+            if (data != null &&
+                    data[2].equals(email) &&
+                    data[6].equals("CUSTOMER")) {
+
                 return data;
             }
         }
@@ -112,11 +98,12 @@ public class AuthService {
         boolean updated = false;
 
         for (String user : users) {
-            String[] data = user.split(",");
+            String[] data = safeSplit(user);
 
-            if (data[2].equals(email) && data[6].equals("CUSTOMER")) {
+            if (data != null &&
+                    data[2].equals(email) &&
+                    data[6].equals("CUSTOMER")) {
 
-                // rebuild updated record
                 String newLine = data[0] + "," + name + "," + email + "," +
                         password + "," + address + "," + phone + ",CUSTOMER";
 
@@ -145,11 +132,14 @@ public class AuthService {
         boolean deleted = false;
 
         for (String user : users) {
-            String[] data = user.split(",");
+            String[] data = safeSplit(user);
 
-            if (data[2].equals(email) && data[6].equals("CUSTOMER")) {
+            if (data != null &&
+                    data[2].equals(email) &&
+                    data[6].equals("CUSTOMER")) {
+
                 deleted = true;
-                continue; // skip this user
+                continue;
             }
 
             updatedList.add(user);
@@ -161,7 +151,7 @@ public class AuthService {
 
     /*
     -------------------------------------------------------
-    CHECK EMAIL EXISTS (helper method)
+    CHECK EMAIL EXISTS
     -------------------------------------------------------
     */
     private boolean emailExists(String email) {
@@ -169,13 +159,35 @@ public class AuthService {
         List<String> users = FileUtil.readAllLines(USER_FILE);
 
         for (String user : users) {
-            String[] data = user.split(",");
+            String[] data = safeSplit(user);
 
-            if (data[2].equals(email)) {
+            if (data != null && data[2].equals(email)) {
                 return true;
             }
         }
 
         return false;
+    }
+
+    /*
+    -------------------------------------------------------
+    SAFE SPLIT METHOD (IMPORTANT FIX)
+    -------------------------------------------------------
+    */
+    private String[] safeSplit(String user) {
+
+        if (user == null || user.trim().isEmpty()) {
+            return null;
+        }
+
+        String[] data = user.split(",");
+
+        // expect at least 7 fields
+        if (data.length < 7) {
+            System.out.println("Skipping invalid line: " + user);
+            return null;
+        }
+
+        return data;
     }
 }

@@ -153,7 +153,7 @@ public class AuthController {
     }
 
     // =====================================================
-    // OWNER UPDATE PROFILE (NEW ADDITION)
+    // OWNER UPDATE PROFILE
     // =====================================================
     @PostMapping("/owner/update")
     public String updateOwner(@RequestParam String name,
@@ -183,7 +183,7 @@ public class AuthController {
     }
 
     // =====================================================
-    // OWNER DELETE PROFILE (NEW ADDITION)
+    // OWNER DELETE PROFILE
     // =====================================================
     @PostMapping("/owner/delete")
     public String deleteOwner(HttpSession session) {
@@ -259,5 +259,36 @@ public class AuthController {
     public String logout(HttpSession session) {
         session.invalidate();
         return "redirect:/";
+    }
+
+    // =====================================================
+    // 🔥 ADDED FIX: RESTAURANTS PAGE (TO REMOVE 404 ERROR)
+    // =====================================================
+    @GetMapping("/restaurants")
+    public String restaurants(HttpSession session) {
+
+        String role = (String) session.getAttribute("role");
+
+        if (role == null) {
+            return "redirect:/login";
+        }
+
+        return "restaurants";
+    }
+
+    // =====================================================
+    // 🔥 ADDED FIX: SAFETY FALLBACK FOR OWNER LINKS
+    // =====================================================
+    @GetMapping("/owner")
+    public String ownerRootRedirect() {
+        return "redirect:/owner/dashboard";
+    }
+
+    // =====================================================
+    // 🔥 ADDED FIX: SAFETY FALLBACK FOR CUSTOMER LINKS
+    // =====================================================
+    @GetMapping("/customer")
+    public String customerRootRedirect() {
+        return "redirect:/dashboard";
     }
 }

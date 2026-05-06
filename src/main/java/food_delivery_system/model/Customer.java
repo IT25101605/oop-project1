@@ -2,7 +2,7 @@ package food_delivery_system.model;
 
 // OOP: Encapsulation (private fields + getters/setters)
 
-public class Customer {
+public class Customer extends User {
 
     private String id;
     private String name;

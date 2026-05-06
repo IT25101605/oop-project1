@@ -13,7 +13,7 @@ public class AuthService {
 
     private final String USER_FILE = "src/main/resources/data/users.txt";
 
-    // ================= REGISTER =================
+    // ================= REGISTER (UPDATED FOR ROLE SUPPORT) =================
     public boolean registerCustomer(Customer customer) {
 
         if (emailExists(customer.getEmail())) {
@@ -22,18 +22,22 @@ public class AuthService {
 
         String id = UUID.randomUUID().toString();
 
+        // ROLE FIX: support CUSTOMER + OWNER
+        String role = (customer.getRole() == null) ? "CUSTOMER" : customer.getRole();
+
         String line = id + "," +
                 customer.getName() + "," +
                 customer.getEmail() + "," +
                 customer.getPassword() + "," +
                 customer.getAddress() + "," +
-                customer.getPhone() + ",CUSTOMER";
+                customer.getPhone() + "," +
+                role;
 
         FileUtil.writeLine(USER_FILE, line);
         return true;
     }
 
-    // ================= LOGIN =================
+    // ================= LOGIN (ROLE BASED FIXED) =================
     public Customer loginUser(String email, String password, String role) {
 
         List<String> users = FileUtil.readAllLines(USER_FILE);
@@ -54,7 +58,7 @@ public class AuthService {
                         && storedPassword.equals(password)
                         && storedRole.equalsIgnoreCase(role)) {
 
-                    return new Customer(
+                    Customer c = new Customer(
                             data[0],
                             data[1],
                             data[2],
@@ -62,6 +66,11 @@ public class AuthService {
                             data[4],
                             data[5]
                     );
+
+                    // attach role to object (IMPORTANT)
+                    c.setRole(storedRole);
+
+                    return c;
                 }
             }
         }
@@ -84,7 +93,7 @@ public class AuthService {
                     data[2].equals(email) &&
                     data[6].equals("CUSTOMER")) {
 
-                return new Customer(
+                Customer c = new Customer(
                         data[0],
                         data[1],
                         data[2],
@@ -92,6 +101,10 @@ public class AuthService {
                         data[4],
                         data[5]
                 );
+
+                c.setRole(data[6]);
+
+                return c;
             }
         }
 

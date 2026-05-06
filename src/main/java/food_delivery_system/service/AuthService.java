@@ -1,101 +1,75 @@
 package food_delivery_system.service;
 
-import food_delivery_system.model.Customer;
-import food_delivery_system.model.RestaurantOwner;
-import food_delivery_system.model.User;
 import food_delivery_system.util.FileUtil;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+
+/*
+-------------------------------------------------------
+SERVICE LAYER (BUSINESS LOGIC)
+-------------------------------------------------------
+✔ Handles authentication logic
+✔ Handles Customer CRUD (via users.txt)
+✔ Does NOT handle UI or file I/O directly (uses FileUtil)
+
+OOP Principle:
+- Encapsulation: hides file operations
+- SRP: only authentication + user management
+-------------------------------------------------------
+*/
 
 @Service
 public class AuthService {
 
-    private static final String USER_FILE = "src/main/resources/data/users.txt";
+    private final String USER_FILE = "src/main/resources/data/users.txt";
 
-    public boolean emailExists(String email) {
-        List<String> users = FileUtil.readAllLines(USER_FILE);
+    /*
+    -------------------------------------------------------
+    REGISTER CUSTOMER (CREATE)
+    -------------------------------------------------------
+    Format in file:
+    id,name,email,password,address,phone,role
+    -------------------------------------------------------
+    */
+    public boolean registerCustomer(String name, String email,
+                                    String password, String address,
+                                    String phone) {
 
-        for (String user : users) {
-            String[] data = user.split(",");
-            if (data.length >= 3 && data[2].equalsIgnoreCase(email)) {
-                return true;
-            }
+        if (emailExists(email)) {
+            return false; // prevent duplicate users
         }
-        return false;
-    }
 
-    public boolean registerCustomer(Customer customer) {
-        if (emailExists(customer.getEmail())) {
-            return false;
-        }
+        String id = UUID.randomUUID().toString();
 
-        String line = customer.getId() + "," +
-                customer.getName() + "," +
-                customer.getEmail() + "," +
-                customer.getPassword() + "," +
-                customer.getRole() + "," +
-                customer.getAddress() + "," +
-                customer.getPhone();
+        String line = id + "," + name + "," + email + "," +
+                password + "," + address + "," + phone + ",CUSTOMER";
 
         FileUtil.writeLine(USER_FILE, line);
         return true;
     }
 
-    public boolean registerOwner(RestaurantOwner owner) {
-        if (emailExists(owner.getEmail())) {
-            return false;
-        }
+    /*
+    -------------------------------------------------------
+    LOGIN (READ + VALIDATION)
+    -------------------------------------------------------
+    */
+    public String login(String email, String password) {
 
-        String line = owner.getId() + "," +
-                owner.getName() + "," +
-                owner.getEmail() + "," +
-                owner.getPassword() + "," +
-                owner.getRole() + "," +
-                owner.getRestaurantName() + "," +
-                owner.getPhone();
-
-        FileUtil.writeLine(USER_FILE, line);
-        return true;
-    }
-
-    public User loginUser(String email, String password, String role) {
         List<String> users = FileUtil.readAllLines(USER_FILE);
 
         for (String user : users) {
             String[] data = user.split(",");
 
             if (data.length >= 7) {
-                String savedEmail = data[2];
-                String savedPassword = data[3];
-                String savedRole = data[4];
+                String storedEmail = data[2];
+                String storedPassword = data[3];
+                String role = data[6];
 
-                if (savedEmail.equalsIgnoreCase(email)
-                        && savedPassword.equals(password)
-                        && savedRole.equalsIgnoreCase(role)) {
-
-                    if ("customer".equalsIgnoreCase(role)) {
-                        return new Customer(
-                                data[0],
-                                data[1],
-                                data[2],
-                                data[3],
-                                data[4],
-                                data[5],
-                                data[6]
-                        );
-                    } else if ("owner".equalsIgnoreCase(role)) {
-                        return new RestaurantOwner(
-                                data[0],
-                                data[1],
-                                data[2],
-                                data[3],
-                                data[4],
-                                data[5],
-                                data[6]
-                        );
-                    }
+                if (storedEmail.equals(email) && storedPassword.equals(password)) {
+                    return role; // CUSTOMER / ADMIN / OWNER
                 }
             }
         }
@@ -103,143 +77,105 @@ public class AuthService {
         return null;
     }
 
-    public Customer getCustomerByEmail(String email) {
+    /*
+    -------------------------------------------------------
+    GET CUSTOMER PROFILE (READ)
+    -------------------------------------------------------
+    */
+    public String[] getCustomerByEmail(String email) {
+
         List<String> users = FileUtil.readAllLines(USER_FILE);
 
         for (String user : users) {
             String[] data = user.split(",");
 
-            if (data.length >= 7 &&
-                    data[2].equalsIgnoreCase(email) &&
-                    data[4].equalsIgnoreCase("customer")) {
-
-                return new Customer(
-                        data[0],
-                        data[1],
-                        data[2],
-                        data[3],
-                        data[4],
-                        data[5],
-                        data[6]
-                );
+            if (data[2].equals(email) && data[6].equals("CUSTOMER")) {
+                return data;
             }
         }
+
         return null;
     }
 
-    public RestaurantOwner getOwnerByEmail(String email) {
+    /*
+    -------------------------------------------------------
+    UPDATE CUSTOMER (UPDATE)
+    -------------------------------------------------------
+    */
+    public boolean updateCustomer(String email, String name,
+                                  String password, String address,
+                                  String phone) {
+
         List<String> users = FileUtil.readAllLines(USER_FILE);
+        List<String> updatedList = new ArrayList<>();
 
-        for (String user : users) {
-            String[] data = user.split(",");
-
-            if (data.length >= 7 &&
-                    data[2].equalsIgnoreCase(email) &&
-                    data[4].equalsIgnoreCase("owner")) {
-
-                return new RestaurantOwner(
-                        data[0],
-                        data[1],
-                        data[2],
-                        data[3],
-                        data[4],
-                        data[5],
-                        data[6]
-                );
-            }
-        }
-        return null;
-    }
-
-    public boolean updateCustomer(Customer updatedCustomer) {
-        List<String> users = FileUtil.readAllLines(USER_FILE);
-        List<String> updatedLines = new ArrayList<>();
         boolean updated = false;
 
         for (String user : users) {
             String[] data = user.split(",");
 
-            if (data.length >= 7 &&
-                    data[2].equalsIgnoreCase(updatedCustomer.getEmail()) &&
-                    data[4].equalsIgnoreCase("customer")) {
+            if (data[2].equals(email) && data[6].equals("CUSTOMER")) {
 
-                String newLine = updatedCustomer.getId() + "," +
-                        updatedCustomer.getName() + "," +
-                        updatedCustomer.getEmail() + "," +
-                        updatedCustomer.getPassword() + "," +
-                        updatedCustomer.getRole() + "," +
-                        updatedCustomer.getAddress() + "," +
-                        updatedCustomer.getPhone();
+                // rebuild updated record
+                String newLine = data[0] + "," + name + "," + email + "," +
+                        password + "," + address + "," + phone + ",CUSTOMER";
 
-                updatedLines.add(newLine);
+                updatedList.add(newLine);
                 updated = true;
+
             } else {
-                updatedLines.add(user);
+                updatedList.add(user);
             }
         }
 
-        if (updated) {
-            FileUtil.overwriteFile(USER_FILE, updatedLines);
-        }
-
+        FileUtil.overwriteFile(USER_FILE, updatedList);
         return updated;
     }
 
-    public boolean updateOwner(RestaurantOwner updatedOwner) {
+    /*
+    -------------------------------------------------------
+    DELETE CUSTOMER (DELETE)
+    -------------------------------------------------------
+    */
+    public boolean deleteCustomer(String email) {
+
         List<String> users = FileUtil.readAllLines(USER_FILE);
-        List<String> updatedLines = new ArrayList<>();
-        boolean updated = false;
+        List<String> updatedList = new ArrayList<>();
 
-        for (String user : users) {
-            String[] data = user.split(",");
-
-            if (data.length >= 7 &&
-                    data[2].equalsIgnoreCase(updatedOwner.getEmail()) &&
-                    data[4].equalsIgnoreCase("owner")) {
-
-                String newLine = updatedOwner.getId() + "," +
-                        updatedOwner.getName() + "," +
-                        updatedOwner.getEmail() + "," +
-                        updatedOwner.getPassword() + "," +
-                        updatedOwner.getRole() + "," +
-                        updatedOwner.getRestaurantName() + "," +
-                        updatedOwner.getPhone();
-
-                updatedLines.add(newLine);
-                updated = true;
-            } else {
-                updatedLines.add(user);
-            }
-        }
-
-        if (updated) {
-            FileUtil.overwriteFile(USER_FILE, updatedLines);
-        }
-
-        return updated;
-    }
-
-    public boolean deleteUserByEmail(String email, String role) {
-        List<String> users = FileUtil.readAllLines(USER_FILE);
-        List<String> updatedLines = new ArrayList<>();
         boolean deleted = false;
 
         for (String user : users) {
             String[] data = user.split(",");
 
-            if (data.length >= 7 &&
-                    data[2].equalsIgnoreCase(email) &&
-                    data[4].equalsIgnoreCase(role)) {
+            if (data[2].equals(email) && data[6].equals("CUSTOMER")) {
                 deleted = true;
-            } else {
-                updatedLines.add(user);
+                continue; // skip this user
+            }
+
+            updatedList.add(user);
+        }
+
+        FileUtil.overwriteFile(USER_FILE, updatedList);
+        return deleted;
+    }
+
+    /*
+    -------------------------------------------------------
+    CHECK EMAIL EXISTS (helper method)
+    -------------------------------------------------------
+    */
+    private boolean emailExists(String email) {
+
+        List<String> users = FileUtil.readAllLines(USER_FILE);
+
+        for (String user : users) {
+            String[] data = user.split(",");
+
+            if (data[2].equals(email)) {
+                return true;
             }
         }
 
-        if (deleted) {
-            FileUtil.overwriteFile(USER_FILE, updatedLines);
-        }
-
-        return deleted;
+        return false;
     }
 }

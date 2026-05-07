@@ -5,7 +5,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.*;
 
-@Repository   // ✅ REQUIRED
+@Repository
 public class FoodRepository {
 
     private static final String FILE = "src/main/resources/data/foods.txt";

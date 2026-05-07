@@ -1,6 +1,6 @@
 package food_delivery_system.model;
 
-// OOP: Encapsulation → private fields
+// Encapsulation → private fields
 public class Restaurant {
 
     private String id;

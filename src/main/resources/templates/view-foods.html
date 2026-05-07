@@ -38,6 +38,13 @@
       margin: 0;
     }
 
+    /* BUTTONS */
+    .btn-action-group {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
     .btn-add {
       background: var(--dark-charcoal);
       color: white;
@@ -55,6 +62,27 @@
       background: var(--primary-gold);
       color: white;
       transform: translateY(-2px);
+    }
+
+    /* NEW BACK BUTTON STYLE */
+    .btn-back {
+      border: 1.5px solid #eee;
+      background: white;
+      color: var(--dark-charcoal);
+      border-radius: 12px;
+      padding: 11px 20px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: 0.3s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-back:hover {
+      background: #f8f9fa;
+      border-color: var(--dark-charcoal);
+      color: var(--dark-charcoal);
     }
 
     /* FOOD CARDS */
@@ -149,13 +177,20 @@
 <header class="page-header">
   <div class="container d-flex justify-content-between align-items-center">
     <div>
-      <h1 class="page-title">Gourmet Selection</h1>
-      <p class="text-muted mb-0">Manage your culinary offerings</p>
+      <h1 class="page-title">DineDrop</h1>
+      <p class="text-muted mb-0"></p>
     </div>
-    <a href="/foods/add" class="btn-add">
-      <span class="material-icons"></span>
-      Add New Dish
-    </a>
+    <div class="btn-action-group">
+      <!-- ADDED BACK BUTTON -->
+      <a href="/owner/dashboard" class="btn-back">
+        <span class="material-icons" style="font-size: 20px;"></span>
+        Back
+      </a>
+      <a href="/foods/add" class="btn-add">
+        <span class="material-icons"></span>
+        Add New Dish
+      </a>
+    </div>
   </div>
 </header>
 
@@ -167,7 +202,7 @@
       <div class="food-card">
         <div class="food-img-wrapper">
           <!-- Dynamic Unsplash image based on food name for variety -->
-          <img th:src="'https://images.unsplash.com/photo-1743674453123-93356ade2891?q=80&w=734&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' + ${food.name} + ',food'"
+          <img th:src="'https://images.unsplash.com/photo-1646606617272-70f5514b1054?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' + ${food.name} + ',food'"
                class="food-img" alt="Food Image">
           <div class="price-tag">
             $<span th:text="${food.price}">0.00</span>
@@ -175,9 +210,9 @@
         </div>
 
         <div class="card-content">
-                        <span class="restaurant-badge">
-                            Restaurant ID: <span th:text="${food.restaurantId}">0</span>
-                        </span>
+          <span class="restaurant-badge">
+              Restaurant ID: <span th:text="${food.restaurantId}">0</span>
+          </span>
           <h3 class="food-name" th:text="${food.name}">Dish Name</h3>
           <p class="text-muted small">Dish ID: <span th:text="${food.id}">0</span></p>
         </div>

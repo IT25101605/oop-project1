@@ -1,6 +1,6 @@
 package food_delivery_system.model;
 
-// OOP: Encapsulation
+// Encapsulation
 public class Payment {
 
     private String paymentId;

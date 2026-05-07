@@ -1,6 +1,6 @@
 package food_delivery_system.model;
 
-// OOP: Encapsulation (private fields + getters/setters)
+//Encapsulation (private fields and getters/setters)
 public class Food {
 
     private String id;

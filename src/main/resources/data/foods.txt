@@ -1,1 +1,1 @@
-10b910d8-44fc-4f59-8b31-2b3223ddd71a,Rice & Curry,3.0,1
+10b910d8-44fc-4f59-8b31-2b3223ddd71a,guava,13.0,1

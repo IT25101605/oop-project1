@@ -13,7 +13,7 @@ public class AuthService {
 
     private final String USER_FILE = "src/main/resources/data/users.txt";
 
-    // ================= REGISTER (UPDATED FOR ROLE SUPPORT) =================
+    //REGISTER -UPDATED FOR ROLE SUPPORT
     public boolean registerCustomer(Customer customer) {
 
         if (emailExists(customer.getEmail())) {

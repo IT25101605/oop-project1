@@ -6,7 +6,7 @@ import java.util.*;
 
 public class FileUtil {
 
-    // SOLID: Single Responsibility → ONLY handles file operations
+    // SOLID- Single Responsibility - only handles file operations
 
     public static List<String> readAllLines(String path) {
         try {

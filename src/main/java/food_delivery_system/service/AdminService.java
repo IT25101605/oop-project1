@@ -3,7 +3,7 @@ package food_delivery_system.service;
 import food_delivery_system.util.FileUtil;
 import java.util.*;
 
-// Solid: SRP → Admin handles system-level operations only
+// Solid: SRP - Admin handles system-level operations only
 public class AdminService {
 
     private final String USERS = "src/main/resources/data/users.txt";
@@ -42,7 +42,7 @@ public class AdminService {
         FileUtil.overwriteFile(USERS, updated);
     }
 
-    // ❌ DELETE RESTAURANT
+    // DELETE RESTAURANT
     public void deleteRestaurant(String id) {
 
         List<String> updated = new ArrayList<>();

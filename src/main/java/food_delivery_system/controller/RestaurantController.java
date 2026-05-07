@@ -3,13 +3,14 @@ package food_delivery_system.controller;
 import food_delivery_system.model.Restaurant;
 import food_delivery_system.service.RestaurantService;
 
+import jakarta.servlet.http.HttpSession;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
-// MVC: Controller handles HTTP only
 @Controller
 @RequestMapping("/restaurant")
 public class RestaurantController {
@@ -23,10 +24,14 @@ public class RestaurantController {
     }
 
     // CREATE
+    // OWNER EMAIL
     @PostMapping("/add")
     public String addRestaurant(@RequestParam String name,
                                 @RequestParam String location,
-                                @RequestParam String ownerEmail) {
+                                HttpSession session) {
+
+        String ownerEmail =
+                (String) session.getAttribute("email");
 
         Restaurant r = new Restaurant(
                 UUID.randomUUID().toString(),
@@ -37,15 +42,36 @@ public class RestaurantController {
 
         service.addRestaurant(r);
 
-        return "redirect:/restaurant/all";
+        return "redirect:/restaurant/my";
     }
 
-    // READ
+    // READ ALL RESTAURANTS
+    // CUSTOMER VIEW
     @GetMapping("/all")
     public String viewRestaurants(Model model) {
 
-        model.addAttribute("restaurants", service.getAllRestaurants());
+        model.addAttribute(
+                "restaurants",
+                service.getAllRestaurants()
+        );
+
         return "view-restaurants";
+    }
+
+    // OWNER RESTAURANTS ONLY
+    @GetMapping("/my")
+    public String myRestaurants(HttpSession session,
+                                Model model) {
+
+        String ownerEmail =
+                (String) session.getAttribute("email");
+
+        model.addAttribute(
+                "restaurants",
+                service.getRestaurantsByOwner(ownerEmail)
+        );
+
+        return "owner-restaurants";
     }
 
     // DELETE
@@ -53,14 +79,21 @@ public class RestaurantController {
     public String deleteRestaurant(@PathVariable String id) {
 
         service.deleteRestaurant(id);
-        return "redirect:/restaurant/all";
+
+        return "redirect:/restaurant/my";
     }
+
 
     // SHOW EDIT PAGE
     @GetMapping("/edit/{id}")
-    public String editPage(@PathVariable String id, Model model) {
+    public String editPage(@PathVariable String id,
+                           Model model) {
 
-        model.addAttribute("restaurant", service.getById(id));
+        model.addAttribute(
+                "restaurant",
+                service.getById(id)
+        );
+
         return "edit-restaurant";
     }
 
@@ -69,11 +102,20 @@ public class RestaurantController {
     public String updateRestaurant(@RequestParam String id,
                                    @RequestParam String name,
                                    @RequestParam String location,
-                                   @RequestParam String ownerEmail) {
+                                   HttpSession session) {
 
-        Restaurant r = new Restaurant(id, name, location, ownerEmail);
+        String ownerEmail =
+                (String) session.getAttribute("email");
+
+        Restaurant r = new Restaurant(
+                id,
+                name,
+                location,
+                ownerEmail
+        );
+
         service.updateRestaurant(r);
 
-        return "redirect:/restaurant/all";
+        return "redirect:/restaurant/my";
     }
 }

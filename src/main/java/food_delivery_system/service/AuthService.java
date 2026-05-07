@@ -37,7 +37,7 @@ public class AuthService {
         return true;
     }
 
-    // ================= LOGIN (ROLE BASED FIXED) =================
+    //LOGIN ROLE BASED
     public Customer loginUser(String email, String password, String role) {
 
         List<String> users = FileUtil.readAllLines(USER_FILE);
@@ -78,7 +78,7 @@ public class AuthService {
         return null;
     }
 
-    // ================= GET CUSTOMER =================
+    //GET CUSTOMER
     public Customer getCustomerByEmail(String email) {
 
         List<String> users = FileUtil.readAllLines(USER_FILE);
@@ -111,7 +111,7 @@ public class AuthService {
         return null;
     }
 
-    // ================= UPDATE =================
+    //UPDATE
     public boolean updateCustomer(Customer updatedCustomer) {
 
         List<String> users = FileUtil.readAllLines(USER_FILE);
@@ -148,7 +148,7 @@ public class AuthService {
         return updated;
     }
 
-    // ================= DELETE =================
+    //DELETE
     public boolean deleteUserByEmail(String email, String role) {
 
         List<String> users = FileUtil.readAllLines(USER_FILE);
@@ -177,7 +177,7 @@ public class AuthService {
         return deleted;
     }
 
-    // ================= EMAIL EXISTS =================
+    //EMAIL EXISTS
     private boolean emailExists(String email) {
 
         List<String> users = FileUtil.readAllLines(USER_FILE);

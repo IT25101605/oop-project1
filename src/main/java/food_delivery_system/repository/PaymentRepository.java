@@ -3,7 +3,7 @@ package food_delivery_system.repository;
 import food_delivery_system.util.FileUtil;
 import java.util.*;
 
-// SOLID: SRP → only handles payment file
+// SOLID: SRP - only handles payment file
 public class PaymentRepository {
 
     private static final String FILE = "src/main/resources/data/payments.txt";

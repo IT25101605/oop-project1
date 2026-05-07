@@ -3,7 +3,7 @@ package food_delivery_system.repository;
 import food_delivery_system.util.FileUtil;
 import java.util.*;
 
-// SOLID: SRP → only handles cart file
+// SOLID: SRP - only handles cart file
 public class CartRepository {
 
     private static final String FILE = "src/main/resources/data/cart.txt";

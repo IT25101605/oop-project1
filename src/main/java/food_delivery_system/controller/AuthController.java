@@ -16,27 +16,24 @@ public class AuthController {
         this.authService = authService;
     }
 
-    // ================= HOME =================
     @GetMapping("/")
     public String home() {
         return "index";
     }
 
-    // ================= LOGIN PAGE =================
+    //LOGIN
     @GetMapping("/login")
     public String loginPage() {
         return "login";
     }
 
-    // ================= REGISTER PAGE =================
+    //REGISTER
     @GetMapping("/register")
     public String registerPage() {
         return "register";
     }
 
-    // =====================================================
-    // REGISTER (ROLE SUPPORT)
-    // =====================================================
+    // REGISTER ROLE
     @PostMapping({"/register", "/customer/register"})
     public String registerCustomer(@RequestParam String name,
                                    @RequestParam String email,
@@ -71,9 +68,7 @@ public class AuthController {
         return "register";
     }
 
-    // =====================================================
-    // LOGIN (ROLE SUPPORT)
-    // =====================================================
+    // LOGIN ROLE
     @PostMapping("/login")
     public String login(@RequestParam String email,
                         @RequestParam String password,
@@ -99,7 +94,7 @@ public class AuthController {
         return "login";
     }
 
-    // ================= CUSTOMER DASHBOARD =================
+    //CUSTOMER DASHBOARD
     @GetMapping("/dashboard")
     public String dashboard(HttpSession session, Model model) {
 
@@ -116,7 +111,7 @@ public class AuthController {
         return "customer-dashboard";
     }
 
-    // ================= OWNER DASHBOARD =================
+    //OWNER DASHBOARD
     @GetMapping("/owner/dashboard")
     public String ownerDashboard(HttpSession session, Model model) {
 
@@ -133,9 +128,7 @@ public class AuthController {
         return "owner-dashboard";
     }
 
-    // =====================================================
-    // OWNER PROFILE VIEW
-    // =====================================================
+    // OWNER PROFILE
     @GetMapping("/owner/profile")
     public String ownerProfile(HttpSession session, Model model) {
 
@@ -152,9 +145,7 @@ public class AuthController {
         return "owner-profile";
     }
 
-    // =====================================================
     // OWNER UPDATE PROFILE
-    // =====================================================
     @PostMapping("/owner/update")
     public String updateOwner(@RequestParam String name,
                               @RequestParam String password,
@@ -182,9 +173,7 @@ public class AuthController {
         return "redirect:/owner/profile";
     }
 
-    // =====================================================
     // OWNER DELETE PROFILE
-    // =====================================================
     @PostMapping("/owner/delete")
     public String deleteOwner(HttpSession session) {
 
@@ -199,7 +188,7 @@ public class AuthController {
         return "redirect:/";
     }
 
-    // ================= PROFILE =================
+    //PROFILE
     @GetMapping("/profile")
     public String profile(HttpSession session, Model model) {
 
@@ -213,7 +202,7 @@ public class AuthController {
         return "customer-profile";
     }
 
-    // ================= UPDATE =================
+    //UPDATE
     @PostMapping("/update")
     public String updateCustomer(@RequestParam String name,
                                  @RequestParam String password,
@@ -240,7 +229,7 @@ public class AuthController {
         return "redirect:/profile";
     }
 
-    // ================= DELETE =================
+    //DELETE
     @PostMapping("/delete")
     public String deleteCustomer(HttpSession session) {
 
@@ -254,16 +243,13 @@ public class AuthController {
         return "redirect:/";
     }
 
-    // ================= LOGOUT =================
+    //LOGOUT
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();
         return "redirect:/";
     }
 
-    // =====================================================
-    // 🔥 ADDED FIX: RESTAURANTS PAGE (TO REMOVE 404 ERROR)
-    // =====================================================
     @GetMapping("/restaurants")
     public String restaurants(HttpSession session) {
 
@@ -276,17 +262,11 @@ public class AuthController {
         return "restaurants";
     }
 
-    // =====================================================
-    // 🔥 ADDED FIX: SAFETY FALLBACK FOR OWNER LINKS
-    // =====================================================
     @GetMapping("/owner")
     public String ownerRootRedirect() {
         return "redirect:/owner/dashboard";
     }
 
-    // =====================================================
-    // 🔥 ADDED FIX: SAFETY FALLBACK FOR CUSTOMER LINKS
-    // =====================================================
     @GetMapping("/customer")
     public String customerRootRedirect() {
         return "redirect:/dashboard";

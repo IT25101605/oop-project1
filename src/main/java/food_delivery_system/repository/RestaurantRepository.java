@@ -3,7 +3,7 @@ package food_delivery_system.repository;
 import food_delivery_system.util.FileUtil;
 import java.util.*;
 
-// SOLID: SRP → Only handles file operations
+// SOLID: SRP - Only handles file operations
 public class RestaurantRepository {
 
     private static final String FILE = "src/main/resources/data/restaurants.txt";

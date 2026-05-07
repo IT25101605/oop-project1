@@ -5,7 +5,7 @@ import food_delivery_system.repository.OrderRepository;
 
 import java.util.*;
 
-// SOLID: Business logic layer
+// SOLID- Business logic layer
 public class OrderService {
 
     private final OrderRepository repo = new OrderRepository();

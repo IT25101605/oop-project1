@@ -33,9 +33,7 @@ public class FoodController {
         return "redirect:/foods/all";
     }
 
-    // =========================================
     // SHOW ADD FOOD PAGE
-    // =========================================
     @GetMapping("/add")
     public String showAddPage(HttpSession session,
                               Model model) {
@@ -51,9 +49,7 @@ public class FoodController {
         return "add-food";
     }
 
-    // =========================================
     // CREATE FOOD
-    // =========================================
     @PostMapping("/add")
     public String addFood(@RequestParam String name,
                           @RequestParam double price,
@@ -71,9 +67,8 @@ public class FoodController {
         return "redirect:/foods/all";
     }
 
-    // =========================================
-    // VIEW ALL FOODS
-    // =========================================
+    // VIEW FOODS
+
     @GetMapping("/all")
     public String viewFoods(Model model) {
 
@@ -83,9 +78,9 @@ public class FoodController {
         return "view-foods";
     }
 
-    // =========================================
+
     // DELETE FOOD
-    // =========================================
+
     @GetMapping("/delete/{id}")
     public String deleteFood(@PathVariable String id) {
 
@@ -94,9 +89,7 @@ public class FoodController {
         return "redirect:/foods/all";
     }
 
-    // =========================================
     // SHOW EDIT PAGE
-    // =========================================
     @GetMapping("/edit/{id}")
     public String editFood(@PathVariable String id,
                            Model model) {
@@ -109,9 +102,7 @@ public class FoodController {
         return "edit-food";
     }
 
-    // =========================================
     // UPDATE FOOD
-    // =========================================
     @PostMapping("/update")
     public String updateFood(@RequestParam String id,
                              @RequestParam String name,

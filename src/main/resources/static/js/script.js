@@ -1,1 +1,0 @@
-console.log("DineDrop auth module loaded");

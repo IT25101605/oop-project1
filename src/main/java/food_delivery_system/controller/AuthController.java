@@ -1,274 +1,143 @@
 package food_delivery_system.controller;
 
-import food_delivery_system.model.Customer;
+import food_delivery_system.model.User;
 import food_delivery_system.service.AuthService;
+import food_delivery_system.service.RestaurantService;
+import food_delivery_system.service.ReviewService;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class AuthController {
-
-    private final AuthService authService;
-
-    public AuthController(AuthService authService) {
-        this.authService = authService;
-    }
+    @Autowired private AuthService authService;
+    @Autowired private RestaurantService restaurantService;
+    @Autowired private ReviewService reviewService;
 
     @GetMapping("/")
-    public String home() {
-        return "index";
+    public String home(Model model) {
+        model.addAttribute("restaurants", restaurantService.all());
+        model.addAttribute("reviews", reviewService.all());
+        return "home";
     }
 
-    //LOGIN
     @GetMapping("/login")
-    public String loginPage() {
+    public String loginPage(@RequestParam(required=false) String role, Model model) {
+        model.addAttribute("role", role == null ? "" : role);
         return "login";
     }
 
-    //REGISTER
-    @GetMapping("/register")
-    public String registerPage() {
-        return "register";
-    }
-
-    // REGISTER ROLE
-    @PostMapping({"/register", "/customer/register"})
-    public String registerCustomer(@RequestParam String name,
-                                   @RequestParam String email,
-                                   @RequestParam String password,
-                                   @RequestParam String address,
-                                   @RequestParam String phone,
-                                   @RequestParam(required = false) String role,
-                                   Model model) {
-
-        if (role == null) {
-            role = "CUSTOMER";
-        }
-
-        Customer customer = new Customer(
-                "C" + System.currentTimeMillis(),
-                name,
-                email,
-                password,
-                address,
-                phone
-        );
-
-        customer.setRole(role);
-
-        boolean success = authService.registerCustomer(customer);
-
-        if (success) {
-            return "redirect:/login";
-        }
-
-        model.addAttribute("error", "Email already exists!");
-        return "register";
-    }
-
-    // LOGIN ROLE
     @PostMapping("/login")
-    public String login(@RequestParam String email,
-                        @RequestParam String password,
-                        @RequestParam String role,
-                        HttpSession session,
-                        Model model) {
-
-        Customer user = authService.loginUser(email, password, role);
-
-        if (user != null) {
-
-            session.setAttribute("email", user.getEmail());
-            session.setAttribute("role", role);
-
-            if ("CUSTOMER".equals(role)) {
-                return "redirect:/dashboard";
-            } else if ("OWNER".equals(role)) {
-                return "redirect:/owner/dashboard";
-            }
-        }
-
-        model.addAttribute("error", "Invalid login details");
-        return "login";
+    public String doLogin(@RequestParam String email, @RequestParam String password,
+                          HttpSession session, Model model) {
+        User u = authService.login(email, password);
+        if (u == null) { model.addAttribute("error", "Invalid credentials"); return "login"; }
+        session.setAttribute("user", u);
+        return "redirect:" + dashboardFor(u.getRole());
     }
 
-    //CUSTOMER DASHBOARD
-    @GetMapping("/dashboard")
-    public String dashboard(HttpSession session, Model model) {
+    @GetMapping("/admin-login")
+    public String adminLogin() { return "admin-login"; }
 
-        String email = (String) session.getAttribute("email");
-        String role = (String) session.getAttribute("role");
-
-        if (email == null) return "redirect:/login";
-
-        if (!"CUSTOMER".equals(role)) {
-            return "redirect:/owner/dashboard";
+    @PostMapping("/admin-login")
+    public String adminLoginPost(@RequestParam String email, @RequestParam String password,
+                                 HttpSession session, Model model) {
+        User u = authService.login(email, password);
+        if (u == null || !"ADMIN".equalsIgnoreCase(u.getRole())) {
+            model.addAttribute("error", "Invalid admin credentials"); return "admin-login";
         }
-
-        model.addAttribute("userEmail", email);
-        return "customer-dashboard";
+        session.setAttribute("user", u);
+        return "redirect:/admin";
     }
 
-    //OWNER DASHBOARD
-    @GetMapping("/owner/dashboard")
-    public String ownerDashboard(HttpSession session, Model model) {
-
-        String email = (String) session.getAttribute("email");
-        String role = (String) session.getAttribute("role");
-
-        if (email == null) return "redirect:/login";
-
-        if (!"OWNER".equals(role)) {
-            return "redirect:/dashboard";
-        }
-
-        model.addAttribute("ownerEmail", email);
-        return "owner-dashboard";
+    @GetMapping("/register")
+    public String registerPage(@RequestParam(required=false) String role, Model model) {
+        model.addAttribute("role", role == null ? "CUSTOMER" : role.toUpperCase());
+        return "register";
     }
 
-    // OWNER PROFILE
-    @GetMapping("/owner/profile")
-    public String ownerProfile(HttpSession session, Model model) {
-
-        String email = (String) session.getAttribute("email");
-        String role = (String) session.getAttribute("role");
-
-        if (email == null) return "redirect:/login";
-
-        if (!"OWNER".equals(role)) {
-            return "redirect:/dashboard";
-        }
-
-        model.addAttribute("ownerEmail", email);
-        return "owner-profile";
+    @PostMapping("/register")
+    public String doRegister(@RequestParam String name, @RequestParam String email,
+                             @RequestParam String password, @RequestParam String phone,
+                             @RequestParam String role,
+                             @RequestParam(required=false) String city,
+                             @RequestParam(required=false) String vehicle,
+                             @RequestParam(required=false) String licenseNumber,
+                             @RequestParam(required=false) String licensePlate,
+                             HttpSession session, Model model) {
+        User u = new User(null, name, email, password, phone, role.toUpperCase(),
+                city == null ? "" : city, vehicle == null ? "" : vehicle,
+                licenseNumber == null ? "" : licenseNumber,
+                licensePlate == null ? "" : licensePlate);
+        String err = authService.register(u);
+        if (err != null) { model.addAttribute("error", err); model.addAttribute("role", role); return "register"; }
+        session.setAttribute("user", u);
+        return "redirect:" + dashboardFor(u.getRole());
     }
 
-    // OWNER UPDATE PROFILE
-    @PostMapping("/owner/update")
-    public String updateOwner(@RequestParam String name,
-                              @RequestParam String password,
-                              @RequestParam String address,
-                              @RequestParam String phone,
-                              HttpSession session) {
+    @GetMapping("/logout")
+    public String logout(HttpSession session) { session.invalidate(); return "redirect:/"; }
 
-        String email = (String) session.getAttribute("email");
-        String role = (String) session.getAttribute("role");
-
-        if (email != null && "OWNER".equals(role)) {
-
-            Customer owner = authService.getCustomerByEmail(email);
-
-            if (owner != null) {
-                owner.setName(name);
-                owner.setPassword(password);
-                owner.setAddress(address);
-                owner.setPhone(phone);
-
-                authService.updateCustomer(owner);
-            }
-        }
-
-        return "redirect:/owner/profile";
-    }
-
-    // OWNER DELETE PROFILE
-    @PostMapping("/owner/delete")
-    public String deleteOwner(HttpSession session) {
-
-        String email = (String) session.getAttribute("email");
-        String role = (String) session.getAttribute("role");
-
-        if (email != null && "OWNER".equals(role)) {
-            authService.deleteUserByEmail(email, "OWNER");
-        }
-
-        session.invalidate();
-        return "redirect:/";
-    }
-
-    //PROFILE
     @GetMapping("/profile")
     public String profile(HttpSession session, Model model) {
-
-        String email = (String) session.getAttribute("email");
-
-        if (email == null) return "redirect:/login";
-
-        Customer customer = authService.getCustomerByEmail(email);
-
-        model.addAttribute("customer", customer);
-        return "customer-profile";
+        User u = (User) session.getAttribute("user");
+        if (u == null) return "redirect:/login";
+        model.addAttribute("user", u);
+        return "profile";
     }
 
-    //UPDATE
-    @PostMapping("/update")
-    public String updateCustomer(@RequestParam String name,
-                                 @RequestParam String password,
-                                 @RequestParam String address,
-                                 @RequestParam String phone,
-                                 HttpSession session) {
-
-        String email = (String) session.getAttribute("email");
-
-        if (email != null) {
-
-            Customer customer = authService.getCustomerByEmail(email);
-
-            if (customer != null) {
-                customer.setName(name);
-                customer.setPassword(password);
-                customer.setAddress(address);
-                customer.setPhone(phone);
-
-                authService.updateCustomer(customer);
+    @PostMapping("/profile")
+    public String updateProfile(@RequestParam String name, @RequestParam String phone,
+                                @RequestParam(required=false) String city,
+                                @RequestParam(required=false) String vehicle,
+                                @RequestParam(required=false) String licenseNumber,
+                                @RequestParam(required=false) String licensePlate,
+                                @RequestParam(required=false) String password,
+                                HttpSession session, Model model) {
+        User u = (User) session.getAttribute("user");
+        if (u == null) return "redirect:/login";
+        u.setName(name); u.setPhone(phone);
+        if (city != null) u.setCity(city);
+        if (vehicle != null) u.setVehicle(vehicle);
+        if ("RIDER".equalsIgnoreCase(u.getRole())) {
+            if (licenseNumber != null) u.setLicenseNumber(licenseNumber);
+            if (licensePlate != null) u.setLicensePlate(licensePlate);
+            String err = authService.validateRiderFields(u);
+            if (err != null) {
+                model.addAttribute("user", u);
+                model.addAttribute("error", err);
+                return "profile";
             }
         }
-
-        return "redirect:/profile";
+        if (password != null && !password.isBlank()) u.setPassword(password);
+        // Persist via Auth/Admin services using UserRepository
+        // We'll use AdminService for update for simplicity.
+        adminUpdate(u);
+        session.setAttribute("user", u);
+        return "redirect:/profile?saved=1";
     }
 
-    //DELETE
-    @PostMapping("/delete")
-    public String deleteCustomer(HttpSession session) {
-
-        String email = (String) session.getAttribute("email");
-
-        if (email != null) {
-            authService.deleteUserByEmail(email, "CUSTOMER");
-        }
-
+    @PostMapping("/profile/delete")
+    public String deleteProfile(HttpSession session) {
+        User u = (User) session.getAttribute("user");
+        if (u == null) return "redirect:/login";
+        adminDelete(u.getId());
         session.invalidate();
         return "redirect:/";
     }
 
-    //LOGOUT
-    @GetMapping("/logout")
-    public String logout(HttpSession session) {
-        session.invalidate();
-        return "redirect:/";
-    }
+    @Autowired private food_delivery_system.service.AdminService adminService;
+    private void adminUpdate(User u){ adminService.updateUser(u); }
+    private void adminDelete(String id){ adminService.deleteUser(id); }
 
-    @GetMapping("/restaurants")
-    public String restaurants(HttpSession session) {
-
-        String role = (String) session.getAttribute("role");
-
-        if (role == null) {
-            return "redirect:/login";
-        }
-
-        return "restaurants";
-    }
-
-    @GetMapping("/owner")
-    public String ownerRootRedirect() {
-        return "redirect:/owner/dashboard";
-    }
-
-    @GetMapping("/customer")
-    public String customerRootRedirect() {
-        return "redirect:/dashboard";
+    private String dashboardFor(String role) {
+        return switch (role.toUpperCase()) {
+            case "OWNER" -> "/owner";
+            case "RIDER" -> "/rider";
+            case "ADMIN" -> "/admin";
+            default -> "/customer";
+        };
     }
 }

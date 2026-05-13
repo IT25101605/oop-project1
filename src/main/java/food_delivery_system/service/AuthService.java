@@ -1,198 +1,59 @@
 package food_delivery_system.service;
 
-import food_delivery_system.model.Customer;
-import food_delivery_system.util.FileUtil;
+import food_delivery_system.model.User;
+import food_delivery_system.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
+/** Authentication & registration service. */
 @Service
 public class AuthService {
+    @Autowired private UserRepository userRepo;
 
-    private final String USER_FILE = "src/main/resources/data/users.txt";
+    /** Sri Lankan NIC format: 12 digits or old format 9 digits + V/X. */
+    public static final String NIC_NUMBER_REGEX = "^(\\d{12}|\\d{9}[VX])$";
+    /** Vehicle number: ABC-1234 or province-prefixed WP-CAB-1234. */
+    public static final String VEHICLE_NUMBER_REGEX = "^([A-Z]{2,3}-)?[A-Z]{2,3}-\\d{4}$";
 
-    //REGISTER -UPDATED FOR ROLE SUPPORT
-    public boolean registerCustomer(Customer customer) {
-
-        if (emailExists(customer.getEmail())) {
-            return false;
-        }
-
-        String id = UUID.randomUUID().toString();
-
-        // ROLE FIX: support CUSTOMER + OWNER
-        String role = (customer.getRole() == null) ? "CUSTOMER" : customer.getRole();
-
-        String line = id + "," +
-                customer.getName() + "," +
-                customer.getEmail() + "," +
-                customer.getPassword() + "," +
-                customer.getAddress() + "," +
-                customer.getPhone() + "," +
-                role;
-
-        FileUtil.writeLine(USER_FILE, line);
-        return true;
-    }
-
-    // ================= LOGIN (ROLE BASED FIXED) =================
-    public Customer loginUser(String email, String password, String role) {
-
-        List<String> users = FileUtil.readAllLines(USER_FILE);
-
-        for (String user : users) {
-
-            if (user == null || user.trim().isEmpty()) continue;
-
-            String[] data = user.split(",");
-
-            if (data.length >= 7) {
-
-                String storedEmail = data[2];
-                String storedPassword = data[3];
-                String storedRole = data[6];
-
-                if (storedEmail.equals(email)
-                        && storedPassword.equals(password)
-                        && storedRole.equalsIgnoreCase(role)) {
-
-                    Customer c = new Customer(
-                            data[0],
-                            data[1],
-                            data[2],
-                            data[3],
-                            data[4],
-                            data[5]
-                    );
-
-                    // attach role to object (IMPORTANT)
-                    c.setRole(storedRole);
-
-                    return c;
-                }
-            }
-        }
-
+    public User login(String email, String password) {
+        User u = userRepo.findByEmail(email);
+        if (u != null && u.getPassword().equals(password)) return u;
         return null;
     }
 
-    // ================= GET CUSTOMER =================
-    public Customer getCustomerByEmail(String email) {
+    public String register(User u) {
+        if (u.getEmail()==null || u.getEmail().isBlank()) return "Email required";
+        if (u.getPassword()==null || u.getPassword().length() < 4) return "Password must be at least 4 chars";
+        if (userRepo.findByEmail(u.getEmail()) != null) return "Email already registered";
+        if (u.getRole() == null || u.getRole().isBlank()) u.setRole("CUSTOMER");
 
-        List<String> users = FileUtil.readAllLines(USER_FILE);
-
-        for (String user : users) {
-
-            if (user == null || user.trim().isEmpty()) continue;
-
-            String[] data = user.split(",");
-
-            if (data.length >= 7 &&
-                    data[2].equals(email) &&
-                    data[6].equals("CUSTOMER")) {
-
-                Customer c = new Customer(
-                        data[0],
-                        data[1],
-                        data[2],
-                        data[3],
-                        data[4],
-                        data[5]
-                );
-
-                c.setRole(data[6]);
-
-                return c;
-            }
+        if ("RIDER".equalsIgnoreCase(u.getRole())) {
+            String err = validateRiderFields(u);
+            if (err != null) return err;
         }
 
+        userRepo.save(u);
+        return null; // success
+    }
+
+    /** Validate rider-specific fields. Returns error message or null when OK. */
+    public String validateRiderFields(User u) {
+        String city = u.getCity() == null ? "" : u.getCity().trim();
+        String vehicle = u.getVehicle() == null ? "" : u.getVehicle().trim();
+        String nic = u.getLicenseNumber() == null ? "" : u.getLicenseNumber().trim().toUpperCase();
+        String vehicleNumber = u.getLicensePlate() == null ? "" : u.getLicensePlate().trim().toUpperCase();
+
+        if (city.isBlank()) return "Service city is required for rider registration";
+        if (vehicle.isBlank()) return "Vehicle type is required for rider registration";
+        if (!nic.matches(NIC_NUMBER_REGEX))
+            return "ID / NIC number must be 12 digits or old NIC format: 9 digits followed by V or X";
+        if (!vehicleNumber.matches(VEHICLE_NUMBER_REGEX))
+            return "Vehicle number must use ABC-1234 or WP-CAB-1234 format";
+
+        u.setCity(city);
+        u.setVehicle(vehicle);
+        u.setLicenseNumber(nic);
+        u.setLicensePlate(vehicleNumber);
         return null;
-    }
-
-    // ================= UPDATE =================
-    public boolean updateCustomer(Customer updatedCustomer) {
-
-        List<String> users = FileUtil.readAllLines(USER_FILE);
-        List<String> updatedList = new ArrayList<>();
-
-        boolean updated = false;
-
-        for (String user : users) {
-
-            if (user == null || user.trim().isEmpty()) continue;
-
-            String[] data = user.split(",");
-
-            if (data.length >= 7 &&
-                    data[2].equals(updatedCustomer.getEmail()) &&
-                    data[6].equals("CUSTOMER")) {
-
-                String newLine = data[0] + "," +
-                        updatedCustomer.getName() + "," +
-                        updatedCustomer.getEmail() + "," +
-                        updatedCustomer.getPassword() + "," +
-                        updatedCustomer.getAddress() + "," +
-                        updatedCustomer.getPhone() + ",CUSTOMER";
-
-                updatedList.add(newLine);
-                updated = true;
-
-            } else {
-                updatedList.add(user);
-            }
-        }
-
-        FileUtil.overwriteFile(USER_FILE, updatedList);
-        return updated;
-    }
-
-    // ================= DELETE =================
-    public boolean deleteUserByEmail(String email, String role) {
-
-        List<String> users = FileUtil.readAllLines(USER_FILE);
-        List<String> updatedList = new ArrayList<>();
-
-        boolean deleted = false;
-
-        for (String user : users) {
-
-            if (user == null || user.trim().isEmpty()) continue;
-
-            String[] data = user.split(",");
-
-            if (data.length >= 7 &&
-                    data[2].equals(email) &&
-                    data[6].equalsIgnoreCase(role)) {
-
-                deleted = true;
-                continue;
-            }
-
-            updatedList.add(user);
-        }
-
-        FileUtil.overwriteFile(USER_FILE, updatedList);
-        return deleted;
-    }
-
-    // ================= EMAIL EXISTS =================
-    private boolean emailExists(String email) {
-
-        List<String> users = FileUtil.readAllLines(USER_FILE);
-
-        for (String user : users) {
-
-            if (user == null || user.trim().isEmpty()) continue;
-
-            String[] data = user.split(",");
-
-            if (data.length >= 3 && data[2].equals(email)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 }

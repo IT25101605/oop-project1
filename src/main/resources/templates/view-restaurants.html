@@ -1,241 +1,30 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DineDrop | Explore Restaurants</title>
-
-    <!-- Bootstrap 5 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Google Fonts & Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Plus+Jakarta+Sans:wght@300;400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/icon?family=Material+Icons">
-
-    <style>
-        :root {
-            --primary-gold: #D4AF37;
-            --dark-charcoal: #121212;
-            --light-bg: #fdfdfd;
-        }
-
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: var(--light-bg);
-            color: var(--dark-charcoal);
-        }
-
-        /* HEADER SECTION */
-        .page-header {
-            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
-            url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=2000');
-            background-size: cover;
-            background-position: center;
-            padding: 100px 0 60px;
-            color: white;
-            text-align: center;
-            margin-bottom: 50px;
-        }
-
-        .page-header h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 3.5rem;
-            margin-bottom: 15px;
-        }
-
-        .breadcrumb-custom {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: var(--primary-gold);
-        }
-
-        /* RESTAURANT GRID */
-        .restaurant-card {
-            border: none;
-            border-radius: 20px;
-            overflow: hidden;
-            background: white;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            transition: all 0.3s ease;
-            margin-bottom: 30px;
-            height: 100%;
-        }
-
-        .restaurant-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-        }
-
-        .card-img-top {
-            height: 220px;
-            object-fit: cover;
-        }
-
-        .card-body {
-            padding: 25px;
-        }
-
-        .res-category {
-            font-size: 0.7rem;
-            font-weight: 700;
-            color: var(--primary-gold);
-            text-transform: uppercase;
-            margin-bottom: 10px;
-            display: block;
-        }
-
-        .card-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.4rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-
-        .res-meta {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            font-size: 0.85rem;
-            color: #777;
-            margin-bottom: 20px;
-        }
-
-        .res-meta span {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .btn-view {
-            width: 100%;
-            border-radius: 12px;
-            padding: 12px;
-            font-weight: 600;
-            border: 1px solid var(--dark-charcoal);
-            background: transparent;
-            color: var(--dark-charcoal);
-            transition: 0.3s;
-        }
-
-        .btn-view:hover {
-            background: var(--dark-charcoal);
-            color: white;
-        }
-
-        .back-nav {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 1000;
-            background: white;
-            padding: 8px 15px;
-            border-radius: 50px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            text-decoration: none;
-            color: var(--dark-charcoal);
-            font-weight: 600;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-    </style>
-</head>
-
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Restaurants - FoodieGo')}"></head>
 <body>
-
-<!-- BACK NAVIGATION -->
-<a href="/dashboard" class="back-nav">
-    <span class="material-icons">arrow_back</span>
-    Dashboard
-</a>
-
-<!-- HEADER -->
-<header class="page-header">
-    <div class="container">
-        <div class="breadcrumb-custom">
-            <span>DineDrop</span> / <span>Discover</span>
-        </div>
-        <h1>Our Restaurants</h1>
-        <p class="lead opacity-75">Explore curated dining experiences near you.</p>
-    </div>
-</header>
-
-<main class="container mb-5">
-
-    <!-- SEARCH / FILTER BAR (UI ONLY) -->
-    <div class="row mb-5">
-        <div class="col-md-8 mx-auto">
-            <div class="input-group bg-white p-2 rounded-pill shadow-sm">
-                    <span class="input-group-text bg-transparent border-0 ps-3">
-                        <span class="material-icons text-muted">search</span>
-                    </span>
-                <input type="text" class="form-control border-0 shadow-none" placeholder="Search by cuisine or name...">
-                <button class="btn btn-dark rounded-pill px-4">Find Food</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <!-- RESTAURANT 1 -->
-        <div class="col-lg-4 col-md-6">
-            <div class="restaurant-card">
-                <img src="https://images.unsplash.com/photo-1552566626-52f8b828add9?auto=format&fit=crop&q=80&w=800" class="card-img-top" alt="Italian">
+<nav th:replace="~{fragments :: navbar}"></nav>
+<div class="container py-5">
+    <h2>🏪 Browse Restaurants</h2>
+    <div class="row g-4 mt-1">
+        <div class="col-md-4" th:each="r : ${restaurants}">
+            <div class="card-rest h-100">
+                <img class="card-img-top" th:src="${r.image != null and !r.image.isEmpty()} ? @{'/uploads/' + ${r.image}} : 'https://images.unsplash.com/photo-1552566626-52f8b828add9?w=600'">
                 <div class="card-body">
-                    <span class="res-category">Italian • Fine Dining</span>
-                    <h3 class="card-title">La Speranza</h3>
-                    <div class="res-meta">
-                        <span><span class="material-icons text-warning" style="font-size:16px">star</span> 4.9</span>
-                        <span><span class="material-icons" style="font-size:16px">schedule</span> 20-30 min</span>
-                    </div>
-                    <button class="btn-view">Explore Menu</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- RESTAURANT 2 -->
-        <div class="col-lg-4 col-md-6">
-            <div class="restaurant-card">
-                <img src="https://images.unsplash.com/photo-1512152272829-e3139592d56f?auto=format&fit=crop&q=80&w=800" class="card-img-top" alt="Fast Food">
-                <div class="card-body">
-                    <span class="res-category">American • Burgers</span>
-                    <h3 class="card-title">Street Bites</h3>
-                    <div class="res-meta">
-                        <span><span class="material-icons text-warning" style="font-size:16px">star</span> 4.7</span>
-                        <span><span class="material-icons" style="font-size:16px">schedule</span> 15-25 min</span>
-                    </div>
-                    <button class="btn-view">Explore Menu</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- RESTAURANT 3 -->
-        <div class="col-lg-4 col-md-6">
-            <div class="restaurant-card">
-                <img src="https://images.unsplash.com/photo-1534422298391-e4f8c170db76?auto=format&fit=crop&q=80&w=800" class="card-img-top" alt="Asian">
-                <div class="card-body">
-                    <span class="res-category">Japanese • Sushi</span>
-                    <h3 class="card-title">Sakura Zen</h3>
-                    <div class="res-meta">
-                        <span><span class="material-icons text-warning" style="font-size:16px">star</span> 4.8</span>
-                        <span><span class="material-icons" style="font-size:16px">schedule</span> 30-45 min</span>
-                    </div>
-                    <button class="btn-view">Explore Menu</button>
+                    <span class="badge-cuisine" th:text="${r.cuisine}">cuisine</span>
+                    <h5 class="mt-2 mb-1" th:text="${r.name}">name</h5>
+                    <p class="text-muted small">📍 <span th:text="${r.city}">city</span></p>
+                    <p class="text-muted small" th:if="${r.address != null}">🏠 <span th:text="${r.address}">addr</span></p>
+                    <iframe class="w-100 rounded mb-2" style="height:180px;border:0"
+                            loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+                            th:src="${r.mapEmbedUrl}"></iframe>
+                    <a th:href="@{/foods(restaurantId=${r.id})}" class="btn btn-brand btn-sm">Menu</a>
+                    <a target="_blank" class="btn btn-outline-secondary btn-sm" th:href="${r.googleMapsUrl}">📍 Directions</a>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- COMING SOON MESSAGE MAINTAINED -->
-    <div class="text-center mt-5 py-5 border rounded-4 bg-white">
-        <span class="material-icons opacity-25" style="font-size: 48px;">more_horiz</span>
-        <p class="text-muted">More restaurants are joining the DineDrop network every day.</p>
-    </div>
-
-</main>
-
+</div>
+<footer th:replace="~{fragments :: footer}"></footer>
+<div th:replace="~{fragments :: scripts}"></div>
 </body>
 </html>

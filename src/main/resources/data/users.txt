@@ -15,3 +15,14 @@ db66eabf-3d12-4e1e-b4ae-47c9f2adfa37,sumudufoods,sumudu1@gmail.com,Sumudu1,Kandy
 251891e2-7930-4e72-a387-6c4acee3e566,Sineth,doni@gmail.com,122,kmkomnjnf,54654465464,OWNER
 90ef23c8-287c-4ced-8f58-4da42e1cb510,Sineth,gg@gmail.com,123,kmkomnjnf,54654465464,CUSTOMER
 2bedc87b-59df-4964-9172-5f039142e80c,Sineth,sineth@gmail.com,123,kurunegala,0714463483,OWNER
+44583829-1556-4272-a888-f78577ca54fc,Chicken Rice,hfg@cgh.lk,dfgd4,ghfd,214511,CUSTOMER
+<<<<<<< HEAD
+
+=======
+251891e2-7930-4e72-a387-6c4acee3e566,Sineth,doni@gmail.com,122,kmkomnjnf,54654465464,OWNER
+90ef23c8-287c-4ced-8f58-4da42e1cb510,Sineth,gg@gmail.com,123,kmkomnjnf,54654465464,CUSTOMER
+2bedc87b-59df-4964-9172-5f039142e80c,Sineth,sineth@gmail.com,123,kurunegala,0714463483,OWNER
+>>>>>>> e52e85b93ecf324fb6e9cdfd806b5b57f4025aac
+251891e2-7930-4e72-a387-6c4acee3e566,Sineth,doni@gmail.com,122,kmkomnjnf,54654465464,OWNER
+90ef23c8-287c-4ced-8f58-4da42e1cb510,Sineth,gg@gmail.com,123,kmkomnjnf,54654465464,CUSTOMER
+2bedc87b-59df-4964-9172-5f039142e80c,Sineth,sineth@gmail.com,123,kurunegala,0714463483,OWNER

@@ -1,223 +1,262 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DineDrop | Curate Your Menu</title>
+<html xmlns:th="http://www.thymeleaf.org">
 
-    <!-- Bootstrap 5 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Google Fonts & Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/icon?family=Material+Icons">
+<head th:replace="~{fragments :: head('Add Food - FoodieGo')}"></head>
 
-    <style>
-        :root {
-            --primary-gold: #D4AF37;
-            --dark-charcoal: #121212;
-            --soft-bg: #fdfdfd;
-        }
+<style>
 
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+    /* ===== iOS 26 GLASS STYLE ===== */
 
-        .curator-container {
-            width: 95%;
-            max-width: 1100px;
-            background: white;
-            border-radius: 30px;
-            overflow: hidden;
-            box-shadow: 0 40px 100px rgba(0,0,0,0.1);
-            display: flex;
-            margin: 20px;
-        }
+    body{
+      min-height:100vh;
 
-        /* VISUAL PANEL */
-        .curator-visual {
-            flex: 1;
-            background: linear-gradient(rgba(18, 18, 18, 0.4), rgba(18, 18, 18, 0.4)),
-            url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&q=80&w=1000');
-            background-size: cover;
-            background-position: center;
-            padding: 60px 40px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            color: white;
-        }
+      background:
+              linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.55)),
+              url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1600');
 
-        /* FORM PANEL */
-        .curator-form-section {
-            flex: 1.2;
-            padding: 60px;
-            background: white;
-        }
+      background-size:cover;
+      background-position:center;
+      background-attachment:fixed;
 
-        .brand-tag {
-            color: var(--primary-gold);
-            font-weight: 800;
-            font-size: 0.75rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-bottom: 10px;
-            display: block;
-        }
+      font-family:"SF Pro Display", sans-serif;
 
-        h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 2.2rem;
-            color: var(--dark-charcoal);
-            margin-bottom: 35px;
-        }
+      color:white;
 
-        .input-group-custom {
-            margin-bottom: 25px;
-        }
+      text-shadow:0 1px 3px rgba(0,0,0,0.45);
+    }
 
-        .label-custom {
-            font-size: 0.7rem;
-            font-weight: 700;
-            color: #999;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 8px;
-            display: block;
-        }
+    /* Glow */
 
-        .form-control, .form-select {
-            border-radius: 12px;
-            padding: 14px 18px;
-            border: 1px solid #eee;
-            background: var(--soft-bg);
-            transition: all 0.3s;
-            font-size: 0.95rem;
-            color: var(--dark-charcoal);
-        }
+    body::before,
+    body::after{
+      content:'';
+      position:fixed;
+      width:320px;
+      height:320px;
+      border-radius:50%;
+      filter:blur(100px);
+      z-index:0;
+    }
 
-        .form-control:focus, .form-select:focus {
-            border-color: var(--primary-gold);
-            box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.1);
-            background: white;
-            outline: none;
-        }
+    body::before{
+      background:#ff9966;
+      top:-120px;
+      left:-100px;
+      opacity:0.45;
+    }
 
-        .btn-submit {
-            background: var(--dark-charcoal);
-            color: white;
-            border: none;
-            padding: 16px;
-            border-radius: 12px;
-            font-weight: 600;
-            width: 100%;
-            transition: 0.3s;
-            margin-top: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
+    body::after{
+      background:#6dd5fa;
+      bottom:-120px;
+      right:-100px;
+      opacity:0.4;
+    }
 
-        .btn-submit:hover {
-            background: var(--primary-gold);
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(212, 175, 55, 0.2);
-        }
+    /* Container layer */
+    .container{
+      position:relative;
+      z-index:2;
+    }
 
-        .back-nav {
-            margin-top: 30px;
-            text-align: center;
-        }
+    /* ===== GLASS CARD ===== */
 
-        .link-secondary {
-            color: #aaa;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.85rem;
-            transition: 0.2s;
-        }
+    .auth-card{
+      max-width:640px;
+      margin:60px auto;
 
-        .link-secondary:hover {
-            color: var(--dark-charcoal);
-        }
+      padding:35px;
 
-        @media (max-width: 992px) {
-            .curator-visual { display: none; }
-            .curator-form-section { padding: 40px 30px; }
-        }
-    </style>
-</head>
+      background:rgba(20,20,20,0.35);
+
+      backdrop-filter:blur(22px);
+      -webkit-backdrop-filter:blur(22px);
+
+      border:1px solid rgba(255,255,255,0.15);
+
+      border-radius:32px;
+
+      box-shadow:0 8px 32px rgba(0,0,0,0.3);
+
+      color:white;
+    }
+
+    /* Title */
+
+    .auth-card h3{
+      font-weight:700;
+      margin-bottom:25px;
+    }
+
+    .auth-card small{
+      color:rgba(255,255,255,0.75);
+    }
+
+    /* Inputs */
+
+    .form-control{
+      background:rgba(255,255,255,0.10) !important;
+
+      border:1px solid rgba(255,255,255,0.15) !important;
+
+      color:white !important;
+
+      border-radius:14px;
+
+      padding:12px;
+    }
+
+    .form-control::placeholder{
+      color:rgba(255,255,255,0.65);
+    }
+
+    .form-control:focus{
+      box-shadow:none;
+      border-color:rgba(255,255,255,0.35) !important;
+    }
+
+    /* Labels */
+
+    label{
+      font-weight:600;
+      margin-bottom:6px;
+      color:rgba(255,255,255,0.85);
+    }
+
+    /* Button */
+
+    .btn-brand{
+      background:rgba(255,255,255,0.18);
+
+      border:1px solid rgba(255,255,255,0.18);
+
+      color:white !important;
+
+      font-weight:600;
+
+      border-radius:16px;
+
+      padding:12px;
+
+      transition:0.3s;
+    }
+
+    .btn-brand:hover{
+      background:rgba(255,255,255,0.28);
+    }
+
+    /* Row spacing */
+
+    .row{
+      margin-bottom:10px;
+    }
+
+    /* Responsive */
+
+    @media(max-width:768px){
+      .auth-card{
+        margin:30px 15px;
+        padding:25px;
+      }
+    }
+
+</style>
 
 <body>
 
-<div class="curator-container">
+<nav th:replace="~{fragments :: navbar}"></nav>
 
-    <!-- VISUAL SIDE -->
-    <div class="curator-visual">
-        <div>
-            <span class="material-icons" style="font-size: 40px; color: var(--primary-gold);"></span>
-            <h3 class="mt-3 fw-bold">Define Your Menu.</h3>
-            <p class="opacity-75">Every great meal starts with a perfect description. Showcase your culinary artistry to the world.</p>
-        </div>
-        <div class="small opacity-50">DineDrop Gourmet Network &copy; 2026</div>
-    </div>
+<div class="container">
 
-    <!-- FORM SIDE -->
-    <div class="curator-form-section">
-        <span class="brand-tag">Menu Management</span>
-        <h2>Register New Dish</h2>
+    <div class="auth-card">
 
-        <form action="/foods/add" method="post">
+        <h3>
+            🍔 Add Food
+            <small th:text="'to ' + ${restaurant.name}"></small>
+        </h3>
 
-            <!-- FOOD NAME -->
-            <div class="input-group-custom">
-                <label class="label-custom">Dish Name</label>
-                <input type="text" name="name" class="form-control" placeholder="e.g. Signature Truffle Pasta" required>
+        <form method="post"
+              th:action="@{'/owner/food/add/' + ${restaurant.id}}"
+              enctype="multipart/form-data">
+
+            <!-- Name -->
+
+            <div class="mb-3">
+
+                <label>Name</label>
+
+                <input class="form-control"
+                       name="name"
+                       required>
+
             </div>
 
-            <!-- PRICE -->
-            <div class="input-group-custom">
-                <label class="label-custom">Price (USD)</label>
-                <div class="position-relative">
-                    <span class="position-absolute top-50 translate-middle-y ms-3 text-muted">$</span>
-                    <input type="number" step="0.01" name="price" class="form-control ps-4" placeholder="0.00" required>
+            <!-- Category + Price -->
+
+            <div class="row">
+
+                <div class="col mb-3">
+
+                    <label>Category</label>
+
+                    <input class="form-control"
+                           name="category"
+                           placeholder="Pizza, Burger..."
+                           required>
+
                 </div>
+
+                <div class="col mb-3">
+
+                    <label>Price (Rs.)</label>
+
+                    <input class="form-control"
+                           type="number"
+                           step="0.01"
+                           name="price"
+                           required>
+
+                </div>
+
             </div>
 
-            <!-- RESTAURANT DROPDOWN -->
-            <div class="input-group-custom">
-                <label class="label-custom">Assign to Restaurant</label>
-                <select name="restaurantId" class="form-select" required>
-                    <option value="" selected disabled>Select an establishment</option>
-                    <option th:each="restaurant : ${restaurants}"
-                            th:value="${restaurant.id}"
-                            th:text="${restaurant.name}">
-                        Demo Restaurant
-                    </option>
-                </select>
+            <!-- Description -->
+
+            <div class="mb-3">
+
+                <label>Description</label>
+
+                <textarea class="form-control"
+                          name="description"
+                          rows="2"></textarea>
+
             </div>
 
-            <button type="submit" class="btn-submit">
-                <span class="material-icons" style="font-size: 20px;"></span>
-                Add to Menu
+            <!-- Image -->
+
+            <div class="mb-4">
+
+                <label>Image</label>
+
+                <input type="file"
+                       class="form-control"
+                       name="image"
+                       accept="image/*">
+
+            </div>
+
+            <!-- Submit -->
+
+            <button class="btn btn-brand w-100">
+                Add Food
             </button>
 
         </form>
 
-        <div class="back-nav">
-            <a href="/foods/all" class="link-secondary">
-                View Entire Menu Inventory
-            </a>
-        </div>
     </div>
 
 </div>
+
+<div th:replace="~{fragments :: scripts}"></div>
 
 </body>
 </html>

@@ -1,31 +1,26 @@
 package food_delivery_system.model;
 
-// Encapsulation
+/** Dummy payment record. */
 public class Payment {
-
-    private String paymentId;
+    private String id;
     private String orderId;
+    private String customerId;
     private double amount;
-    private String status;
+    private String cardLast4;
+    private String status; // PAID
+    private String paidAt;
 
     public Payment() {}
-
-    public Payment(String paymentId, String orderId, double amount, String status) {
-        this.paymentId = paymentId;
-        this.orderId = orderId;
-        this.amount = amount;
-        this.status = status;
+    public Payment(String id, String orderId, String customerId, double amount,
+                   String cardLast4, String status, String paidAt) {
+        this.id=id; this.orderId=orderId; this.customerId=customerId; this.amount=amount;
+        this.cardLast4=cardLast4; this.status=status; this.paidAt=paidAt;
     }
-
-    public String getPaymentId() { return paymentId; }
-    public void setPaymentId(String paymentId) { this.paymentId = paymentId; }
-
-    public String getOrderId() { return orderId; }
-    public void setOrderId(String orderId) { this.orderId = orderId; }
-
-    public double getAmount() { return amount; }
-    public void setAmount(double amount) { this.amount = amount; }
-
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    public String getId(){return id;} public void setId(String i){this.id=i;}
+    public String getOrderId(){return orderId;} public void setOrderId(String o){this.orderId=o;}
+    public String getCustomerId(){return customerId;} public void setCustomerId(String c){this.customerId=c;}
+    public double getAmount(){return amount;} public void setAmount(double a){this.amount=a;}
+    public String getCardLast4(){return cardLast4;} public void setCardLast4(String c){this.cardLast4=c;}
+    public String getStatus(){return status;} public void setStatus(String s){this.status=s;}
+    public String getPaidAt(){return paidAt;} public void setPaidAt(String p){this.paidAt=p;}
 }

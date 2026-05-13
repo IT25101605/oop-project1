@@ -1,31 +1,29 @@
 package food_delivery_system.model;
 
-// Encapsulation
+/** Customer review for a food/restaurant after delivery. */
 public class Review {
-
-    private String reviewId;
-    private String customerEmail;
-    private String message;
-    private int rating;
+    private String id;
+    private String customerId;
+    private String customerName;
+    private String restaurantId;
+    private String orderId;
+    private int rating;       // 1..5
+    private String comment;
+    private String createdAt;
 
     public Review() {}
-
-    public Review(String reviewId, String customerEmail, String message, int rating) {
-        this.reviewId = reviewId;
-        this.customerEmail = customerEmail;
-        this.message = message;
-        this.rating = rating;
+    public Review(String id, String customerId, String customerName, String restaurantId,
+                  String orderId, int rating, String comment, String createdAt) {
+        this.id=id; this.customerId=customerId; this.customerName=customerName;
+        this.restaurantId=restaurantId; this.orderId=orderId; this.rating=rating;
+        this.comment=comment; this.createdAt=createdAt;
     }
-
-    public String getReviewId() { return reviewId; }
-    public void setReviewId(String reviewId) { this.reviewId = reviewId; }
-
-    public String getCustomerEmail() { return customerEmail; }
-    public void setCustomerEmail(String customerEmail) { this.customerEmail = customerEmail; }
-
-    public String getMessage() { return message; }
-    public void setMessage(String message) { this.message = message; }
-
-    public int getRating() { return rating; }
-    public void setRating(int rating) { this.rating = rating; }
+    public String getId(){return id;} public void setId(String i){this.id=i;}
+    public String getCustomerId(){return customerId;} public void setCustomerId(String c){this.customerId=c;}
+    public String getCustomerName(){return customerName;} public void setCustomerName(String c){this.customerName=c;}
+    public String getRestaurantId(){return restaurantId;} public void setRestaurantId(String r){this.restaurantId=r;}
+    public String getOrderId(){return orderId;} public void setOrderId(String o){this.orderId=o;}
+    public int getRating(){return rating;} public void setRating(int r){this.rating=r;}
+    public String getComment(){return comment;} public void setComment(String c){this.comment=c;}
+    public String getCreatedAt(){return createdAt;} public void setCreatedAt(String c){this.createdAt=c;}
 }

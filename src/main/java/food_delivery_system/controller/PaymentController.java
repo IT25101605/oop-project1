@@ -1,48 +1,22 @@
 package food_delivery_system.controller;
 
-import food_delivery_system.model.Payment;
+import food_delivery_system.model.User;
 import food_delivery_system.service.PaymentService;
-
+import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.UUID;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
-@RequestMapping("/payment")
 public class PaymentController {
+    @Autowired private PaymentService paymentService;
 
-    private final PaymentService service = new PaymentService();
-
-    // SHOW PAGE
-    @GetMapping("/pay")
-    public String paymentPage() {
-        return "payment";
-    }
-
-    // CREATE
-    @PostMapping("/pay")
-    public String makePayment(@RequestParam String orderId,
-                              @RequestParam double amount) {
-
-        Payment payment = new Payment(
-                UUID.randomUUID().toString(),
-                orderId,
-                amount,
-                "Completed"
-        );
-
-        service.makePayment(payment);
-
-        return "redirect:/payment/all";
-    }
-
-    // READ
-    @GetMapping("/all")
-    public String viewPayments(Model model) {
-
-        model.addAttribute("payments", service.getAllPayments());
+    @GetMapping("/payments")
+    public String myPayments(HttpSession session, Model model) {
+        User u = (User) session.getAttribute("user");
+        if (u == null) return "redirect:/login";
+        model.addAttribute("payments", paymentService.byCustomer(u.getId()));
         return "view-payments";
     }
 }

@@ -1,193 +1,59 @@
 package food_delivery_system.service;
 
-import food_delivery_system.util.FileUtil;
+import food_delivery_system.model.User;
+import food_delivery_system.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
+/** Authentication & registration service. */
 @Service
 public class AuthService {
+    @Autowired private UserRepository userRepo;
 
-    private final String USER_FILE = "src/main/resources/data/users.txt";
+    /** Sri Lankan NIC format: 12 digits or old format 9 digits + V/X. */
+    public static final String NIC_NUMBER_REGEX = "^(\\d{12}|\\d{9}[VX])$";
+    /** Vehicle number: ABC-1234 or province-prefixed WP-CAB-1234. */
+    public static final String VEHICLE_NUMBER_REGEX = "^([A-Z]{2,3}-)?[A-Z]{2,3}-\\d{4}$";
 
-    /*
-    -------------------------------------------------------
-    REGISTER CUSTOMER (CREATE)
-    -------------------------------------------------------
-    */
-    public boolean registerCustomer(String name, String email,
-                                    String password, String address,
-                                    String phone) {
-
-        if (emailExists(email)) {
-            return false; // prevent duplicate users
-        }
-
-        String id = UUID.randomUUID().toString();
-
-        String line = id + "," + name + "," + email + "," +
-                password + "," + address + "," + phone + ",CUSTOMER";
-
-        FileUtil.writeLine(USER_FILE, line);
-        return true;
-    }
-
-    /*
-    -------------------------------------------------------
-    LOGIN (READ + VALIDATION)
-    -------------------------------------------------------
-    */
-    public String login(String email, String password) {
-
-        List<String> users = FileUtil.readAllLines(USER_FILE);
-
-        for (String user : users) {
-            String[] data = safeSplit(user);
-
-            if (data != null) {
-                String storedEmail = data[2];
-                String storedPassword = data[3];
-                String role = data[6];
-
-                if (storedEmail.equals(email) && storedPassword.equals(password)) {
-                    return role;
-                }
-            }
-        }
-
+    public User login(String email, String password) {
+        User u = userRepo.findByEmail(email);
+        if (u != null && u.getPassword().equals(password)) return u;
         return null;
     }
 
-    /*
-    -------------------------------------------------------
-    GET CUSTOMER PROFILE (READ)
-    -------------------------------------------------------
-    */
-    public String[] getCustomerByEmail(String email) {
+    public String register(User u) {
+        if (u.getEmail()==null || u.getEmail().isBlank()) return "Email required";
+        if (u.getPassword()==null || u.getPassword().length() < 4) return "Password must be at least 4 chars";
+        if (userRepo.findByEmail(u.getEmail()) != null) return "Email already registered";
+        if (u.getRole() == null || u.getRole().isBlank()) u.setRole("CUSTOMER");
 
-        List<String> users = FileUtil.readAllLines(USER_FILE);
-
-        for (String user : users) {
-            String[] data = safeSplit(user);
-
-            if (data != null &&
-                    data[2].equals(email) &&
-                    data[6].equals("CUSTOMER")) {
-
-                return data;
-            }
+        if ("RIDER".equalsIgnoreCase(u.getRole())) {
+            String err = validateRiderFields(u);
+            if (err != null) return err;
         }
 
+        userRepo.save(u);
+        return null; // success
+    }
+
+    /** Validate rider-specific fields. Returns error message or null when OK. */
+    public String validateRiderFields(User u) {
+        String city = u.getCity() == null ? "" : u.getCity().trim();
+        String vehicle = u.getVehicle() == null ? "" : u.getVehicle().trim();
+        String nic = u.getLicenseNumber() == null ? "" : u.getLicenseNumber().trim().toUpperCase();
+        String vehicleNumber = u.getLicensePlate() == null ? "" : u.getLicensePlate().trim().toUpperCase();
+
+        if (city.isBlank()) return "Service city is required for rider registration";
+        if (vehicle.isBlank()) return "Vehicle type is required for rider registration";
+        if (!nic.matches(NIC_NUMBER_REGEX))
+            return "ID / NIC number must be 12 digits or old NIC format: 9 digits followed by V or X";
+        if (!vehicleNumber.matches(VEHICLE_NUMBER_REGEX))
+            return "Vehicle number must use ABC-1234 or WP-CAB-1234 format";
+
+        u.setCity(city);
+        u.setVehicle(vehicle);
+        u.setLicenseNumber(nic);
+        u.setLicensePlate(vehicleNumber);
         return null;
-    }
-
-    /*
-    -------------------------------------------------------
-    UPDATE CUSTOMER (UPDATE)
-    -------------------------------------------------------
-    */
-    public boolean updateCustomer(String email, String name,
-                                  String password, String address,
-                                  String phone) {
-
-        List<String> users = FileUtil.readAllLines(USER_FILE);
-        List<String> updatedList = new ArrayList<>();
-
-        boolean updated = false;
-
-        for (String user : users) {
-            String[] data = safeSplit(user);
-
-            if (data != null &&
-                    data[2].equals(email) &&
-                    data[6].equals("CUSTOMER")) {
-
-                String newLine = data[0] + "," + name + "," + email + "," +
-                        password + "," + address + "," + phone + ",CUSTOMER";
-
-                updatedList.add(newLine);
-                updated = true;
-
-            } else {
-                updatedList.add(user);
-            }
-        }
-
-        FileUtil.overwriteFile(USER_FILE, updatedList);
-        return updated;
-    }
-
-    /*
-    -------------------------------------------------------
-    DELETE CUSTOMER (DELETE)
-    -------------------------------------------------------
-    */
-    public boolean deleteCustomer(String email) {
-
-        List<String> users = FileUtil.readAllLines(USER_FILE);
-        List<String> updatedList = new ArrayList<>();
-
-        boolean deleted = false;
-
-        for (String user : users) {
-            String[] data = safeSplit(user);
-
-            if (data != null &&
-                    data[2].equals(email) &&
-                    data[6].equals("CUSTOMER")) {
-
-                deleted = true;
-                continue;
-            }
-
-            updatedList.add(user);
-        }
-
-        FileUtil.overwriteFile(USER_FILE, updatedList);
-        return deleted;
-    }
-
-    /*
-    -------------------------------------------------------
-    CHECK EMAIL EXISTS
-    -------------------------------------------------------
-    */
-    private boolean emailExists(String email) {
-
-        List<String> users = FileUtil.readAllLines(USER_FILE);
-
-        for (String user : users) {
-            String[] data = safeSplit(user);
-
-            if (data != null && data[2].equals(email)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /*
-    -------------------------------------------------------
-    SAFE SPLIT METHOD (IMPORTANT FIX)
-    -------------------------------------------------------
-    */
-    private String[] safeSplit(String user) {
-
-        if (user == null || user.trim().isEmpty()) {
-            return null;
-        }
-
-        String[] data = user.split(",");
-
-        // expect at least 7 fields
-        if (data.length < 7) {
-            System.out.println("Skipping invalid line: " + user);
-            return null;
-        }
-
-        return data;
     }
 }

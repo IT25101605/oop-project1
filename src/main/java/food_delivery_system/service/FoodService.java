@@ -2,103 +2,20 @@ package food_delivery_system.service;
 
 import food_delivery_system.model.Food;
 import food_delivery_system.repository.FoodRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
 
-// OOP: Abstraction → hides file operations from controller
+@Service
 public class FoodService {
+    @Autowired private FoodRepository repo;
 
-    private final FoodRepository repo = new FoodRepository();
-
-    // CREATE
-    public void addFood(Food f) {
-
-        String line = f.getId() + "," +
-                f.getName() + "," +
-                f.getPrice() + "," +
-                f.getRestaurantId();
-
-        repo.save(line);
-    }
-
-    // READ ALL
-    public List<Food> getAllFoods() {
-
-        List<String> lines = repo.findAll();
-        List<Food> foods = new ArrayList<>();
-
-        for (String line : lines) {
-            String[] data = line.split(",");
-
-            if (data.length == 4) {
-                foods.add(new Food(
-                        data[0],
-                        data[1],
-                        Double.parseDouble(data[2]),
-                        data[3]
-                ));
-            }
-        }
-
-        return foods;
-    }
-
-    // UPDATE
-    public void updateFood(Food updated) {
-
-        List<String> lines = repo.findAll();
-        List<String> newLines = new ArrayList<>();
-
-        for (String line : lines) {
-            String[] data = line.split(",");
-
-            if (data[0].equals(updated.getId())) {
-
-                String newLine = updated.getId() + "," +
-                        updated.getName() + "," +
-                        updated.getPrice() + "," +
-                        updated.getRestaurantId();
-
-                newLines.add(newLine);
-
-            } else {
-                newLines.add(line);
-            }
-        }
-
-        repo.overwrite(newLines);
-    }
-
-    // DELETE
-    public void deleteFood(String id) {
-
-        List<String> lines = repo.findAll();
-        List<String> newLines = new ArrayList<>();
-
-        for (String line : lines) {
-            if (!line.startsWith(id + ",")) {
-                newLines.add(line);
-            }
-        }
-
-        repo.overwrite(newLines);
-    }
-
-    // FIND ONE
-    public Food getById(String id) {
-
-        for (String line : repo.findAll()) {
-            String[] data = line.split(",");
-
-            if (data[0].equals(id)) {
-                return new Food(
-                        data[0],
-                        data[1],
-                        Double.parseDouble(data[2]),
-                        data[3]
-                );
-            }
-        }
-        return null;
-    }
+    public List<Food> all() { return repo.findAll(); }
+    public Food byId(String id) { return repo.findById(id); }
+    public List<Food> byRestaurant(String rid) { return repo.findByRestaurant(rid); }
+    public List<Food> search(String q) { return repo.search(q); }
+    public Food add(Food f) { return repo.save(f); }
+    public void update(Food f) { repo.update(f); }
+    public void delete(String id) { repo.delete(id); }
 }

@@ -5,6 +5,9 @@ df3436f6-a9d2-49b4-92a2-73d7b135aa35,ggddf,sagfdgman@gmail.com,dfgfd4554,ffgdgff
 
 0522c208-6038-469c-a30f-c371a09357a3,hfghf,sagfdgmffan@gmail.com,dfgfhd4554,hfghf,123456,OWNER
 8bc75f9d-085d-44bf-90fe-3511a7afefed,alan,alan1@gmail.com,Alan1,Udakotuwa,07845458,OWNER
+b51c7198-e5cf-44ff-a99f-5f606dec5555,sms,sms2@gmail.com,sms2,kurunegala,0778956423,OWNER
+7f745edc-47af-40d6-a878-8684c81bedee,sandu,sms02@gmail.com,sms02,kurunegala,0775842654,CUSTOMER
+
 db66eabf-3d12-4e1e-b4ae-47c9f2adfa37,sumudufoods,sumudu1@gmail.com,Sumudu1,Kandy,071856644,OWNER
 40951d4c-a473-444d-b5a9-71c69be21f68,Amanda,amanda@gmail.com,amanda1,Kurunegala,+94718956788,CUSTOMER
 7014e613-3247-4766-86da-f2d7814aaa55,sarala,sarala@gmail.com,1234,Kurunegala,+94770200367,OWNER

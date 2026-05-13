@@ -18,7 +18,7 @@ public class UserRepository {
 
     @PostConstruct
     public void seed() {
-        if (findByEmail("admin@foodiego.com") == null) {
+        if (findByEmail("admin@dinedrop.com") == null) {
             save(new User("U-ADMIN", "Admin", "admin@foodiego.com", "admin123",
                     "0000000000", "ADMIN", "HQ", "", "", ""));
         }

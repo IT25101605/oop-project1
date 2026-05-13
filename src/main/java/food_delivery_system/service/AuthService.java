@@ -1,6 +1,5 @@
 package food_delivery_system.service;
 
-import food_delivery_system.model.Customer;
 import food_delivery_system.util.FileUtil;
 import org.springframework.stereotype.Service;
 

@@ -1,21 +1,9 @@
 package food_delivery_system.model;
 
-// OOP: Encapsulation
-public class Admin {
-
-    private String username;
-    private String password;
-
-    public Admin() {}
-
-    public Admin(String username, String password) {
-        this.username = username;
-        this.password = password;
+/** Admin — demonstrates Inheritance from User. */
+public class Admin extends User {
+    public Admin() { super(); setRole("ADMIN"); }
+    public Admin(String id, String name, String email, String password) {
+        super(id, name, email, password, "", "ADMIN", "", "");
     }
-
-    public String getUsername() { return username; }
-    public void setUsername(String username) { this.username = username; }
-
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
 }

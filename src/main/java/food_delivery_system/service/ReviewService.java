@@ -2,55 +2,26 @@ package food_delivery_system.service;
 
 import food_delivery_system.model.Review;
 import food_delivery_system.repository.ReviewRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
+@Service
 public class ReviewService {
+    @Autowired private ReviewRepository repo;
 
-    private final ReviewRepository repo = new ReviewRepository();
-
-    // CREATE
-    public void addReview(Review review) {
-
-        String line = review.getReviewId() + "," +
-                review.getCustomerEmail() + "," +
-                review.getMessage() + "," +
-                review.getRating();
-
-        repo.save(line);
+    public Review add(Review r) {
+        r.setCreatedAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
+        return repo.save(r);
     }
+    public List<Review> all() { return repo.findAll(); }
+    public List<Review> byCustomer(String cid) { return repo.findByCustomer(cid); }
+    public List<Review> byRestaurant(String rid) { return repo.findByRestaurant(rid); }
+    public void delete(String id) { repo.delete(id); }
+    public Review byId(String id) { return repo.findById(id); }
+    public Review update(Review r) { return repo.update(r); }
 
-    // READ
-    public List<Review> getAllReviews() {
-
-        List<Review> list = new ArrayList<>();
-
-        for (String line : repo.findAll()) {
-            String[] data = line.split(",");
-
-            if (data.length == 4) {
-                list.add(new Review(
-                        data[0],
-                        data[1],
-                        data[2],
-                        Integer.parseInt(data[3])
-                ));
-            }
-        }
-        return list;
-    }
-
-    // DELETE
-    public void deleteReview(String id) {
-
-        List<String> updated = new ArrayList<>();
-
-        for (String line : repo.findAll()) {
-            if (!line.startsWith(id + ",")) {
-                updated.add(line);
-            }
-        }
-
-        repo.overwrite(updated);
-    }
 }

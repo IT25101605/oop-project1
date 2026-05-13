@@ -1,0 +1,2 @@
+U-ADMIN|Admin|admin@foodiego.com|admin123|0000000000|ADMIN|HQ|||
+U-177869408694392|saman|saman@gmail.com|Saman123|0712545789|CUSTOMER||||

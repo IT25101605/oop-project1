@@ -74,6 +74,11 @@ public class RestaurantController {
             if (!cs.isEmpty()) couponByRestaurant.put(r.getId(), cs.get(0));
         }
         model.addAttribute("couponByRestaurant", couponByRestaurant);
+        int totalFoods = 0;
+        for (Restaurant r : mine) {
+            totalFoods += foodService.byRestaurant(r.getId()).size();
+        }
+        model.addAttribute("totalFoods", totalFoods);
         return "owner-dashboard";
     }
 

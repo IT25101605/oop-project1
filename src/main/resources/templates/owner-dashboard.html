@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{fragments :: head('Owner Dashboard - DineDrop')}"></head>
+<head th:replace="~{fragments :: head('Owner Dashboard - FoodieGo')}"></head>
 
 <style>
 
@@ -375,15 +375,15 @@
         <div class="col-md-4">
             <div class="dash-card">
 
-                <div class="dash-label">Restaurants</div>
+                <div class="dash-label">Foods Added</div>
 
                 <div class="dash-stat"
-                     th:text="${#lists.size(restaurants)}">
+                     th:text="${totalFoods}">
                     0
                 </div>
 
             </div>
-        </div>'
+        </div>
 
         <div class="col-md-4">
             <div class="dash-card">

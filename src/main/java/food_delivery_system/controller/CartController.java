@@ -36,7 +36,7 @@ public class CartController {
     @Autowired private CouponService couponService;
 
 
-    // CHECK CUSTOMER LOGIN
+    // checking customer login
 
 
     // Ensures logged user is CUSTOMER
@@ -54,7 +54,7 @@ public class CartController {
     }
 
 
-    // CUSTOMER DISTRICT VALIDATION
+    // customer district validation
 
 
     private boolean foodMatchesCustomerDistrict(User u, String foodId) {
@@ -66,7 +66,7 @@ public class CartController {
     }
 
 
-    // CUSTOMER DASHBOARD
+    // customer dashboard
 
 
     @GetMapping("/customer")
@@ -105,7 +105,7 @@ public class CartController {
     }
 
 
-    // VIEW CART
+    // cart view
 
 
     @GetMapping("/cart")
@@ -219,7 +219,7 @@ public class CartController {
     }
 
 
-    // ADD ITEM TO CART
+    // adding iterm to cart
 
 
     @PostMapping("/cart/add")
@@ -254,7 +254,7 @@ public class CartController {
                 qty
         );
 
-        // Success message
+
         ra.addFlashAttribute("msg", "Added to cart");
 
         // Redirect back to previous page
@@ -265,7 +265,7 @@ public class CartController {
     }
 
 
-    // UPDATE CART ITEM QUANTITY
+    //update cart iterm quntity
 
 
     @PostMapping("/cart/update/{cartId}")
@@ -290,7 +290,7 @@ public class CartController {
     }
 
 
-    // REMOVE ITEM FROM CART
+    // removing iterm in cart
 
 
     @PostMapping("/cart/remove/{cartId}")

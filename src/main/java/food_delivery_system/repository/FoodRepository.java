@@ -13,27 +13,22 @@ import java.util.stream.Collectors;
 @Repository
 public class FoodRepository {
 
-    // File used as a simple database (file-based persistence)
+    // File used as a simple database
     private static final String FILE = "foods.txt";
 
     // Dependency Injection using @Autowired
-    // FileUtil handles file read/write operations (abstraction of file handling)
+    // FileUtil handles file read/write operations
     @Autowired private FileUtil fileUtil;
 
     // read operations
-
     // Retrieves all food records from file
     public List<Food> findAll() {
-
         // Reads all lines from file and converts each line into Food object
         return fileUtil.readAllLines(FILE).stream()
-
                 // Ignore empty lines
                 .filter(l -> !l.isBlank())
-
                 // Convert each line into Food object (mapping)
                 .map(this::parse)
-
                 // Collect results into List
                 .collect(Collectors.toList());
     }
@@ -43,28 +38,21 @@ public class FoodRepository {
 
         // Stream filtering to find matching food item
         return findAll().stream()
-
                 // Filter by food ID
                 .filter(f -> f.getId().equals(id))
-
                 // Return first match or null
                 .findFirst().orElse(null);
     }
-
     // Finds foods belonging to a specific restaurant
     public List<Food> findByRestaurant(String rid) {
-
         return findAll().stream()
-
                 // Filter by restaurant ID
                 .filter(f -> rid.equals(f.getRestaurantId()))
 
                 .collect(Collectors.toList());
     }
-
     // Search foods by name or category
     public List<Food> search(String q) {
-
         // Convert query to lowercase for case-insensitive search
         String s = q == null ? "" : q.toLowerCase();
 
@@ -132,7 +120,6 @@ public class FoodRepository {
 
         fileUtil.writeAllLines(FILE, lines);
     }
-
     // Converts Food object → String (for file storage)
     private String toLine(Food f) {
 
@@ -146,7 +133,6 @@ public class FoodRepository {
                 f.getDescription()
         );
     }
-
     // Converts String → Food object (parsing file data)
     private Food parse(String l) {
 
@@ -165,7 +151,6 @@ public class FoodRepository {
                 price, g(p,5), g(p,6)
         );
     }
-
     // Safe getter method for array index access
     private static String g(String[] a, int i){
         return i < a.length ? a[i] : "";

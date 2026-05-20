@@ -1,6 +1,6 @@
 package food_delivery_system.controller;
 
-// Importing models, services, and Spring classes
+
 import food_delivery_system.model.*;
 import food_delivery_system.service.*;
 import jakarta.servlet.http.HttpSession;
@@ -65,7 +65,7 @@ public class AdminController {
         return "admin-dashboard";
     }
 
-    // ================= MANAGE USERS =================
+    //Manage Users
 
     @GetMapping("/admin/users")
     public String users(HttpSession s, Model m) {
@@ -232,7 +232,7 @@ public class AdminController {
         return "redirect:/admin/orders";
     }
 
-    // ================= DELETE REVIEWS =================
+    //Delete Reviews
 
     @PostMapping("/admin/reviews/delete/{id}")
     public String deleteReview(@PathVariable String id,
@@ -247,10 +247,8 @@ public class AdminController {
         return "redirect:/reviews";
     }
 
-    // ====================================================
-    // ================= RIDER SECTION ====================
-    // ====================================================
 
+    //Rider Section
     @GetMapping("/rider")
     public String riderDashboard(HttpSession s, Model m) {
 
@@ -397,9 +395,8 @@ public class AdminController {
         return "redirect:/rider";
     }
 
-    // ====================================================
-    // ================= OWNER SECTION ====================
-    // ====================================================
+
+    //Owner Section
 
     @PostMapping("/owner/order/status/{orderId}")
     public String ownerStatus(@PathVariable String orderId,

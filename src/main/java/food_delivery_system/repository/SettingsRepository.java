@@ -16,16 +16,11 @@ import java.util.List;
  */
 @Repository
 public class SettingsRepository {
-
-    // File acting as simple database for system settings
     private static final String FILE = "settings.txt";
-
     // Dependency Injection using Spring
     // FileUtil abstracts file handling operations
     @Autowired private FileUtil fileUtil;
-
     // Load
-
     public Settings load() {
 
         // Reads all lines from settings file
@@ -33,7 +28,6 @@ public class SettingsRepository {
 
         // Loop through file lines (usually only one line exists)
         for (String l : lines) {
-
             // Skip empty or blank lines
             if (l == null || l.isBlank()) continue;
 
@@ -51,7 +45,6 @@ public class SettingsRepository {
                 return new Settings(rPct, riderPct);
 
             } catch (Exception ignored) {
-
                 // Exception handling for invalid file data
                 // If parsing fails, default settings will be used
             }
@@ -67,18 +60,16 @@ public class SettingsRepository {
     }
 
     // save
-
     public void save(Settings s) {
 
         // Writes only ONE LINE (single-row configuration)
         fileUtil.writeAllLines(FILE, java.util.List.of(
 
-                // Convert Settings object → file format string
+                // Convert Settings object to file format string
                 FileUtil.join(
                         s.getRestaurantCommissionPct(),
                         s.getRiderCommissionPct()
                 )
         ));
     }
-
 }

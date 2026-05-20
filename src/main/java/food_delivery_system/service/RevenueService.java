@@ -9,54 +9,40 @@ import java.time.YearMonth;
 import java.util.List;
 
 /** Aggregates website revenue from completed orders. */
-// Service layer: handles business logic for revenue calculations
+// Service layer handles business logic for revenue calculations
 @Service
 public class RevenueService {
-
     // Dependency Injection: OrderService provides order data
     @Autowired private OrderService orderService;
 
-    // INNER CLASS (DTO / DATA TRANSFER OBJECT
-    // This class represents calculated revenue statistics
     public static class Stats {
-
         // Total commission earned from restaurants
         public double restaurantCommission;
-
         // Total commission earned from riders
         public double riderCommission;
-
         // Total revenue (restaurant + rider commission)
         public double total;
-
         // Number of completed orders considered in calculation
         public int completedOrders;
 
         // Constructor initializes computed statistics
         public Stats(double r, double rd, int n) {
-
             // Utility method used for rounding values (external service)
             this.restaurantCommission = SettingsService.round2(r);
             this.riderCommission = SettingsService.round2(rd);
-
             // Total revenue calculation
             this.total = SettingsService.round2(r + rd);
-
             this.completedOrders = n;
         }
     }
 
     // helper method
-
     // Checks whether an order is completed (business rule)
     private boolean isCompleted(Order o) {
-
-        // Only DELIVERED orders are considered revenue-generating
         return "DELIVERED".equalsIgnoreCase(o.getStatus());
     }
 
     // Revenue calculations
-
     // Calculates overall revenue from all completed orders
     public Stats overall() {
 
@@ -121,7 +107,6 @@ public class RevenueService {
         double rd = orders.stream()
                 .mapToDouble(Order::getRiderWebsiteFee)
                 .sum();
-
         // Return calculated statistics object
         return new Stats(r, rd, orders.size());
     }

@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
  * Central pricing service.
  * This service ensures consistent pricing logic across:
  * cart, checkout, order placement, payment, and reports.
- *
  * Service Layer: Contains business logic (not data storage).
  */
 @Service
@@ -43,13 +42,11 @@ public class SettingsService {
 
         return round2(basePrice + commissionFromBase(basePrice));
     }
-
     // Calculates commission added on top of base food price
     public double commissionFromBase(double basePrice) {
 
         return round2(basePrice * (get().getRestaurantCommissionPct() / 100.0));
     }
-
     // Calculates website fee deducted from rider delivery fee
     public double riderWebsiteFee(double deliveryFee) {
 

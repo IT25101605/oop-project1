@@ -183,11 +183,27 @@
 
         if (addPinBtn) {
             addPinBtn.addEventListener('click', function () {
-                if (!hasCoordinates(latInput, lngInput)) {
-                    alert('Please click the map or enter both latitude and longitude first.');
+                if (hasCoordinates(latInput, lngInput)) {
+                    setStorePin(state, latInput.value, lngInput.value, PIN_ZOOM);
                     return;
                 }
-                setStorePin(state, latInput.value, lngInput.value, PIN_ZOOM);
+
+                var typedLocation = locationFromInputs(addressInput, cityInput);
+                if (typedLocation && typedLocation !== 'Sri Lanka' && google.maps.Geocoder) {
+                    var geocoder = new google.maps.Geocoder();
+                    geocoder.geocode({ address: typedLocation }, function (results, status) {
+                        if (status === 'OK' && results && results[0]) {
+                            var loc = results[0].geometry.location;
+                            setStorePin(state, loc.lat(), loc.lng(), PIN_ZOOM);
+                        } else {
+                            updateGoogleStorePreview(latInput, lngInput, addressInput, cityInput);
+                            alert('Location preview updated using the typed address. If you need an exact pin, click the map or enter latitude and longitude.');
+                        }
+                    });
+                    return;
+                }
+
+                updateGoogleStorePreview(latInput, lngInput, addressInput, cityInput);
             });
         }
 
@@ -383,12 +399,10 @@
         if (addPinBtn && !addPinBtn.dataset.googleFallbackBound) {
             addPinBtn.dataset.googleFallbackBound = 'true';
             addPinBtn.addEventListener('click', function () {
-                if (!hasCoordinates(latInput, lngInput)) {
-                    alert('Please enter both latitude and longitude first.');
-                    return;
+                if (hasCoordinates(latInput, lngInput)) {
+                    latInput.value = asFixed(latInput.value);
+                    lngInput.value = asFixed(lngInput.value);
                 }
-                latInput.value = asFixed(latInput.value);
-                lngInput.value = asFixed(lngInput.value);
                 updateGoogleStorePreview(latInput, lngInput, addressInput, cityInput);
             });
         }

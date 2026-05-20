@@ -14,10 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-/**
- * Service class responsible for all Cart-related business logic.
- * Handles adding items, updating quantities, removing items, and calculating subtotal.
- */
+
 @Service
 public class CartService {
 
@@ -26,7 +23,7 @@ public class CartService {
     @Autowired private FoodRepository foodRepo;
 
 
-    // GET ALL CART ITEMS FOR A CUSTOMER
+    //get all cart iterm from custommer
 
 
     public List<Cart> getCart(String customerId) {
@@ -36,7 +33,7 @@ public class CartService {
     }
 
 
-    // ADD ITEM TO CART
+
 
 
     public void addToCart(String customerId, String foodId, int qty) {
@@ -78,7 +75,7 @@ public class CartService {
     }
 
 
-    // UPDATE QUANTITY OF CART ITEM
+    // update quantity of cart iterm
 
 
     public void updateQuantity(String cartId, int qty) {
@@ -100,7 +97,7 @@ public class CartService {
     }
 
 
-    // REMOVE ITEM FROM CART
+    // remove iterm cart
 
 
     public void remove(String cartId) {
@@ -109,7 +106,7 @@ public class CartService {
     }
 
 
-    // CLEAR ENTIRE CART
+    // clear entire cart
 
 
     public void clear(String customerId) {
@@ -118,7 +115,7 @@ public class CartService {
     }
 
 
-    // CALCULATE CART SUBTOTAL
+    // Cart subtotal calculate
 
 
     public double subtotal(String customerId) {

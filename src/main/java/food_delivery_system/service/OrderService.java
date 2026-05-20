@@ -16,7 +16,7 @@ public class OrderService {
     @Autowired private CartService cartService;
     @Autowired private SettingsService settingsService;
 
-    /** Delivery fee = base 150 + 50 per km (city-based pseudo distance). */
+
     public double calculateDeliveryFee(String city, String restaurantCity) {
         if (city != null && restaurantCity != null && city.equalsIgnoreCase(restaurantCity)) return 150.0;
         return 350.0; // out of city
@@ -37,10 +37,7 @@ public class OrderService {
                 restaurantAddress, restaurantMapCity, 0.0, "");
     }
 
-    /**
-     * Place order with website commission breakdown and optional coupon.
-     * Customer-facing item prices already include the website commission.
-     */
+
     public Order place(String customerId, List<Cart> items, String address, String city,
                        String restaurantCity, String customerLatitude, String customerLongitude,
                        String restaurantLatitude, String restaurantLongitude,

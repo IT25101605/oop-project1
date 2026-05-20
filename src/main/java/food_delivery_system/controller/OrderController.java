@@ -50,6 +50,17 @@ public class OrderController {
     }
 
     // ====================================================
+    // HELPER: CUSTOMER DISTRICT VALIDATION
+    // ====================================================
+
+    private boolean foodMatchesCustomerDistrict(User u, Food f) {
+        if (u == null || u.getCity() == null || u.getCity().isBlank()) return true;
+        if (f == null) return false;
+        Restaurant r = restaurantService.byId(f.getRestaurantId());
+        return r != null && u.getCity().trim().equalsIgnoreCase(r.getCity() == null ? "" : r.getCity().trim());
+    }
+
+    // ====================================================
     // HELPER: MAP DATA FOR CHECKOUT PAGE
     // ====================================================
 
@@ -147,6 +158,7 @@ public class OrderController {
         model.addAttribute("items", items);
         model.addAttribute("restaurant", r);
         model.addAttribute("buyNow", false);
+        model.addAttribute("customer", u);
 
         addCheckoutBreakdown(model, items, coupon);
         addCheckoutMapAttributes(model, r);
@@ -160,6 +172,7 @@ public class OrderController {
 
     @PostMapping("/order/place")
     public String place(@RequestParam String address,
+                        @RequestParam String homeTown,
                         @RequestParam String city,
                         @RequestParam(required=false) String customerLatitude,
                         @RequestParam(required=false) String customerLongitude,
@@ -203,6 +216,9 @@ public class OrderController {
                 coupon.ok ? coupon.code : ""
         );
 
+        o.setHomeTown(homeTown);
+        orderService.update(o);
+
         // Payment processing
         paymentService.pay(o.getId(), u.getId(),
                 o.getTotal(), cardNumber);
@@ -228,6 +244,7 @@ public class OrderController {
 
         Food f = foodService.byId(foodId);
         if (f == null) return "redirect:/foods";
+        if (!foodMatchesCustomerDistrict(u, f)) return "redirect:/foods";
 
         if (qty < 1) qty = 1;
 
@@ -249,6 +266,7 @@ public class OrderController {
         model.addAttribute("items", items);
         model.addAttribute("restaurant", r);
         model.addAttribute("buyNow", true);
+        model.addAttribute("customer", u);
 
         addCheckoutBreakdown(model, items, null);
         addCheckoutMapAttributes(model, r);
@@ -262,6 +280,7 @@ public class OrderController {
 
     @PostMapping("/order/buy-now/place")
     public String buyNowPlace(@RequestParam String address,
+                              @RequestParam String homeTown,
                               @RequestParam String city,
                               @RequestParam(required=false) String customerLatitude,
                               @RequestParam(required=false) String customerLongitude,
@@ -306,6 +325,9 @@ public class OrderController {
                 coupon.ok ? coupon.discount : 0,
                 coupon.ok ? coupon.code : ""
         );
+
+        o.setHomeTown(homeTown);
+        orderService.update(o);
 
         paymentService.pay(o.getId(),
                 u.getId(),

@@ -3,12 +3,7 @@ package food_delivery_system.model;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
-/**
- * Represents a placed order in the food delivery system.
- *
- * Order status flow:
- * PENDING → PREPARING → OUT_FOR_DELIVERY → DELIVERED → CANCELLED
- */
+
 public class Order {
 
 
@@ -17,24 +12,24 @@ public class Order {
     private String customerId;
     private String restaurantId;
 
-    // Human-readable item summary (e.g., "Burger x2; Coke x1")
+
     private String items;
 
-    // Subtotal (customer-facing, includes commission before discount)
+
     private double subtotal;
 
-    // Delivery charge applied to order
+
     private double deliveryFee;
 
-    // Final amount paid by customer
+
     private double total;
 
-    // Delivery details
+
     private String address;
     private String city;
     private String homeTown;
 
-    // Order status (PENDING, PREPARING, etc.)
+
     private String status;
 
     // Assigned rider ID (if any)
@@ -46,7 +41,7 @@ public class Order {
     // Order completion timestamp (saved when rider marks order as DELIVERED)
     private String completedAt;
 
-    // ===================== LOCATION DATA =====================
+
 
     private String customerLatitude;
     private String customerLongitude;
@@ -57,7 +52,7 @@ public class Order {
     private String restaurantAddress;
     private String restaurantCity;
 
-    // ===================== COMMISSION / FINANCIAL DATA =====================
+
 
     // Raw food cost (restaurant base earnings)
     private double foodCost;
@@ -77,7 +72,7 @@ public class Order {
     // Coupon code used
     private String couponCode;
 
-    // ===================== CONSTRUCTORS =====================
+
 
     public Order() {}
 
@@ -150,7 +145,7 @@ public class Order {
         this.couponCode = couponCode == null ? "" : couponCode;
     }
 
-    // ===================== GETTERS & SETTERS =====================
+    // getters setters
 
     public String getId() { return id; }
     public void setId(String i) { this.id = i; }
@@ -198,7 +193,7 @@ public class Order {
         return completedAt == null || completedAt.isBlank() ? createdAt : completedAt;
     }
 
-    // ===================== LOCATION GETTERS/SETTERS =====================
+    //location getters setters
 
     public String getCustomerLatitude() { return customerLatitude; }
     public void setCustomerLatitude(String v) { this.customerLatitude = v == null ? "" : v; }
@@ -218,7 +213,7 @@ public class Order {
     public String getRestaurantCity() { return restaurantCity; }
     public void setRestaurantCity(String v) { this.restaurantCity = v == null ? "" : v; }
 
-    // ===================== FINANCIAL GETTERS/SETTERS =====================
+    // financial getter setters
 
     public double getFoodCost() { return foodCost; }
     public void setFoodCost(double v) { this.foodCost = v; }
@@ -238,7 +233,7 @@ public class Order {
     public String getCouponCode() { return couponCode; }
     public void setCouponCode(String v) { this.couponCode = v == null ? "" : v; }
 
-    // ===================== ORDER STATE HELPERS =====================
+    // order getters setters
 
     // Check if customer location exists
     public boolean hasCustomerCoordinates() {
@@ -259,7 +254,7 @@ public class Order {
                 || (restaurantCity != null && !restaurantCity.isBlank());
     }
 
-    // ===================== MAP HELPERS =====================
+    // map
 
     public String getCustomerMapQuery() {
         if (hasCustomerCoordinates())
@@ -289,7 +284,7 @@ public class Order {
                 && !"CANCELLED".equalsIgnoreCase(status);
     }
 
-    // URL encoder helper
+    // URL encoder h
     private static String enc(String v) {
         return URLEncoder.encode(v == null ? "" : v, StandardCharsets.UTF_8);
     }

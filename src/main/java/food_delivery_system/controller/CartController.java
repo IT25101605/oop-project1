@@ -35,9 +35,9 @@ public class CartController {
     @Autowired private SettingsService settingsService;
     @Autowired private CouponService couponService;
 
-    // ====================================================
+
     // CHECK CUSTOMER LOGIN
-    // ====================================================
+
 
     // Ensures logged user is CUSTOMER
     private User requireCustomer(HttpSession s) {
@@ -53,9 +53,21 @@ public class CartController {
         return u;
     }
 
-    // ====================================================
+
+    // CUSTOMER DISTRICT VALIDATION
+
+
+    private boolean foodMatchesCustomerDistrict(User u, String foodId) {
+        if (u == null || u.getCity() == null || u.getCity().isBlank()) return true;
+        Food f = foodService.byId(foodId);
+        if (f == null) return false;
+        Restaurant r = restaurantService.byId(f.getRestaurantId());
+        return r != null && u.getCity().trim().equalsIgnoreCase(r.getCity() == null ? "" : r.getCity().trim());
+    }
+
+
     // CUSTOMER DASHBOARD
-    // ====================================================
+
 
     @GetMapping("/customer")
     public String customerDashboard(HttpSession session, Model model) {
@@ -66,8 +78,15 @@ public class CartController {
         if (u == null)
             return "redirect:/login";
 
-        // Send restaurant list
-        model.addAttribute("restaurants", restaurantService.all());
+        // Send city-matched restaurant list
+        java.util.List<Restaurant> visibleRestaurants = restaurantService.all();
+        if (u.getCity() != null && !u.getCity().isBlank()) {
+            String city = u.getCity().trim();
+            visibleRestaurants = visibleRestaurants.stream()
+                    .filter(r -> city.equalsIgnoreCase(r.getCity() == null ? "" : r.getCity().trim()))
+                    .toList();
+        }
+        model.addAttribute("restaurants", visibleRestaurants);
 
         // Send customer orders
         model.addAttribute("orders",
@@ -85,9 +104,9 @@ public class CartController {
         return "customer-dashboard";
     }
 
-    // ====================================================
+
     // VIEW CART
-    // ====================================================
+
 
     @GetMapping("/cart")
     public String viewCart(
@@ -162,9 +181,8 @@ public class CartController {
             }
         }
 
-        // ====================================================
+
         // SEND DATA TO FRONTEND
-        // ====================================================
 
         model.addAttribute("items", items);
 
@@ -200,9 +218,9 @@ public class CartController {
         return "cart";
     }
 
-    // ====================================================
+
     // ADD ITEM TO CART
-    // ====================================================
+
 
     @PostMapping("/cart/add")
     public String addToCart(
@@ -223,6 +241,12 @@ public class CartController {
         if (u == null)
             return "redirect:/login";
 
+        if (!foodMatchesCustomerDistrict(u, foodId)) {
+            ra.addFlashAttribute("msg", "This food is not available in your selected district.");
+            String referer = request.getHeader("Referer");
+            return "redirect:" + (referer != null ? referer : "/foods");
+        }
+
         // Add item to cart
         cartService.addToCart(
                 u.getId(),
@@ -240,9 +264,9 @@ public class CartController {
                 (referer != null ? referer : "/foods");
     }
 
-    // ====================================================
+
     // UPDATE CART ITEM QUANTITY
-    // ====================================================
+
 
     @PostMapping("/cart/update/{cartId}")
     public String updateQty(
@@ -265,9 +289,9 @@ public class CartController {
         return "redirect:/cart";
     }
 
-    // ====================================================
+
     // REMOVE ITEM FROM CART
-    // ====================================================
+
 
     @PostMapping("/cart/remove/{cartId}")
     public String remove(

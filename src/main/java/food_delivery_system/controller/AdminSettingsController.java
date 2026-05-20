@@ -1,13 +1,11 @@
 package food_delivery_system.controller;
 
-// Importing models and services
 import food_delivery_system.model.*;
 import food_delivery_system.service.*;
 
 // Session handling
 import jakarta.servlet.http.HttpSession;
 
-// Spring Framework imports
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

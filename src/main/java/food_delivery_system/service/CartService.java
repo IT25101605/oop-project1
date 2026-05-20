@@ -25,9 +25,9 @@ public class CartService {
     @Autowired private CartRepository cartRepo;
     @Autowired private FoodRepository foodRepo;
 
-    // ====================================================
+
     // GET ALL CART ITEMS FOR A CUSTOMER
-    // ====================================================
+
 
     public List<Cart> getCart(String customerId) {
 
@@ -35,9 +35,9 @@ public class CartService {
         return cartRepo.findByCustomer(customerId);
     }
 
-    // ====================================================
+
     // ADD ITEM TO CART
-    // ====================================================
+
 
     public void addToCart(String customerId, String foodId, int qty) {
 
@@ -77,9 +77,9 @@ public class CartService {
         cartRepo.save(c);
     }
 
-    // ====================================================
+
     // UPDATE QUANTITY OF CART ITEM
-    // ====================================================
+
 
     public void updateQuantity(String cartId, int qty) {
 
@@ -99,27 +99,27 @@ public class CartService {
         cartRepo.update(c);
     }
 
-    // ====================================================
+
     // REMOVE ITEM FROM CART
-    // ====================================================
+
 
     public void remove(String cartId) {
 
         cartRepo.delete(cartId);
     }
 
-    // ====================================================
+
     // CLEAR ENTIRE CART
-    // ====================================================
+
 
     public void clear(String customerId) {
 
         cartRepo.clearForCustomer(customerId);
     }
 
-    // ====================================================
+
     // CALCULATE CART SUBTOTAL
-    // ====================================================
+
 
     public double subtotal(String customerId) {
 

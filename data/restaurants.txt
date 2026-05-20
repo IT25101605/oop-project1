@@ -1,4 +1,1 @@
-R-1779299336039530|U-1779299135582765|Pizza Hut Kurunegala|Kurunegala|Kurunegala Pizza Hut |Pizza|1779299842849_pizzah.png||7.473329|80.352908
-R-1779299029772658|U-1779298875880388|KFC|Kurunegala|KFC,Colombo Road,Kurunegala|American|1779299029455_KFC_logo.svg.png|It's Fingerlicking good||
-R-1779299444430612|U-1779299323420916|Barista|Kurunegala|Barista,Kurunegala|Cafe|1779299444391_news-new-outlet.jpg|||
-R-1779299982473632|U-1779299922092908|Subway Colombo|Colombo|Subway,Colombo|American|1779299982408_subway_22.9.19.jpg|||
+R-1779299857473740|U-177929923651260|P&S|Kandy|P&S Kandy|srilankan|1779299857396_P&S.png|perera and son||

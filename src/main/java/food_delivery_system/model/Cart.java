@@ -1,36 +1,31 @@
 package food_delivery_system.model;
 
-/**
- * Represents a single item in the customer's shopping cart.
- * Each Cart object stores details of one food item selected by a customer.
- */
+
 public class Cart {
 
-    // Unique identifier for this cart item
+
     private String id;
 
-    // ID of the customer who owns this cart
+
     private String customerId;
 
-    // Food item details
+
     private String foodId;
     private String foodName;
 
-    // Restaurant that owns this food item
+
     private String restaurantId;
 
-    // Price of a single unit of the food
+
     private double price;
 
-    // Quantity selected by the customer
+
     private int quantity;
 
     // Default constructor (required for frameworks like Spring / serialization)
     public Cart() {}
 
-    /**
-     * Full constructor to create a cart item with all values.
-     */
+
     public Cart(String id,
                 String customerId,
                 String foodId,
@@ -48,7 +43,7 @@ public class Cart {
         this.quantity = quantity;
     }
 
-    // ===================== GETTERS & SETTERS =====================
+    //getters and setters
 
     public String getId() { return id; }
     public void setId(String i) { this.id = i; }
@@ -71,9 +66,7 @@ public class Cart {
     public int getQuantity() { return quantity; }
     public void setQuantity(int q) { this.quantity = q; }
 
-    /**
-     * Calculates subtotal for this cart item (price × quantity).
-     */
+
     public double getSubtotal() {
         return price * quantity;
     }

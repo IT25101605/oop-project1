@@ -34,9 +34,9 @@ public class OrderController {
     @Autowired private CouponService couponService;
     @Autowired private UserRepository userRepo;
 
-    // ====================================================
+
     // HELPER: CHECK CUSTOMER LOGIN
-    // ====================================================
+
 
     // Ensures session user is CUSTOMER
     private User requireCustomer(HttpSession session) {
@@ -49,9 +49,9 @@ public class OrderController {
         return u;
     }
 
-    // ====================================================
+
     // HELPER: CUSTOMER DISTRICT VALIDATION
-    // ====================================================
+
 
     private boolean foodMatchesCustomerDistrict(User u, Food f) {
         if (u == null || u.getCity() == null || u.getCity().isBlank()) return true;
@@ -60,9 +60,9 @@ public class OrderController {
         return r != null && u.getCity().trim().equalsIgnoreCase(r.getCity() == null ? "" : r.getCity().trim());
     }
 
-    // ====================================================
+
     // HELPER: MAP DATA FOR CHECKOUT PAGE
-    // ====================================================
+
 
     private void addCheckoutMapAttributes(Model model, Restaurant r) {
 
@@ -79,9 +79,9 @@ public class OrderController {
                         : "https://www.google.com/maps/search/?api=1&query=Sri+Lanka");
     }
 
-    // ====================================================
+
     // CALCULATE CUSTOMER SUBTOTAL (FOOD + COMMISSION)
-    // ====================================================
+
 
     private double customerSubtotal(List<Cart> items) {
 
@@ -98,9 +98,9 @@ public class OrderController {
         return SettingsService.round2(s);
     }
 
-    // ====================================================
+
     // APPLY COUPON + BREAKDOWN DATA
-    // ====================================================
+
 
     private void addCheckoutBreakdown(Model model,
                                       List<Cart> items,
@@ -137,9 +137,9 @@ public class OrderController {
         model.addAttribute("couponOk", couponOk);
     }
 
-    // ====================================================
+
     // CHECKOUT PAGE (FROM CART)
-    // ====================================================
+
 
     @GetMapping("/order/checkout")
     public String checkout(@RequestParam(required = false) String coupon,
@@ -166,9 +166,9 @@ public class OrderController {
         return "payment";
     }
 
-    // ====================================================
+
     // PLACE ORDER (FROM CART)
-    // ====================================================
+
 
     @PostMapping("/order/place")
     public String place(@RequestParam String address,
@@ -229,9 +229,9 @@ public class OrderController {
         return "redirect:/customer/orders?placed=" + o.getId();
     }
 
-    // ====================================================
+
     // BUY NOW FLOW (SKIPS CART)
-    // ====================================================
+
 
     @PostMapping("/order/buy-now")
     public String buyNow(@RequestParam String foodId,
@@ -274,9 +274,9 @@ public class OrderController {
         return "payment";
     }
 
-    // ====================================================
+
     // PLACE ORDER (BUY NOW FLOW)
-    // ====================================================
+
 
     @PostMapping("/order/buy-now/place")
     public String buyNowPlace(@RequestParam String address,
@@ -339,9 +339,9 @@ public class OrderController {
         return "redirect:/customer/orders?placed=" + o.getId();
     }
 
-    // ====================================================
+
     // ORDER HISTORY PAGE
-    // ====================================================
+
 
     @GetMapping("/customer/orders")
     public String myOrders(HttpSession session,
@@ -390,9 +390,9 @@ public class OrderController {
         return "view-orders";
     }
 
-    // ====================================================
+
     // CUSTOMER CANCEL ORDER
-    // ====================================================
+
 
     @PostMapping("/customer/orders/cancel/{id}")
     public String cancelOrder(@PathVariable String id,

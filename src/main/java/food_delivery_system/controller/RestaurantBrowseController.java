@@ -1,130 +1,124 @@
 package food_delivery_system.controller;
 
-import food_delivery_system.model.Food;
-import food_delivery_system.model.Order;
-import food_delivery_system.model.Restaurant;
-import food_delivery_system.model.User;
-import food_delivery_system.repository.UserRepository;
-import food_delivery_system.service.FoodService;
-import food_delivery_system.service.OrderService;
-import food_delivery_system.service.RestaurantService;
-import food_delivery_system.service.ReviewService;
-import jakarta.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-
-import java.util.List;
-
-public class RestaurantBrowseController {
-}
-package food_delivery_system.controller;
-
 import food_delivery_system.model.*;
-        import food_delivery_system.repository.UserRepository;
+import food_delivery_system.repository.UserRepository;
 import food_delivery_system.service.*;
-        import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-        import java.util.*;
+import java.util.*;
 
-// @Controller marks this class as a Spring MVC Controller
-// Controller layer handles client requests and communicates with Service layer
-// MVC Architecture: Controller connects View and Business Logic
+// @Controller annotation marks this class as Spring MVC Controller
+// MVC Architecture:
+// Controller layer handles user requests and responses
 @Controller
 public class RestaurantBrowseController {
 
     // Dependency Injection using @Autowired
-    // Spring automatically injects service objects
+    // Spring automatically injects required objects
 
-    // Service class handles restaurant business logic
+    // Service class for restaurant business logic
     @Autowired
     private RestaurantService restaurantService;
 
-    // Food service used for food-related operations
-    @Autowired private FoodService foodService;
+    // Service class for food operations
+    @Autowired
+    private FoodService foodService;
 
-    // Order service used to retrieve restaurant orders
-    @Autowired private OrderService orderService;
+    // Service class for order management
+    @Autowired
+    private OrderService orderService;
 
-    // Review service used for managing reviews
-    @Autowired private ReviewService reviewService;
+    // Service class for review operations
+    @Autowired
+    private ReviewService reviewService;
 
-    // Repository pattern used for database/data access operations
-    // Repository directly interacts with data source
-    @Autowired private UserRepository userRepository;
+    // Repository class for user data access
+    // Repository Pattern used here
+    @Autowired
+    private UserRepository userRepository;
 
-    // Handles GET request for viewing restaurant list
+    // Handles GET request for restaurant list page
     @GetMapping("/restaurants")
-    public String browseRestaurants(HttpSession session, Model model) {
+    public String browseRestaurants(HttpSession session,
+                                    Model model) {
 
         // Getting logged-in user from session
         // Session management used for authentication
-        User currentUser = (User) session.getAttribute("user");
+        User currentUser =
+                (User) session.getAttribute("user");
 
-        // Ternary operator used for checking customer city
-        // Encapsulation: accessing private variables through getter methods
+        // Ternary operator used for conditional value assignment
         String customerCity =
-                currentUser != null &&
-                        "CUSTOMER".equalsIgnoreCase(currentUser.getRole())
+                currentUser != null
+                        && "CUSTOMER".equalsIgnoreCase(currentUser.getRole())
+
                         ? (currentUser.getCity() == null
                         ? ""
                         : currentUser.getCity().trim())
+
                         : "";
 
-        // Fetching all restaurants using service layer
-        List<Restaurant> restaurants = restaurantService.all();
+        // Fetching all restaurants
+        List<Restaurant> restaurants =
+                restaurantService.all();
 
         // Filtering restaurants based on customer city
         if (!customerCity.isBlank()) {
 
-            // Java Stream API used for filtering collections
-            // Functional programming concept used here
+            // Stream API used for filtering collection data
             restaurants = restaurants.stream()
 
-                    // Lambda expression filters matching cities
+                    // Lambda expression used here
                     .filter(r -> customerCity.equalsIgnoreCase(
                             r.getCity() == null
                                     ? ""
                                     : r.getCity().trim()
                     ))
 
-                    // Converts stream back to list
+                    // Converts stream back into List
                     .toList();
         }
 
-        // Sending data from controller to frontend view
+        // Sending restaurant list to frontend view
         model.addAttribute("restaurants", restaurants);
+
+        // Sending customer city to frontend
         model.addAttribute("customerCity", customerCity);
+
+        // Sending review service object
         model.addAttribute("reviewService", reviewService);
 
-        // Returning frontend page name
+        // Returning HTML/Thymeleaf page name
         return "restaurants";
     }
 
-    // Handles GET request for viewing single restaurant profile
+    // Handles request for viewing single restaurant profile
     @GetMapping("/restaurants/{id}")
     public String restaurantProfile(@PathVariable String id,
                                     HttpSession session,
                                     Model model) {
 
-        // Fetching restaurant using restaurant ID
-        Restaurant restaurant = restaurantService.byId(id);
+        // Fetching restaurant using ID
+        Restaurant restaurant =
+                restaurantService.byId(id);
 
-        // Null checking prevents errors
-        if (restaurant == null) return "redirect:/restaurants";
+        // Validation checking
+        // Redirect if restaurant does not exist
+        if (restaurant == null)
+            return "redirect:/restaurants";
 
         // Getting current logged-in user
-        User currentUser = (User) session.getAttribute("user");
+        User currentUser =
+                (User) session.getAttribute("user");
 
-        // Validation to ensure customers can only access restaurants in their city
-        if (currentUser != null &&
-                "CUSTOMER".equalsIgnoreCase(currentUser.getRole())
+        // Security validation:
+        // Customers can only view restaurants in their city
+        if (currentUser != null
+                && "CUSTOMER".equalsIgnoreCase(currentUser.getRole())
                 && currentUser.getCity() != null
                 && !currentUser.getCity().isBlank()
                 && !currentUser.getCity().trim().equalsIgnoreCase(
@@ -136,73 +130,85 @@ public class RestaurantBrowseController {
             return "redirect:/restaurants";
         }
 
-        // Fetching food items belonging to this restaurant
-        // Aggregation relationship: Restaurant contains Food items
-        List<Food> foods = foodService.byRestaurant(id);
+        // Fetching food items belonging to restaurant
+        // Aggregation relationship:
+        // Restaurant contains multiple Food items
+        List<Food> foods =
+                foodService.byRestaurant(id);
 
-        // Fetching all restaurant orders
-        List<Order> orders = orderService.byRestaurant(id);
+        // Fetching orders for restaurant
+        List<Order> orders =
+                orderService.byRestaurant(id);
 
-        // Fetching owner details using repository
-        User owner = userRepository.findById(restaurant.getOwnerId());
+        // Fetching restaurant owner details
+        User owner =
+                userRepository.findById(
+                        restaurant.getOwnerId()
+                );
 
-        // Adding restaurant data to model
+        // Sending restaurant details to frontend
         model.addAttribute("restaurant", restaurant);
 
-        // Sending foods list to view
+        // Sending food list
         model.addAttribute("foods", foods);
 
         // Sending owner details
         model.addAttribute("owner", owner);
 
-        // Sending order details
+        // Sending orders list
         model.addAttribute("orders", orders);
 
-        // Stream API used to filter reviews related to restaurant orders
-        model.addAttribute("reviews", reviewService.all().stream()
+        // Stream API used for filtering matching reviews
+        model.addAttribute("reviews",
+                reviewService.all().stream()
 
-                // Filtering reviews matching order IDs
-                .filter(rv -> orders.stream()
-                        .anyMatch(o -> o.getId().equals(rv.getOrderId())))
+                        // Matching reviews with restaurant orders
+                        .filter(rv -> orders.stream()
+                                .anyMatch(o ->
+                                        o.getId().equals(rv.getOrderId())
+                                ))
 
-                .toList());
+                        .toList());
 
-        // Total number of orders
+        // Sending total order count
         model.addAttribute("totalOrders", orders.size());
 
-        // Counting completed orders using method reference
-        // Polymorphism may occur internally through overridden methods
+        // Counting completed orders
+        // Method reference used here
         model.addAttribute("completedOrders",
-                orders.stream().filter(Order::isCompleted).count());
+                orders.stream()
+                        .filter(Order::isCompleted)
+                        .count());
 
         // Counting active orders
         model.addAttribute("activeOrders",
-                orders.stream().filter(Order::isActive).count());
+                orders.stream()
+                        .filter(Order::isActive)
+                        .count());
 
         // Returning restaurant profile page
         return "restaurant-profile";
     }
 
-    // Handles admin access for restaurant profile
+    // Handles admin access for restaurant profiles
     @GetMapping("/admin/restaurants/{id}")
     public String adminRestaurantProfile(@PathVariable String id,
                                          HttpSession session,
                                          Model model) {
 
-        // Getting logged-in admin user
-        User currentUser = (User) session.getAttribute("user");
+        // Getting logged-in user
+        User currentUser =
+                (User) session.getAttribute("user");
 
-        // Authorization checking
+        // Role-based authorization
         // Only ADMIN users can access this page
-        if (currentUser == null ||
-                !"ADMIN".equalsIgnoreCase(currentUser.getRole())) {
+        if (currentUser == null
+                || !"ADMIN".equalsIgnoreCase(currentUser.getRole()))
 
             return "redirect:/admin-login";
-        }
 
-        // Reusing existing method to avoid duplicate code
-        // Reusability is an important OOP principle
+        // Reusing existing method
+        // Reusability is an important OOP concept
         return restaurantProfile(id, session, model);
     }
 }
-

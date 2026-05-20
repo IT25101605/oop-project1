@@ -20,7 +20,7 @@ public class FoodRepository {
     // FileUtil handles file read/write operations (abstraction of file handling)
     @Autowired private FileUtil fileUtil;
 
-    // ================= READ OPERATIONS =================
+    // read operations
 
     // Retrieves all food records from file
     public List<Food> findAll() {

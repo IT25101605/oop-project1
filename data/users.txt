@@ -1,1 +1,4 @@
 U-ADMIN|Admin|admin@dinedrop.com|admin123|0000000000|ADMIN|HQ|||
+U-1779298875880388|KFC Kurunegala|kfckuru@gmail.com|1234|0378274554|OWNER|Kurunegala|||
+U-1779299323420916|Barista Kurunegala|barista@gmail.com|1234|0375805584|OWNER|Kurunegala|||
+U-1779299922092908|Subway Colombo|subcolo@gmail.com|1234|0112548845|OWNER|Colombo|||

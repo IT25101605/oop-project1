@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{fragments :: head('Add Restaurant - FoodieGo')}"></head>
+<head th:replace="~{fragments :: head('Add Restaurant - DineDrop')}"></head>
 
 <style>
 
@@ -228,7 +228,7 @@
 
                 <div class="col mb-3">
                     <label>City</label>
-                    <input class="form-control" name="city" required>
+                    <input class="form-control" id="city" name="city" required>
                 </div>
 
                 <div class="col mb-3">
@@ -242,7 +242,7 @@
             <!-- Address -->
             <div class="mb-3">
                 <label>Address</label>
-                <input class="form-control" name="address" required>
+                <input class="form-control" id="address" name="address" required>
             </div>
 
             <!-- LOCATION BOX -->
@@ -276,11 +276,11 @@
 
                     <div class="col-md-4 d-grid gap-2">
 
-                        <button type="button" class="btn btn-brand btn-sm">
+                        <button type="button" id="addStorePin" class="btn btn-brand btn-sm">
                             Add Location
                         </button>
 
-                        <button type="button" class="btn btn-outline-secondary btn-sm">
+                        <button type="button" id="useStoreLocation" class="btn btn-outline-secondary btn-sm">
                             Use GPS
                         </button>
 
@@ -292,12 +292,6 @@
                     No GPS pin selected yet.
                 </small>
 
-                <iframe id="storeMap"
-                        class="location-preview-map w-100 mt-2"
-                        style="height:220px"
-                        loading="lazy"
-                        src="https://maps.google.com/maps?q=Sri+Lanka&output=embed">
-                </iframe>
 
             </div>
 

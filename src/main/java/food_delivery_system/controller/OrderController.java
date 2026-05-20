@@ -1,6 +1,6 @@
 package food_delivery_system.controller;
 
-// Importing models
+// import models
 import food_delivery_system.model.*;
 
 // Importing services
@@ -24,7 +24,7 @@ import java.util.List;
 @Controller // Marks this class as Spring MVC controller for order operations
 public class OrderController {
 
-    // Injecting required services
+    // injecting required services
     @Autowired private OrderService orderService;
     @Autowired private CartService cartService;
     @Autowired private RestaurantService restaurantService;
@@ -35,10 +35,10 @@ public class OrderController {
     @Autowired private UserRepository userRepo;
 
 
-    // HELPER: CHECK CUSTOMER LOGIN
+    // check customer login
 
 
-    // Ensures session user is CUSTOMER
+
     private User requireCustomer(HttpSession session) {
 
         User u = (User) session.getAttribute("user");
@@ -50,7 +50,7 @@ public class OrderController {
     }
 
 
-    // HELPER: CUSTOMER DISTRICT VALIDATION
+    // customer district validation
 
 
     private boolean foodMatchesCustomerDistrict(User u, Food f) {
@@ -61,12 +61,12 @@ public class OrderController {
     }
 
 
-    // HELPER: MAP DATA FOR CHECKOUT PAGE
+    // map for checkout
 
 
     private void addCheckoutMapAttributes(Model model, Restaurant r) {
 
-        // Restaurant location map data
+        // restaurant location map data
         model.addAttribute("storeMapQuery",
                 r != null ? r.getMapQuery() : "Sri Lanka");
 
@@ -80,7 +80,7 @@ public class OrderController {
     }
 
 
-    // CALCULATE CUSTOMER SUBTOTAL (FOOD + COMMISSION)
+    // calculate customer tot with food and commission
 
 
     private double customerSubtotal(List<Cart> items) {
@@ -115,7 +115,7 @@ public class OrderController {
         String couponMsg = "";
         boolean couponOk = true;
 
-        // Apply coupon if provided
+        // apple coupen if avalable
         if (couponCode != null && !couponCode.isBlank()) {
 
             CouponService.CouponResult r =
@@ -138,7 +138,7 @@ public class OrderController {
     }
 
 
-    // CHECKOUT PAGE (FROM CART)
+    // checkout page
 
 
     @GetMapping("/order/checkout")
@@ -167,7 +167,7 @@ public class OrderController {
     }
 
 
-    // PLACE ORDER (FROM CART)
+    // place order
 
 
     @PostMapping("/order/place")
@@ -199,7 +199,7 @@ public class OrderController {
                         items.get(0).getRestaurantId(),
                         subtotal);
 
-        // Create order
+        // create order
         Order o = orderService.place(
                 u.getId(),
                 items,
@@ -219,18 +219,18 @@ public class OrderController {
         o.setHomeTown(homeTown);
         orderService.update(o);
 
-        // Payment processing
+        // payment processing
         paymentService.pay(o.getId(), u.getId(),
                 o.getTotal(), cardNumber);
 
-        // Clear cart after order
+        // clear cart after order
         cartService.clear(u.getId());
 
         return "redirect:/customer/orders?placed=" + o.getId();
     }
 
 
-    // BUY NOW FLOW (SKIPS CART)
+    //buy now flow
 
 
     @PostMapping("/order/buy-now")
@@ -248,7 +248,7 @@ public class OrderController {
 
         if (qty < 1) qty = 1;
 
-        // Create temporary cart item
+        // create temporary cart item
         Cart line = new Cart(null, u.getId(),
                 f.getId(), f.getName(),
                 f.getRestaurantId(),
@@ -275,7 +275,7 @@ public class OrderController {
     }
 
 
-    // PLACE ORDER (BUY NOW FLOW)
+    // place order buy now
 
 
     @PostMapping("/order/buy-now/place")
@@ -340,7 +340,7 @@ public class OrderController {
     }
 
 
-    // ORDER HISTORY PAGE
+    // order history page
 
 
     @GetMapping("/customer/orders")
@@ -391,7 +391,7 @@ public class OrderController {
     }
 
 
-    // CUSTOMER CANCEL ORDER
+    // customer cancel order
 
 
     @PostMapping("/customer/orders/cancel/{id}")

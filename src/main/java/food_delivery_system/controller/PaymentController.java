@@ -1,48 +1,41 @@
 package food_delivery_system.controller;
 
-import food_delivery_system.model.Payment;
+import food_delivery_system.model.User;
 import food_delivery_system.service.PaymentService;
-
+import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
 
-import java.util.UUID;
-
+// @Controller marks this class as a Spring MVC Controller
+// Controller layer handles HTTP requests in MVC architecture
 @Controller
-@RequestMapping("/payment")
 public class PaymentController {
 
-    private final PaymentService service = new PaymentService();
+    // Dependency Injection using @Autowired
+    // Service layer object is automatically created by Spring
+    @Autowired
+    private PaymentService paymentService;
 
-    // SHOW PAGE
-    @GetMapping("/pay")
-    public String paymentPage() {
-        return "payment";
-    }
+    // Handles GET request for "/payments" URL
+    @GetMapping("/payments")
+    public String myPayments(HttpSession session, Model model) {
 
-    // CREATE
-    @PostMapping("/pay")
-    public String makePayment(@RequestParam String orderId,
-                              @RequestParam double amount) {
+        // HttpSession is used to store logged-in user data
+        // Type casting Object to User model class
+        User u = (User) session.getAttribute("user");
 
-        Payment payment = new Payment(
-                UUID.randomUUID().toString(),
-                orderId,
-                amount,
-                "Completed"
-        );
+        // Simple validation / exception prevention
+        // If user is not logged in, redirect to login page
+        if (u == null) return "redirect:/login";
 
-        service.makePayment(payment);
+        // Calling service layer method to get customer payments
+        // Service layer contains business logic
+        // Encapsulation used because data is accessed through methods
+        model.addAttribute("payments", paymentService.byCustomer(u.getId()));
 
-        return "redirect:/payment/all";
-    }
-
-    // READ
-    @GetMapping("/all")
-    public String viewPayments(Model model) {
-
-        model.addAttribute("payments", service.getAllPayments());
+        // Returns Thymeleaf/JSP view page
         return "view-payments";
     }
 }

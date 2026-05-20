@@ -168,6 +168,7 @@ public class RestaurantController {
 
         // Sending coupon data to frontend
         model.addAttribute("couponByRestaurant", couponByRestaurant);
+ imesh
 
         // Variable used for storing total food count
         int totalFoods = 0;
@@ -183,6 +184,13 @@ public class RestaurantController {
         model.addAttribute("totalFoods", totalFoods);
 
         // Returning dashboard page
+
+        int totalFoods = 0;
+        for (Restaurant r : mine) {
+            totalFoods += foodService.byRestaurant(r.getId()).size();
+        }
+        model.addAttribute("totalFoods", totalFoods);
+ main
         return "owner-dashboard";
     }
 
@@ -381,5 +389,9 @@ public class RestaurantController {
             return null;
         }
     }
+ imesh
 }
 
+
+}
+ main

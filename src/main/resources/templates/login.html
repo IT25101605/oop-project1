@@ -3,202 +3,480 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DineDrop | Welcome Back</title>
 
-  <!-- Bootstrap 5 -->
+  <title>DineDrop | Premium Login</title>
+
+  <!-- Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Google Fonts & Icons -->
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Plus+Jakarta+Sans:wght@300;400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/icon?family=Material+Icons">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
-    :root {
-      --primary-gold: #D4AF37;
-      --dark-charcoal: #121212;
+
+    :root{
+      --gold:#D4AF37;
+      --dark:#0f0f0f;
+      --soft:#f8f9fa;
     }
 
-    body {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      margin: 0;
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      /* Sophisticated culinary background */
-      background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
-      url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
-      background-size: cover;
-      background-position: center;
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
     }
 
-    .login-card {
-      width: 100%;
-      max-width: 420px;
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
-      padding: 50px 40px;
-      border-radius: 28px;
-      box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+    body{
+      font-family:'Plus Jakarta Sans',sans-serif;
+      background:#111;
+      overflow-x:hidden;
+      overflow-y:auto;
     }
 
-    .brand-logo {
-      font-weight: 800;
-      color: var(--primary-gold);
-      letter-spacing: 3px;
-      font-size: 0.85rem;
-      text-align: center;
-      display: block;
-      margin-bottom: 8px;
+    /* BACKGROUND */
+    .page-wrapper{
+      min-height:100vh;
+      display:flex;
+      position:relative;
+      overflow:visible;
     }
 
-    .login-header {
-      text-align: center;
-      margin-bottom: 35px;
+    /* LEFT LOGIN PANEL */
+    .login-side{
+      width:45%;
+      min-height:100vh;
+      max-height:100vh;
+      overflow-y:auto;
+      background:rgba(15,15,15,0.94);
+      backdrop-filter:blur(12px);
+      display:flex;
+      align-items:flex-start;
+      justify-content:center;
+      padding:50px;
+      position:relative;
+      z-index:5;
     }
 
-    .login-header h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: 2rem;
-      color: var(--dark-charcoal);
-      margin-bottom: 5px;
+    .login-card{
+      width:100%;
+      max-width:430px;
+      animation:fadeUp 1s ease;
     }
 
-    .form-label {
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: #666;
-      text-transform: uppercase;
-      margin-bottom: 8px;
-      display: block;
+    .brand{
+      font-family:'Playfair Display',serif;
+      font-size:2rem;
+      color:white;
+      margin-bottom:15px;
     }
 
-    .input-wrapper {
-      position: relative;
-      margin-bottom: 20px;
+    .brand span{
+      color:var(--gold);
     }
 
-    .input-wrapper .material-icons {
-      position: absolute;
-      left: 15px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #aaa;
-      font-size: 18px;
+    .sub-text{
+      color:rgba(255,255,255,.7);
+      margin-bottom:40px;
     }
 
-    .form-control, .form-select {
-      padding: 12px 15px 12px 45px;
-      border-radius: 12px;
-      border: 1px solid #e0e0e0;
-      background: #fff;
-      font-size: 0.95rem;
-      transition: all 0.3s ease;
+    /* ROLE SELECTOR */
+    .role-selector{
+      display:flex;
+      gap:10px;
+      margin-bottom:30px;
     }
 
-    .form-control:focus, .form-select:focus {
-      border-color: var(--primary-gold);
-      box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.15);
-      outline: none;
+    .role-item{
+      flex:1;
+      text-align:center;
+      padding:14px;
+      border-radius:16px;
+      background:rgba(255,255,255,.06);
+      color:#aaa;
+      cursor:pointer;
+      transition:.3s;
+      font-weight:600;
+      border:1px solid rgba(255,255,255,.08);
     }
 
-    /* Adjust padding for select as it doesn't need as much left space */
-    .form-select {
-      padding-left: 15px;
+    .role-item:hover{
+      transform:translateY(-3px);
+      background:rgba(255,255,255,.1);
     }
 
-    .btn-login {
-      background: var(--dark-charcoal);
-      color: white;
-      width: 100%;
-      padding: 14px;
-      border-radius: 12px;
-      font-weight: 600;
-      border: none;
-      margin-top: 10px;
-      transition: 0.3s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
+    .role-item.active{
+      background:var(--gold);
+      color:white;
+      box-shadow:0 10px 25px rgba(212,175,55,.35);
     }
 
-    .btn-login:hover {
-      background: var(--primary-gold);
-      transform: translateY(-2px);
-      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    /* FORM */
+    .form-label{
+      color:white;
+      font-size:.9rem;
+      margin-bottom:8px;
+      font-weight:600;
     }
 
-    .auth-footer {
-      text-align: center;
-      margin-top: 25px;
-      font-size: 0.85rem;
-      color: #666;
+    .form-control{
+      height:55px;
+      border-radius:16px;
+      background:rgba(255,255,255,.07);
+      border:1px solid rgba(255,255,255,.08);
+      color:white;
+      padding:15px;
     }
 
-    .auth-footer a {
-      color: var(--dark-charcoal);
-      font-weight: 700;
-      text-decoration: none;
+    .form-control:focus{
+      background:rgba(255,255,255,.1);
+      color:white;
+      border-color:var(--gold);
+      box-shadow:0 0 0 0.2rem rgba(212,175,55,.15);
     }
 
-    .forgot-pw {
-      display: block;
-      text-align: right;
-      font-size: 0.75rem;
-      color: #888;
-      text-decoration: none;
-      margin-bottom: 20px;
-      margin-top: -15px;
+    .form-control::placeholder{
+      color:#888;
     }
+
+    select.form-control option, .form-select option{
+      background:#ffffff !important;
+      color:#111111 !important;
+      text-shadow:none !important;
+    }
+
+
+    /* BUTTON */
+    .btn-login{
+      height:58px;
+      border:none;
+      border-radius:18px;
+      background:var(--gold);
+      color:white;
+      font-weight:700;
+      transition:.35s;
+      box-shadow:0 10px 25px rgba(212,175,55,.3);
+    }
+
+    .btn-login:hover{
+      transform:translateY(-3px);
+      background:#bc982b;
+    }
+
+    /* LINKS */
+    .bottom-links{
+      margin-top:35px;
+    }
+
+    .bottom-links a{
+      color:var(--gold);
+      text-decoration:none;
+      font-weight:600;
+      transition:.3s;
+    }
+
+    .bottom-links a:hover{
+      opacity:.8;
+    }
+
+    /* RIGHT SIDE */
+    .visual-side{
+      width:55%;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .visual-side img{
+      width:100%;
+      height:100vh;
+      object-fit:cover;
+      animation:zoomMove 18s ease-in-out infinite alternate;
+    }
+
+    .overlay{
+      position:absolute;
+      inset:0;
+      background:
+              linear-gradient(to left, rgba(0,0,0,.15), rgba(0,0,0,.75));
+    }
+
+    /* FLOATING CARDS */
+    .floating-card{
+      position:absolute;
+      background:rgba(255,255,255,.1);
+      backdrop-filter:blur(15px);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:24px;
+      padding:20px;
+      color:white;
+      box-shadow:0 10px 35px rgba(0,0,0,.2);
+      animation:float 5s ease-in-out infinite;
+    }
+
+    .card1{
+      top:12%;
+      right:10%;
+      width:260px;
+    }
+
+    .card2{
+      bottom:12%;
+      right:18%;
+      width:220px;
+      animation-delay:1.5s;
+    }
+
+    .food-thumb{
+      width:55px;
+      height:55px;
+      border-radius:15px;
+      object-fit:cover;
+    }
+
+    /* ANIMATIONS */
+    @keyframes float{
+      0%{
+        transform:translateY(0px);
+      }
+      50%{
+        transform:translateY(-12px);
+      }
+      100%{
+        transform:translateY(0px);
+      }
+    }
+
+    @keyframes zoomMove{
+      0%{
+        transform:scale(1);
+      }
+      100%{
+        transform:scale(1.08);
+      }
+    }
+
+    @keyframes fadeUp{
+      from{
+        opacity:0;
+        transform:translateY(30px);
+      }
+      to{
+        opacity:1;
+        transform:translateY(0);
+      }
+    }
+
+    /* MOBILE */
+    @media(max-width:991px){
+
+      body{
+        overflow-y:auto;
+      }
+
+      .page-wrapper{
+        flex-direction:column;
+        min-height:100vh;
+      }
+
+      .login-side{
+        width:100%;
+        min-height:100vh;
+        max-height:none;
+        overflow-y:visible;
+        padding:35px 25px;
+        align-items:flex-start;
+      }
+
+      .visual-side{
+        display:none;
+      }
+
+    }
+
   </style>
 </head>
 
 <body>
 
-<div class="login-card">
-  <div class="login-header">
-    <span class="brand-logo">DINEDROP</span>
-    <h1>Welcome Back</h1>
-    <p class="text-muted small">The kitchen is waiting for you.</p>
+<div class="page-wrapper">
+
+  <!-- LEFT LOGIN -->
+  <div class="login-side">
+
+    <div class="login-card">
+
+      <h1 class="brand">
+        <a href="/"
+           style="text-decoration:none; color:white;">
+          🍽 DINE<span>DROP</span>
+        </a>
+      </h1>
+
+      <p class="sub-text">
+        Welcome back to the premium food delivery experience.
+        Select your role and continue your journey.
+      </p>
+
+      <!-- ERROR -->
+      <div class="alert alert-danger"
+           th:if="${error}"
+           th:text="${error}">
+      </div>
+
+      <!-- FORM -->
+      <form method="post"
+            th:action="@{/login}">
+
+        <!-- ROLE SELECT -->
+        <div class="role-selector">
+
+          <div class="role-item" data-role="CUSTOMER" onclick="setRole('CUSTOMER', this)">Customer</div>
+          <div class="role-item" data-role="OWNER" onclick="setRole('OWNER', this)">Owner</div>
+          <div class="role-item" data-role="RIDER" onclick="setRole('RIDER', this)">Rider</div>
+
+        </div>
+
+        <!-- HIDDEN -->
+        <input type="hidden"
+               name="role"
+               id="selectedRole"
+               th:value="${role != null and !role.isBlank()} ? ${role} : 'CUSTOMER'">
+
+        <!-- EMAIL -->
+        <div class="mb-4">
+
+          <label class="form-label">
+            Email Address
+          </label>
+
+          <input class="form-control"
+                 type="email"
+                 name="email"
+                 placeholder="name@example.com"
+                 required>
+
+        </div>
+
+
+        <!-- Customer Current City -->
+        <div class="mb-4" id="loginCityGroup">
+          <label class="form-label">Current City</label>
+          <select class="form-control" name="city" id="loginCityInput">
+            <option value="">Keep saved city / select city</option>
+            <option th:each="d : ${districts}" th:value="${d}" th:text="${d}"></option>
+          </select>
+        </div>
+
+        <!-- PASSWORD -->
+        <div class="mb-4">
+
+          <label class="form-label">
+            Password
+          </label>
+
+          <input class="form-control"
+                 type="password"
+                 name="password"
+                 placeholder="••••••••"
+                 required
+                 minlength="4">
+
+        </div>
+
+        <!-- BUTTON -->
+        <button type="submit"
+                class="btn btn-login w-100">
+
+          Sign In
+
+        </button>
+
+      </form>
+
+      <!-- LINKS -->
+      <div class="bottom-links text-center">
+
+        <p class="text-light small mb-3">
+          Don’t have an account?
+        </p>
+
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+
+          <a th:href="@{/register}">
+            User Register
+          </a>
+
+          <span class="text-secondary">|</span>
+
+          <a th:href="@{/register(role='OWNER')}">
+            Restaurant Partner
+          </a>
+
+          <span class="text-secondary">|</span>
+
+          <!-- RIDER REGISTER -->
+          <a th:href="@{/register(role='RIDER')}">
+            Rider Register
+          </a>
+
+        </div>
+
+        <div class="mt-4">
+
+          <a th:href="@{/admin-login}"
+             class="text-secondary small">
+            Access Admin Portal
+          </a>
+
+        </div>
+
+      </div>
+
+    </div>
+
   </div>
 
-  <form action="/login" method="post">
+  <!-- RIGHT VISUAL -->
+  <div class="visual-side">
 
-    <!-- EMAIL -->
-    <label class="form-label">Email Address</label>
-    <div class="input-wrapper">
-      <span class="material-icons"></span>
-      <input type="email" name="email" class="form-control" placeholder="edirimuni@abc.com" required>
-    </div>
+    <!-- BACKGROUND IMAGE -->
+    <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&q=80&w=2070"
+         alt="Food">
 
-    <!-- PASSWORD -->
-    <label class="form-label">Password</label>
-    <div class="input-wrapper">
-      <span class="material-icons"></span>
-      <input type="password" name="password" class="form-control" placeholder="Password" required>
-    </div>
+    <div class="overlay"></div>
 
-    <a href="#" class="forgot-pw">Forgot password?</a>
+    <!-- FLOATING CARD 1 -->
 
-    <!-- ROLE -->
-    <label class="form-label">Login As</label>
-    <div class="mb-4">
-      <select name="role" class="form-select" required>
-        <option value="CUSTOMER">Customer</option>
-        <option value="OWNER">Restaurant Owner</option>
-      </select>
-    </div>
 
-    <button type="submit" class="btn-login">
-      Sign In
-      <span class="material-icons" style="font-size: 18px;"></span>
-    </button>
-  </form>
 
-  <div class="auth-footer">
-    Don't have an account? <a href="/register">Sign Up</a>
+
   </div>
+
 </div>
+
+<!-- SCRIPT -->
+<script>
+
+  function setRole(role, element) {
+
+    document.getElementById('selectedRole').value = role;
+
+    document.querySelectorAll('.role-item').forEach(item => {
+      item.classList.remove('active');
+    });
+
+    element.classList.add('active');
+
+    const cityGroup = document.getElementById('loginCityGroup');
+    if (cityGroup) cityGroup.style.display = role === 'CUSTOMER' ? 'block' : 'none';
+  }
+
+  window.addEventListener('DOMContentLoaded', function(){
+    const selected = document.getElementById('selectedRole').value || 'CUSTOMER';
+    const item = document.querySelector('.role-item[data-role="' + selected + '"]') || document.querySelector('.role-item[data-role="CUSTOMER"]');
+    if (item) setRole(item.dataset.role, item);
+  });
+
+</script>
 
 </body>
 </html>

@@ -1,21 +1,18 @@
 package food_delivery_system.model;
 
-// OOP: Encapsulation
-public class Admin {
+public class Admin extends User {
 
-    private String username;
-    private String password;
-
-    public Admin() {}
-
-    public Admin(String username, String password) {
-        this.username = username;
-        this.password = password;
+    // Default Constructor: Used for creating an empty Admin object.
+    public Admin() {
+        super(); // Calls the parent (User) class constructor.
+        setRole("ADMIN"); // Encapsulation: Modifying internal state via a setter.
     }
 
-    public String getUsername() { return username; }
-    public void setUsername(String username) { this.username = username; }
-
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
+    // Parameterized Constructor: Used for object initialization with data
+    // Polymorphism: Constructor overloading (if multiple constructors exist in User)
+    public Admin(String id, String name, String email, String password) {
+        //pass arguments to the parent class constructor.
+        super(id, name, email, password, "", "ADMIN", "", "");
+    }
 }
+

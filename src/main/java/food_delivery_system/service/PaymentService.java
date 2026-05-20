@@ -2,42 +2,87 @@ package food_delivery_system.service;
 
 import food_delivery_system.model.Payment;
 import food_delivery_system.repository.PaymentRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
-// Business logic layer
+// @Service marks this class as Service layer
+// Service layer contains business logic in MVC architecture
+@Service
 public class PaymentService {
 
-    private final PaymentRepository repo = new PaymentRepository();
+    // Dependency Injection using @Autowired
+    // Spring automatically injects PaymentRepository object
+    @Autowired
+    private PaymentRepository repo;
 
-    // CREATE (simulate payment)
-    public void makePayment(Payment payment) {
+    // Method used to process payment
+    public Payment pay(String orderId,
+                       String customerId,
+                       double amount,
+                       String cardNumber) {
 
-        String line = payment.getPaymentId() + "," +
-                payment.getOrderId() + "," +
-                payment.getAmount() + "," +
-                payment.getStatus();
+        // Ternary operator used for validation
+        // If card number is invalid, use default value "0000"
 
-        repo.save(line);
+        // replaceAll("\\s","") removes spaces from card number
+        // substring() gets last 4 digits of card
+        String last4 = cardNumber == null || cardNumber.length() < 4
+                ? "0000"
+                : cardNumber.replaceAll("\\s","")
+                .substring(
+                        Math.max(
+                                0,
+                                cardNumber.replaceAll("\\s","").length() - 4
+                        )
+                );
+
+        // Get current date and time
+        // Java DateTime API used
+        String now = LocalDateTime.now()
+                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+
+        // Create Payment object and save using repository layer
+        // Abstraction:
+        // Service does not know file/database details
+        return repo.save(
+                new Payment(
+                        null,
+                        orderId,
+                        customerId,
+                        amount,
+                        last4,
+                        "PAID",
+                        now
+                )
+        );
     }
 
-    // READ
-    public List<Payment> getAllPayments() {
+    // Return all payments
+    public List<Payment> all() {
 
-        List<Payment> list = new ArrayList<>();
+        // Delegating operation to repository layer
+        return repo.findAll();
+    }
 
-        for (String line : repo.findAll()) {
-            String[] data = line.split(",");
+    // Find payments by customer ID
+    public List<Payment> byCustomer(String cid) {
 
-            if (data.length == 4) {
-                list.add(new Payment(
-                        data[0],
-                        data[1],
-                        Double.parseDouble(data[2]),
-                        data[3]
-                ));
-            }
-        }
-        return list;
+        return repo.findByCustomer(cid);
+    }
+
+    // Find payment using order ID
+    public Payment byOrder(String orderId) {
+
+        return repo.findByOrder(orderId);
+    }
+
+    // Delete payment record
+    public void delete(String id) {
+
+        repo.delete(id);
     }
 }

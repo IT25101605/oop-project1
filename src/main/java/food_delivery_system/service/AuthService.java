@@ -1,198 +1,161 @@
 package food_delivery_system.service;
 
-import food_delivery_system.model.Customer;
-import food_delivery_system.util.FileUtil;
+import food_delivery_system.model.User;
+import food_delivery_system.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
+/**
+ * Service layer in MVC architecture
+ * Handles authentication and registration business logic
+ * Service layer acts between Controller and Repository layers
+ */
 @Service
 public class AuthService {
 
-    private final String USER_FILE = "src/main/resources/data/users.txt";
+    // Dependency Injection using @Autowired
+    // Repository object used for database/file operations
+    @Autowired
+    private UserRepository userRepo;
 
-    //REGISTER -UPDATED FOR ROLE SUPPORT
-    public boolean registerCustomer(Customer customer) {
+    /**
+     * Regular Expression for Sri Lankan NIC validation
+     * Supports:
+     * 1. New NIC format -> 12 digits
+     * 2. Old NIC format -> 9 digits followed by V or X
+     */
+    public static final String NIC_NUMBER_REGEX = "^(\\d{12}|\\d{9}[VX])$";
 
-        if (emailExists(customer.getEmail())) {
-            return false;
-        }
+    /**
+     * Regular Expression for vehicle number validation
+     * Example formats:
+     * ABC-1234
+     * WP-CAB-1234
+     */
+    public static final String VEHICLE_NUMBER_REGEX = "^([A-Z]{2,3}-)?[A-Z]{2,3}-\\d{4}$";
 
-        String id = UUID.randomUUID().toString();
+    // Login method for user authentication
+    public User login(String email, String password) {
 
-        // ROLE FIX: support CUSTOMER + OWNER
-        String role = (customer.getRole() == null) ? "CUSTOMER" : customer.getRole();
+        // Fetch user using email
+        User u = userRepo.findByEmail(email);
 
-        String line = id + "," +
-                customer.getName() + "," +
-                customer.getEmail() + "," +
-                customer.getPassword() + "," +
-                customer.getAddress() + "," +
-                customer.getPhone() + "," +
-                role;
+        // Checks whether user exists and password matches
+        if (u != null && u.getPassword().equals(password))
 
-        FileUtil.writeLine(USER_FILE, line);
-        return true;
-    }
+            // Returns logged-in user object
+            return u;
 
-    //LOGIN ROLE BASED
-    public Customer loginUser(String email, String password, String role) {
-
-        List<String> users = FileUtil.readAllLines(USER_FILE);
-
-        for (String user : users) {
-
-            if (user == null || user.trim().isEmpty()) continue;
-
-            String[] data = user.split(",");
-
-            if (data.length >= 7) {
-
-                String storedEmail = data[2];
-                String storedPassword = data[3];
-                String storedRole = data[6];
-
-                if (storedEmail.equals(email)
-                        && storedPassword.equals(password)
-                        && storedRole.equalsIgnoreCase(role)) {
-
-                    Customer c = new Customer(
-                            data[0],
-                            data[1],
-                            data[2],
-                            data[3],
-                            data[4],
-                            data[5]
-                    );
-
-                    // attach role to object (IMPORTANT)
-                    c.setRole(storedRole);
-
-                    return c;
-                }
-            }
-        }
-
+        // Returns null if login fails
         return null;
     }
 
-    //GET CUSTOMER
-    public Customer getCustomerByEmail(String email) {
+    // Handles user registration
+    public String register(User u) {
 
-        List<String> users = FileUtil.readAllLines(USER_FILE);
+        // Validation for empty email
+        if (u.getEmail()==null || u.getEmail().isBlank())
+            return "Email required";
 
-        for (String user : users) {
+        // Password validation
+        if (u.getPassword()==null || u.getPassword().length() < 4)
+            return "Password must be at least 4 chars";
 
-            if (user == null || user.trim().isEmpty()) continue;
+        // Checks duplicate email registration
+        if (userRepo.findByEmail(u.getEmail()) != null)
+            return "Email already registered";
 
-            String[] data = user.split(",");
+        // Default role assignment
+        if (u.getRole() == null || u.getRole().isBlank())
+            u.setRole("CUSTOMER");
 
-            if (data.length >= 7 &&
-                    data[2].equals(email) &&
-                    data[6].equals("CUSTOMER")) {
+        // Rider-specific validation
+        if ("RIDER".equalsIgnoreCase(u.getRole())) {
 
-                Customer c = new Customer(
-                        data[0],
-                        data[1],
-                        data[2],
-                        data[3],
-                        data[4],
-                        data[5]
-                );
+            // Calls separate validation method
+            String err = validateRiderFields(u);
 
-                c.setRole(data[6]);
-
-                return c;
-            }
+            // Returns validation error if exists
+            if (err != null)
+                return err;
         }
 
+        // Save user using repository layer
+        userRepo.save(u);
+
+        // null means registration successful
         return null;
     }
 
-    //UPDATE
-    public boolean updateCustomer(Customer updatedCustomer) {
+    /**
+     * Validates rider registration fields
+     * Returns error message if validation fails
+     * Returns null if validation passes
+     */
+    public String validateRiderFields(User u) {
 
-        List<String> users = FileUtil.readAllLines(USER_FILE);
-        List<String> updatedList = new ArrayList<>();
+        // Null handling + trim removes unwanted spaces
+        String city = u.getCity() == null ? "" : u.getCity().trim();
 
-        boolean updated = false;
+        String vehicle = u.getVehicle() == null ? "" : u.getVehicle().trim();
 
-        for (String user : users) {
+        // Converts NIC to uppercase for consistency
+        String nic = u.getLicenseNumber() == null ? "" :
+                u.getLicenseNumber().trim().toUpperCase();
 
-            if (user == null || user.trim().isEmpty()) continue;
+        // Converts vehicle number to uppercase
+        String vehicleNumber = u.getLicensePlate() == null ? "" :
+                u.getLicensePlate().trim().toUpperCase();
 
-            String[] data = user.split(",");
+        // Validation for city
+        if (city.isBlank())
+            return "Service city is required for rider registration";
 
-            if (data.length >= 7 &&
-                    data[2].equals(updatedCustomer.getEmail()) &&
-                    data[6].equals("CUSTOMER")) {
+        // Validation for vehicle type
+        if (vehicle.isBlank())
+            return "Vehicle type is required for rider registration";
 
-                String newLine = data[0] + "," +
-                        updatedCustomer.getName() + "," +
-                        updatedCustomer.getEmail() + "," +
-                        updatedCustomer.getPassword() + "," +
-                        updatedCustomer.getAddress() + "," +
-                        updatedCustomer.getPhone() + ",CUSTOMER";
+        // Regular expression validation for NIC
+        if (!nic.matches(NIC_NUMBER_REGEX))
 
-                updatedList.add(newLine);
-                updated = true;
+            return "ID / NIC number must be 12 digits or old NIC format: 9 digits followed by V or X";
 
-            } else {
-                updatedList.add(user);
-            }
-        }
+        // Regular expression validation for vehicle number
+        if (!vehicleNumber.matches(VEHICLE_NUMBER_REGEX))
 
-        FileUtil.overwriteFile(USER_FILE, updatedList);
-        return updated;
+            return "Vehicle number must use ABC-1234 or WP-CAB-1234 format";
+
+        // Encapsulation using setter methods
+        // Stores cleaned/formatted values back into object
+        u.setCity(city);
+        u.setVehicle(vehicle);
+        u.setLicenseNumber(nic);
+        u.setLicensePlate(vehicleNumber);
+
+        // Validation successful
+        return null;
     }
 
-    //DELETE
-    public boolean deleteUserByEmail(String email, String role) {
+    // OOP Concepts Used:
+    // 1. Encapsulation -> User object fields accessed through getters/setters
+    // 2. Abstraction -> Service layer hides business logic from controller
+    // 3. Composition -> AuthService uses UserRepository object
+    // 4. Polymorphism may occur if interfaces/services are extended later
 
-        List<String> users = FileUtil.readAllLines(USER_FILE);
-        List<String> updatedList = new ArrayList<>();
+    // SOLID Principles:
+    // Single Responsibility Principle:
+    // This class only handles authentication and registration logic
 
-        boolean deleted = false;
+    // Dependency Inversion Principle:
+    // Service depends on repository layer instead of direct file handling
 
-        for (String user : users) {
+    // MVC Architecture:
+    // Controller -> AuthController
+    // Service -> AuthService
+    // Repository -> UserRepository
+    // Model -> User
 
-            if (user == null || user.trim().isEmpty()) continue;
+    // Exception/Validation Handling:
+    // Instead of crashing program, validation errors return messages safely
 
-            String[] data = user.split(",");
-
-            if (data.length >= 7 &&
-                    data[2].equals(email) &&
-                    data[6].equalsIgnoreCase(role)) {
-
-                deleted = true;
-                continue;
-            }
-
-            updatedList.add(user);
-        }
-
-        FileUtil.overwriteFile(USER_FILE, updatedList);
-        return deleted;
-    }
-
-    //EMAIL EXISTS
-    private boolean emailExists(String email) {
-
-        List<String> users = FileUtil.readAllLines(USER_FILE);
-
-        for (String user : users) {
-
-            if (user == null || user.trim().isEmpty()) continue;
-
-            String[] data = user.split(",");
-
-            if (data.length >= 3 && data[2].equals(email)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
 }

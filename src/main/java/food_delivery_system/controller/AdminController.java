@@ -389,8 +389,10 @@ public class AdminController {
         if (u == null || !"RIDER".equalsIgnoreCase(u.getRole()))
             return "redirect:/login";
 
-        // Update status
-        orderService.updateStatus(orderId, status);
+        boolean ok = orderService.updateStatusByRider(orderId, u.getId(), status);
+        if (!ok) {
+            // Rider is only allowed to move own orders to OUT_FOR_DELIVERY or DELIVERED.
+        }
 
         return "redirect:/rider";
     }
@@ -412,82 +414,17 @@ public class AdminController {
         if (u == null || !"OWNER".equalsIgnoreCase(u.getRole()))
             return "redirect:/login";
 
-        // Find order
-        Order order = orderService.byId(orderId);
+        java.util.List<String> ownerRestaurantIds = restaurantService.byOwner(u.getId())
+                .stream().map(Restaurant::getId).toList();
 
-        // Find restaurant
-        Restaurant restaurant =
-                order == null ? null
-                        : restaurantService.byId(order.getRestaurantId());
+        boolean allowed = orderService.updateStatusByOwner(orderId, u.getId(), ownerRestaurantIds, status);
 
-        // Check ownership
-        if (order != null
-                && restaurant != null
-                && u.getId().equals(restaurant.getOwnerId())) {
-
-            /*
-             Allowed status flow:
-             PENDING -> PREPARING -> OUT_FOR_DELIVERY -> DELIVERED
-
-             CANCELLED only allowed from PENDING
-            */
-
-            java.util.Map<String,Integer> rank =
-                    java.util.Map.of(
-                            "PENDING", 0,
-                            "PREPARING", 1,
-                            "OUT_FOR_DELIVERY", 2,
-                            "DELIVERED", 3);
-
-            // Current status
-            String cur =
-                    order.getStatus() == null
-                            ? "PENDING"
-                            : order.getStatus().toUpperCase();
-
-            // Next status
-            String next =
-                    status == null ? ""
-                            : status.toUpperCase();
-
-            boolean allowed;
-
-            // Cancellation rule
-            if ("CANCELLED".equals(next)) {
-
-                allowed = "PENDING".equals(cur);
-
-            }
-            // Cannot change delivered/cancelled orders
-            else if ("DELIVERED".equals(cur)
-                    || "CANCELLED".equals(cur)) {
-
-                allowed = false;
-
-            } else {
-
-                Integer cr = rank.get(cur);
-                Integer nr = rank.get(next);
-
-                // Forward-only flow validation
-                allowed = cr != null && nr != null && nr >= cr;
-            }
-
-            // Update if allowed
-            if (allowed) {
-
-                orderService.updateStatus(orderId, next);
-
-            } else {
-
-                // Error message
-                ra.addFlashAttribute("statusError",
-                        "Order " + orderId
-                                + ": cannot move from "
-                                + cur + " to " + next + ".");
-            }
+        if (!allowed) {
+            ra.addFlashAttribute("statusError",
+                    "Restaurant owners can only update restaurant-side statuses (PENDING, PREPARING, or CANCELLED while pending). Only riders can mark Out for Delivery or Delivered.");
         }
 
         return "redirect:/owner";
     }
+
 }

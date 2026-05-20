@@ -1,8 +1,13 @@
 U-177869408694392|saman|saman@gmail.com|Saman123|0712545789|CUSTOMER||||
 U-ADMIN|Admin|admin@dinedrop.com|admin123|0000000000|ADMIN|HQ|||
-U-177869408694392|saman|saman@gmail.com|Saman123|0712545789|CUSTOMER||||U-1778739256820145|customer|customer@gmail.com|1234|0770200367|CUSTOMER||||
+U-177869408694392|saman|saman@gmail.com|Saman123|0712545789|CUSTOMER||||U-1778739256820145
 U-1778739321739758|owner|owner@gmail.com|1234|0714463483|OWNER|Kurunegala|||
 U-1778739587912863|customer1|cus1@gmail.com|1234|0712545789|CUSTOMER||||
 U-1779098538462389|Duminda|duminda@gmail.com|Duminda123|0712545789|OWNER|Kurunegala|||
 U-1779174681849603|customer1|customer1@gmail.com|customer1|0712545789|CUSTOMER||||
-U-1778755171602233|ape kema adu milata|amit@foodie.com|cust123|0770002468|OWNER|Kurunegala|||
+U-1778755171602233|ape kema adu milata|amit@foodie.com|cust123|0770002468|OWNER|Kurunegala|||U-1779297298092420
+U-17792973822477|rider|rider@gmail.com|rider|0777542369|RIDER|Kurunegala|Scooter|543546543323|BIL-1955
+U-1779298426676794|customer3|customer3@gmail.com|customer3|0778956423|CUSTOMER|Kurunegala|||
+U-1779298540747414|owner3@gmail.com|owner3@gmail.com|owner3|0715489632|OWNER|Kurunegala|||
+U-1779298599558168|rider3|rider3@gmail.com|rider3|0778956456|RIDER|Kurunegala|Scooter|543546543323|BIL-1955
+U-177929923651260|Perera and son|pereraandson@gmail.com|pereraandson|0771458963|OWNER|Kandy|||

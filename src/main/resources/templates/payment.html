@@ -195,13 +195,37 @@
         <!-- LEFT -->
         <div class="col-lg-7">
 
+            <!-- 👤 CUSTOMER DETAILS -->
+            <div class="dash-card mb-3">
+
+                <div class="section-title">👤 Your Details</div>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label>Name</label>
+                        <input class="form-control"
+                               name="customerName"
+                               th:value="${customer != null ? customer.name : ''}"
+                               required>
+                    </div>
+                    <div class="col-md-6">
+                        <label>Phone Number</label>
+                        <input class="form-control"
+                               name="customerPhone"
+                               th:value="${customer != null ? customer.phone : ''}"
+                               required>
+                    </div>
+                </div>
+
+            </div>
+
             <!-- 📍 DELIVERY -->
             <div class="dash-card mb-3">
 
-                <div class="section-title">📍 Delivery Location Pin</div>
+                <div class="section-title">📍 Delivery Location</div>
 
                 <p class="text-muted small">
-                    Select your delivery location for accurate routing
+                    Full Address is only for rider/customer address idea. Google Maps route uses Home Town only.
                 </p>
 
                 <div class="mb-3">
@@ -210,19 +234,50 @@
                               id="deliveryAddress"
                               name="address"
                               rows="2"
+                              placeholder="House number, street, landmark etc."
                               required></textarea>
                 </div>
 
                 <div class="mb-3">
-                    <label>City</label>
+                    <label>Home Town</label>
                     <input class="form-control"
-                           name="city"
+                           id="deliveryCity"
+                           name="homeTown"
+                           placeholder="e.g. Maspotha"
                            required>
                 </div>
 
-                <div id="deliveryPinMap"
-                     class="w-100 mb-3"
-                     style="height:220px"></div>
+                <div class="mb-3">
+                    <label>City</label>
+                    <select class="form-control" name="city" required>
+                        <option th:if="${customer != null and customer.city != null and !customer.city.isEmpty()}"
+                                th:value="${customer.city}"
+                                th:text="${customer.city}"
+                                selected></option>
+                        <option th:if="${customer == null or customer.city == null or customer.city.isEmpty()}" value="">Select city for rider</option>
+                        <option th:if="${customer == null or customer.city == null or customer.city.isEmpty()}"
+                                th:each="d : ${districts}"
+                                th:value="${d}"
+                                th:text="${d}"></option>
+                    </select>
+                    <small class="text-muted">Only your login selected city is used to show this order to riders.</small>
+                </div>
+
+                <input type="hidden" id="customerLatitude" name="customerLatitude" value="">
+                <input type="hidden" id="customerLongitude" name="customerLongitude" value="">
+
+                <iframe id="routeMap"
+                        class="w-100 mb-2"
+                        style="height:220px;border:0;border-radius:18px;"
+                        loading="lazy"
+                        th:attr="data-store-query=${storeMapQuery}"
+                        src="https://maps.google.com/maps?saddr=Sri+Lanka&daddr=Sri+Lanka&output=embed">
+                </iframe>
+
+                <a id="openRouteLink"
+                   class="btn btn-outline-brand btn-sm"
+                   target="_blank"
+                   th:href="${storeMapsUrl}">Open route in Google Maps</a>
 
             </div>
 
@@ -317,6 +372,24 @@
         </div>
     </form>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const homeTown = document.getElementById('deliveryCity');
+      const routeMap = document.getElementById('routeMap');
+      const routeLink = document.getElementById('openRouteLink');
+      function enc(v){ return encodeURIComponent((v || 'Sri Lanka').trim() || 'Sri Lanka'); }
+      function updateRoute(){
+        if (!routeMap) return;
+        const store = routeMap.dataset.storeQuery || 'Sri Lanka';
+        const destination = homeTown ? homeTown.value : 'Sri Lanka';
+        routeMap.src = 'https://maps.google.com/maps?saddr=' + enc(store) + '&daddr=' + enc(destination) + '&output=embed';
+        if (routeLink) routeLink.href = 'https://www.google.com/maps/dir/?api=1&origin=' + enc(store) + '&destination=' + enc(destination);
+      }
+      if (homeTown) homeTown.addEventListener('input', updateRoute);
+      updateRoute();
+    });
+</script>
 <footer th:replace="~{fragments :: footer}"></footer>
 <div th:replace="~{fragments :: scripts}"></div>
 </body>

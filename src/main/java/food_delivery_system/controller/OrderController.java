@@ -34,9 +34,9 @@ public class OrderController {
     @Autowired private CouponService couponService;
     @Autowired private UserRepository userRepo;
 
-    // ====================================================
+
     // HELPER: CHECK CUSTOMER LOGIN
-    // ====================================================
+
 
     // Ensures session user is CUSTOMER
     private User requireCustomer(HttpSession session) {
@@ -49,9 +49,20 @@ public class OrderController {
         return u;
     }
 
-    // ====================================================
+
+    // HELPER: CUSTOMER DISTRICT VALIDATION
+
+
+    private boolean foodMatchesCustomerDistrict(User u, Food f) {
+        if (u == null || u.getCity() == null || u.getCity().isBlank()) return true;
+        if (f == null) return false;
+        Restaurant r = restaurantService.byId(f.getRestaurantId());
+        return r != null && u.getCity().trim().equalsIgnoreCase(r.getCity() == null ? "" : r.getCity().trim());
+    }
+
+
     // HELPER: MAP DATA FOR CHECKOUT PAGE
-    // ====================================================
+
 
     private void addCheckoutMapAttributes(Model model, Restaurant r) {
 
@@ -68,9 +79,9 @@ public class OrderController {
                         : "https://www.google.com/maps/search/?api=1&query=Sri+Lanka");
     }
 
-    // ====================================================
+
     // CALCULATE CUSTOMER SUBTOTAL (FOOD + COMMISSION)
-    // ====================================================
+
 
     private double customerSubtotal(List<Cart> items) {
 
@@ -87,9 +98,9 @@ public class OrderController {
         return SettingsService.round2(s);
     }
 
-    // ====================================================
+
     // APPLY COUPON + BREAKDOWN DATA
-    // ====================================================
+
 
     private void addCheckoutBreakdown(Model model,
                                       List<Cart> items,
@@ -126,9 +137,9 @@ public class OrderController {
         model.addAttribute("couponOk", couponOk);
     }
 
-    // ====================================================
+
     // CHECKOUT PAGE (FROM CART)
-    // ====================================================
+
 
     @GetMapping("/order/checkout")
     public String checkout(@RequestParam(required = false) String coupon,
@@ -147,6 +158,7 @@ public class OrderController {
         model.addAttribute("items", items);
         model.addAttribute("restaurant", r);
         model.addAttribute("buyNow", false);
+        model.addAttribute("customer", u);
 
         addCheckoutBreakdown(model, items, coupon);
         addCheckoutMapAttributes(model, r);
@@ -154,12 +166,13 @@ public class OrderController {
         return "payment";
     }
 
-    // ====================================================
+
     // PLACE ORDER (FROM CART)
-    // ====================================================
+
 
     @PostMapping("/order/place")
     public String place(@RequestParam String address,
+                        @RequestParam String homeTown,
                         @RequestParam String city,
                         @RequestParam(required=false) String customerLatitude,
                         @RequestParam(required=false) String customerLongitude,
@@ -203,6 +216,9 @@ public class OrderController {
                 coupon.ok ? coupon.code : ""
         );
 
+        o.setHomeTown(homeTown);
+        orderService.update(o);
+
         // Payment processing
         paymentService.pay(o.getId(), u.getId(),
                 o.getTotal(), cardNumber);
@@ -213,9 +229,9 @@ public class OrderController {
         return "redirect:/customer/orders?placed=" + o.getId();
     }
 
-    // ====================================================
+
     // BUY NOW FLOW (SKIPS CART)
-    // ====================================================
+
 
     @PostMapping("/order/buy-now")
     public String buyNow(@RequestParam String foodId,
@@ -228,6 +244,7 @@ public class OrderController {
 
         Food f = foodService.byId(foodId);
         if (f == null) return "redirect:/foods";
+        if (!foodMatchesCustomerDistrict(u, f)) return "redirect:/foods";
 
         if (qty < 1) qty = 1;
 
@@ -249,6 +266,7 @@ public class OrderController {
         model.addAttribute("items", items);
         model.addAttribute("restaurant", r);
         model.addAttribute("buyNow", true);
+        model.addAttribute("customer", u);
 
         addCheckoutBreakdown(model, items, null);
         addCheckoutMapAttributes(model, r);
@@ -256,12 +274,13 @@ public class OrderController {
         return "payment";
     }
 
-    // ====================================================
+
     // PLACE ORDER (BUY NOW FLOW)
-    // ====================================================
+
 
     @PostMapping("/order/buy-now/place")
     public String buyNowPlace(@RequestParam String address,
+                              @RequestParam String homeTown,
                               @RequestParam String city,
                               @RequestParam(required=false) String customerLatitude,
                               @RequestParam(required=false) String customerLongitude,
@@ -307,6 +326,9 @@ public class OrderController {
                 coupon.ok ? coupon.code : ""
         );
 
+        o.setHomeTown(homeTown);
+        orderService.update(o);
+
         paymentService.pay(o.getId(),
                 u.getId(),
                 o.getTotal(),
@@ -317,9 +339,9 @@ public class OrderController {
         return "redirect:/customer/orders?placed=" + o.getId();
     }
 
-    // ====================================================
+
     // ORDER HISTORY PAGE
-    // ====================================================
+
 
     @GetMapping("/customer/orders")
     public String myOrders(HttpSession session,
@@ -368,9 +390,9 @@ public class OrderController {
         return "view-orders";
     }
 
-    // ====================================================
+
     // CUSTOMER CANCEL ORDER
-    // ====================================================
+
 
     @PostMapping("/customer/orders/cancel/{id}")
     public String cancelOrder(@PathVariable String id,

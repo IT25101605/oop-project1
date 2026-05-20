@@ -11,11 +11,11 @@ import java.nio.charset.StandardCharsets;
  */
 public class Order {
 
-    // ===================== BASIC ORDER INFO =====================
 
-    private String id;               // Unique order ID
-    private String customerId;       // Customer who placed the order
-    private String restaurantId;     // Restaurant fulfilling the order
+//order info
+    private String id;
+    private String customerId;
+    private String restaurantId;
 
     // Human-readable item summary (e.g., "Burger x2; Coke x1")
     private String items;
@@ -32,6 +32,7 @@ public class Order {
     // Delivery details
     private String address;
     private String city;
+    private String homeTown;
 
     // Order status (PENDING, PREPARING, etc.)
     private String status;
@@ -41,6 +42,9 @@ public class Order {
 
     // Order creation timestamp
     private String createdAt;
+
+    // Order completion timestamp (saved when rider marks order as DELIVERED)
+    private String completedAt;
 
     // ===================== LOCATION DATA =====================
 
@@ -123,9 +127,11 @@ public class Order {
         this.total = total;
         this.address = address;
         this.city = city;
+        this.homeTown = "";
         this.status = status;
         this.riderId = riderId;
         this.createdAt = createdAt;
+        this.completedAt = "";
 
         this.customerLatitude = customerLatitude == null ? "" : customerLatitude;
         this.customerLongitude = customerLongitude == null ? "" : customerLongitude;
@@ -173,6 +179,9 @@ public class Order {
     public String getCity() { return city; }
     public void setCity(String c) { this.city = c; }
 
+    public String getHomeTown() { return homeTown == null || homeTown.isBlank() ? city : homeTown; }
+    public void setHomeTown(String h) { this.homeTown = h == null ? "" : h; }
+
     public String getStatus() { return status; }
     public void setStatus(String s) { this.status = s; }
 
@@ -181,6 +190,13 @@ public class Order {
 
     public String getCreatedAt() { return createdAt; }
     public void setCreatedAt(String c) { this.createdAt = c; }
+
+    public String getCompletedAt() { return completedAt; }
+    public void setCompletedAt(String completedAt) { this.completedAt = completedAt == null ? "" : completedAt; }
+
+    public String getDisplayCompletedAt() {
+        return completedAt == null || completedAt.isBlank() ? createdAt : completedAt;
+    }
 
     // ===================== LOCATION GETTERS/SETTERS =====================
 
@@ -249,8 +265,7 @@ public class Order {
         if (hasCustomerCoordinates())
             return customerLatitude + "," + customerLongitude;
 
-        String q = ((address == null ? "" : address)
-                + ", " + (city == null ? "" : city)).trim();
+        String q = (homeTown != null && !homeTown.isBlank()) ? homeTown.trim() : (city == null ? "" : city.trim());
 
         return q.isBlank() || q.equals(",") ? "Sri Lanka" : q;
     }

@@ -10,23 +10,18 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-// @Controller marks this class as a Spring MVC Controller
-// Controller layer handles HTTP requests and returns views/pages
-// MVC Architecture: This is the Controller component
 @Controller
 public class AuthController {
 
-    // Dependency Injection using @Autowired
+    // Dependency Injection by @Autowired
     // AuthService contains business logic related to authentication
     @Autowired private AuthService authService;
 
-    // Service class used to fetch restaurant data
     @Autowired private RestaurantService restaurantService;
 
-    // Service class used to fetch review data
     @Autowired private ReviewService reviewService;
 
-    // Handles home page request
+    // handles home page request
     // Model is used to send data from controller to view
     @GetMapping("/")
     public String home(Model model, HttpSession session) {
@@ -55,7 +50,6 @@ public class AuthController {
     @GetMapping("/login")
     public String loginPage(@RequestParam(required=false) String role, Model model) {
 
-        // Adds role data to frontend. Admin uses the separate admin portal.
         String loginRole = role == null ? "" : role.toUpperCase();
         if ("ADMIN".equalsIgnoreCase(loginRole)) loginRole = "CUSTOMER";
         model.addAttribute("role", loginRole);
@@ -70,10 +64,9 @@ public class AuthController {
                           @RequestParam(required=false) String city,
                           HttpSession session, Model model) {
 
-        // Calls service layer to validate login
         User u = authService.login(email, password);
 
-        // Basic validation and error handling
+        // validation and error handling
         if (u == null) {
             model.addAttribute("error", "Invalid credentials");
             model.addAttribute("role", role == null ? "" : role);
@@ -94,44 +87,38 @@ public class AuthController {
             return "login";
         }
 
-        // Save selected current city for customer login when provided
         if (city != null && !city.isBlank() && "CUSTOMER".equalsIgnoreCase(u.getRole())) {
             u.setCity(city.trim());
             adminUpdate(u);
         }
 
-        // Session used to store logged-in user details
+        // Session used to store logged in user details
         session.setAttribute("user", u);
 
         // Polymorphism concept can appear in service implementations
-        // Redirect user based on role
+        // rdirecting user based on the role
         return "redirect:" + dashboardFor(u.getRole());
     }
 
-    // Shows admin login page
     @GetMapping("/admin-login")
     public String adminLogin() {
         return "admin-login";
     }
 
-    // Handles admin login functionality
     @PostMapping("/admin-login")
     public String adminLoginPost(@RequestParam String email, @RequestParam String password,
                                  HttpSession session, Model model) {
 
-        // Service layer authentication
         User u = authService.login(email, password);
 
         // Role validation for admin access
         if (u == null || !"ADMIN".equalsIgnoreCase(u.getRole())) {
 
-            // Error message passed to frontend
             model.addAttribute("error", "Invalid admin credentials");
 
             return "admin-login";
         }
 
-        // Store admin object in session
         session.setAttribute("user", u);
 
         return "redirect:/admin";
@@ -141,7 +128,6 @@ public class AuthController {
     @GetMapping("/register")
     public String registerPage(@RequestParam(required=false) String role, Model model) {
 
-        // Converts role to uppercase for consistency
         model.addAttribute("role", role == null ? "CUSTOMER" : role.toUpperCase());
 
         return "register";
@@ -158,8 +144,7 @@ public class AuthController {
                              @RequestParam(required=false) String licensePlate,
                              HttpSession session, Model model) {
 
-        // Object creation using constructor
-        // Encapsulation used through private fields inside User class
+        // Encapsulation (from user class)
         User u = new User(null, name, email, password, phone, role.toUpperCase(),
                 city == null ? "" : city, vehicle == null ? "" : vehicle,
                 licenseNumber == null ? "" : licenseNumber,
@@ -171,10 +156,9 @@ public class AuthController {
             return "register";
         }
 
-        // Calls service layer to register user
         String err = authService.register(u);
 
-        // Validation and exception-like handling
+        // Validation
         if (err != null) {
 
             model.addAttribute("error", err);
@@ -183,17 +167,16 @@ public class AuthController {
             return "register";
         }
 
-        // Store registered user in session
         session.setAttribute("user", u);
 
         return "redirect:" + dashboardFor(u.getRole());
     }
 
-    // Logout functionality
+    // Logout
     @GetMapping("/logout")
     public String logout(HttpSession session) {
 
-        // Invalidates current session
+        // invalidates current session
         session.invalidate();
 
         return "redirect:/";
@@ -203,13 +186,10 @@ public class AuthController {
     @GetMapping("/profile")
     public String profile(HttpSession session, Model model) {
 
-        // Type casting session object to User
         User u = (User) session.getAttribute("user");
 
-        // Authentication check
         if (u == null) return "redirect:/login";
 
-        // Send user object to frontend
         model.addAttribute("user", u);
 
         return "profile";
@@ -225,7 +205,7 @@ public class AuthController {
                                 @RequestParam(required=false) String password,
                                 HttpSession session, Model model) {
 
-        // Retrieve logged-in user from session
+        // Retrieve logged in user from session
         User u = (User) session.getAttribute("user");
 
         if (u == null) return "redirect:/login";
@@ -244,14 +224,14 @@ public class AuthController {
 
         if (vehicle != null) u.setVehicle(vehicle);
 
-        // Conditional logic for rider role
+        // rider role
         if ("RIDER".equalsIgnoreCase(u.getRole())) {
 
             if (licenseNumber != null) u.setLicenseNumber(licenseNumber);
 
             if (licensePlate != null) u.setLicensePlate(licensePlate);
 
-            // Validation method from service layer
+            // Validation from service layer
             String err = authService.validateRiderFields(u);
 
             if (err != null) {
@@ -268,7 +248,6 @@ public class AuthController {
             u.setPassword(password);
         }
 
-        // Repository pattern is used internally inside service classes
         // Update user data through AdminService
         adminUpdate(u);
 
@@ -279,7 +258,7 @@ public class AuthController {
     }
 
 
-    // Updates customer current city from browse pages without changing page design
+    // Updates customer current city
     @PostMapping("/customer/city")
     public String updateCustomerCity(@RequestParam String city, HttpSession session,
                                      jakarta.servlet.http.HttpServletRequest request) {
@@ -314,7 +293,6 @@ public class AuthController {
         return "redirect:/";
     }
 
-    // Dependency Injection for AdminService
     @Autowired private food_delivery_system.service.AdminService adminService;
 
     // Helper method to update user
@@ -327,12 +305,11 @@ public class AuthController {
     // Helper method to delete user
     private void adminDelete(String id){
 
-        // CRUD delete operation
+        // delete operation
         adminService.deleteUser(id);
     }
 
     // Method decides dashboard URL based on user role
-    // Switch expression introduced in newer Java versions
     private String dashboardFor(String role) {
 
         return switch (role.toUpperCase()) {
